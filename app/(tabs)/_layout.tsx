@@ -1,57 +1,75 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { StatusBar } from "react-native";
 
 export default function HomeLayout() {
   return (
-    <Tabs
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: string = "";
-
-          if (route.name === "index") {
-            iconName = "clipboard";
-          } else if (route.name === "details") {
-            iconName = "heart";
-          }
-
-          return <FontAwesome name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: "#FF6347", // 활성화된 탭의 색상
-        tabBarInactiveTintColor: "#808080", // 비활성화된 탭의 색상
-        tabBarStyle: {
-          backgroundColor: "#FFF8DC", // 탭바 배경 색상
-          borderTopWidth: 0, // 탭바 상단의 테두리 제거
-          height: 70, // 탭바 높이 조정
-        },
-        tabBarLabelStyle: {
-          fontSize: 14, // 탭바 라벨 폰트 크기
-          fontWeight: "bold", // 라벨 폰트 두께
-        },
-        tabBarItemStyle: {
-          borderRadius: 10, // 탭 아이템의 모서리 둥글게 만들기
-          margin: 5, // 탭 아이템 간격
-        },
-      })}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "나의 미션",
-          // tabBarIcon: ({ color }) => (
-          //   <FontAwesome size={28} name="smile" color={color} />
-          // ),
-        }}
+    <>
+      <StatusBar
+        barStyle="light-content" // 상태바 아이콘을 밝게 표시 (아이콘 색상: 하얀색)
+        backgroundColor="#1c1f2a" // 상태바 배경색
+        // translucent={true}
       />
-      <Tabs.Screen
-        name="details"
-        options={{
-          title: "연인의 미션",
-          // tabBarIcon: ({ color }) => (
-          //   <FontAwesome size={28} name="heart" color={color} />
-          // ),
-        }}
-      />
-    </Tabs>
+      <Tabs
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName: string = "";
+
+            if (route.name === "index") {
+              iconName = "clipboard";
+            } else if (route.name === "love") {
+              iconName = "heart";
+            } else if (route.name === "coupon") {
+              iconName = "ticket";
+            }else if (route.name === "setting") {
+              iconName = "cog";
+            }
+            // @ts-expect-error
+            return <FontAwesome name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: "#ff3b3b", // 딥 레드
+          tabBarInactiveTintColor: "#d1d1d1", // 라이트 그레이
+          tabBarStyle: {
+            backgroundColor: "#1e2025", // 다크 그레이
+            borderTopWidth: 0,
+            height: 72,
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: "bold",
+          },
+          tabBarItemStyle: {
+            borderRadius: 10,
+            margin: 10,
+          },
+        })}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "나의 미션",
+          }}
+        />
+        <Tabs.Screen
+          name="love"
+          options={{
+            title: "연인의 미션",
+          }}
+        />
+        <Tabs.Screen
+          name="coupon"
+          options={{
+            title: "쿠폰",
+          }}
+        />
+        <Tabs.Screen
+          name="setting"
+          options={{
+            title: "설정",
+          }}
+        />
+      </Tabs>
+    </>
   );
 }

@@ -1,22 +1,21 @@
-import {
-  Alert,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { supabase } from "@/utils/supabase";
-import { useEffect, useState } from "react";
-import { user } from "@/types/user";
+import { colors } from "@/constants/Colors";
+import theme from "@/constants/Theme";
 import useAuthStore from "@/stores/authStore";
 import { todo } from "@/types/todo";
-import theme from "@/constants/Theme";
-import { colors } from "@/constants/Colors";
+import { user } from "@/types/user";
+import { supabase } from "@/utils/supabase";
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+  Alert,
+} from "react-native";
 
-export default function HomeScreen() {
+export default function LoveScreen() {
   const [todos, setTodos] = useState<todo[]>([]);
   const [text, setText] = useState("");
 
@@ -30,7 +29,7 @@ export default function HomeScreen() {
 
     const { error } = await supabase
       .from("todos")
-      .insert({ title: text, user_id: user.id });
+      .insert({ title: text, user_id: user.love_id });
 
     if (error) {
       console.error(error);
@@ -57,42 +56,12 @@ export default function HomeScreen() {
     getTodos();
   };
 
-  const updateStatus = async (todo: todo) => {
-    const confirmText = todo.completed
-      ? "미션을 완료하지 않으셨나요~?"
-      : "미션을 완수하셨나요!";
-
-    Alert.alert(
-      "미션 완료 여부 변경",
-      confirmText,
-      [
-        {
-          text: "취소",
-          style: "cancel",
-        },
-        {
-          text: "확인",
-          onPress: async () => {
-            const { error } = await supabase
-              .from("todos")
-              .update({ completed: !todo.completed })
-              .eq("id", todo.id);
-
-            if (error) {
-              return;
-            }
-
-            getTodos();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
   const getTodos = async () => {
     try {
-      const { data, error } = await supabase.from("todos").select("*").eq("user_id", user.id);
+      const { data, error } = await supabase
+        .from("todos")
+        .select("*")
+        .eq("user_id", user.love_id);
 
       if (error) {
         console.error("Error fetching todos:", error.message);
@@ -129,19 +98,13 @@ export default function HomeScreen() {
         keyExtractor={(todo: todo) => todo.id.toString()}
         renderItem={({ item }) =>
           item.completed ? (
-            <TouchableOpacity
-              style={styles.completedItem}
-              onPress={() => updateStatus(item)}
-            >
+            <TouchableOpacity style={styles.completedItem}>
               <Text style={styles.completedItemText} key={item.id}>
                 {item.title}
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => updateStatus(item)}
-            >
+            <TouchableOpacity style={styles.item}>
               <Text key={item.id} style={styles.itemText}>
                 {item.title}
               </Text>

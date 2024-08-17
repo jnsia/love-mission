@@ -6,14 +6,16 @@
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
-export const Colors = {
+export const colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#FFFFFF',
+    // 미드나잇 블루
+    background: '#2a2d3e', // #121417 차콜 블랙도 괜찮은데... 
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    button: "#121417"
   },
   dark: {
     text: '#ECEDEE',
@@ -22,5 +24,9 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    button: "#121417"
   },
+  deepRed: "#ff3b3b",
+  darkGray: "#1e2025",
+  lightGray: "#d1d1d1",
 };

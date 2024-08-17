@@ -1,9 +1,7 @@
 import useAuthStore from "@/stores/authStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function DetailsScreen() {
+export default function SettingScreen() {
   const logout = useAuthStore((state: any) => state.logout);
 
   const remove = async () => {

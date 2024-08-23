@@ -1,8 +1,14 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { colors } from "@/constants/Colors";
+import theme from "@/constants/Theme";
+import useAuthStore from "@/stores/authStore";
+import { user } from "@/types/user";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { StatusBar } from "react-native";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function HomeLayout() {
+  const user: user | null = useAuthStore((state: any) => state.user);
+
   return (
     <>
       <StatusBar
@@ -10,6 +16,14 @@ export default function HomeLayout() {
         backgroundColor="#1c1f2a" // 상태바 배경색
         // translucent={true}
       />
+      <View style={styles.header}>
+        <View style={styles.userPointContainer}>
+          <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
+          {user !== null && (
+            <Text style={styles.userPoint}>{user.point + 1000} Coins</Text>
+          )}
+        </View>
+      </View>
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
@@ -22,7 +36,7 @@ export default function HomeLayout() {
               iconName = "heart";
             } else if (route.name === "coupon") {
               iconName = "ticket";
-            }else if (route.name === "setting") {
+            } else if (route.name === "setting") {
               iconName = "cog";
             }
             // @ts-expect-error
@@ -73,3 +87,23 @@ export default function HomeLayout() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: theme.colors.background,
+    padding: 16,
+    alignItems: "flex-end",
+  },
+  userPointContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 4,
+    gap: 12,
+  },
+  userPoint: {
+    minWidth: 36,
+    textAlign: "right",
+    color: colors.deepRed,
+    fontWeight: "bold",
+  },
+});

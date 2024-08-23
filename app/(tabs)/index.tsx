@@ -15,6 +15,8 @@ import useAuthStore from "@/stores/authStore";
 import { todo } from "@/types/todo";
 import theme from "@/constants/Theme";
 import { colors } from "@/constants/Colors";
+import SubmitButton from "@/components/common/SubmitButton";
+import MissionInput from "@/components/common/MissionInput";
 
 export default function HomeScreen() {
   const [todos, setTodos] = useState<todo[]>([]);
@@ -92,7 +94,10 @@ export default function HomeScreen() {
 
   const getTodos = async () => {
     try {
-      const { data, error } = await supabase.from("todos").select("*").eq("user_id", user.id);
+      const { data, error } = await supabase
+        .from("todos")
+        .select("*")
+        .eq("user_id", user.id);
 
       if (error) {
         console.error("Error fetching todos:", error.message);
@@ -149,17 +154,8 @@ export default function HomeScreen() {
           )
         }
       />
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="미션을 등록해주세요!"
-          onChangeText={setText}
-          value={text}
-        />
-      </View>
-      <TouchableOpacity style={styles.button} onPress={addTodo}>
-        <Text style={styles.buttonText}>저장하기</Text>
-      </TouchableOpacity>
+      {/* <MissionInput text={text} setText={setText} /> */}
+      {/* <SubmitButton text="저장하기" onPressEvent={addTodo} /> */}
     </View>
   );
 }
@@ -167,7 +163,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
     paddingHorizontal: 20,
     backgroundColor: theme.colors.background,
   },
@@ -190,42 +185,7 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    color: theme.colors.text
-  },
-  inputContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    borderRadius: 8,
-    borderColor: colors.deepRed,
-    borderWidth: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 3,
-    marginBottom: 10,
-    paddingHorizontal: 15,
-  },
-  input: {
-    flex: 1,
-    height: 50,
-    fontSize: 18,
-    color: "#333",
-  },
-  button: {
-    backgroundColor: theme.colors.button,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
     color: theme.colors.text,
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
   completedItem: {
     padding: 15,

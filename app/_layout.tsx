@@ -1,14 +1,12 @@
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "react-native-reanimated";
 import useAuthStore from "@/stores/authStore";
 import { user } from "@/types/user";
-import { StatusBar, StyleSheet, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import theme from "@/constants/Theme";
+import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function RootLayout() {
-  const user: user = useAuthStore((state: any) => state.user);
+  const user: user | null = useAuthStore((state: any) => state.user);
   const getPIN = useAuthStore((state: any) => state.getPIN);
   const router = useRouter();
 
@@ -33,6 +31,7 @@ export default function RootLayout() {
         translucent={true} // 상태바를 투명하게 설정
         backgroundColor="transparent" // 상태바의 배경을 투명하게 설정
       />
+
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
           {user === null ? (
@@ -41,7 +40,8 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
           ) : (
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            // <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" />
           )}
           <Stack.Screen name="+not-found" />
         </Stack>

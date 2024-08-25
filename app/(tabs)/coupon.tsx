@@ -1,48 +1,28 @@
 // screens/CouponListScreen.tsx
+import CouponList from "@/components/coupons/CouponList";
 import CouponTabs from "@/components/coupons/CouponTabs";
-import LoveCoupon from "@/components/coupons/LoveCoupon";
-import { colors } from "@/constants/Colors";
 import theme from "@/constants/Theme";
 import useAuthStore from "@/stores/authStore";
 import { user } from "@/types/user";
 import { supabase } from "@/utils/supabase";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-
-const coupons: coupon[] = [
-  { id: "1", title: "Free Coffee", description: "lormMovie Night", price: "$20" },
-  { id: "2", title: "Movie Night", description: "Movie Night", price: "$30" },
-  { id: "3", title: "Dinner Date", description: "Movie NightMovie Night", price: "$150" },
-];
-
-const availableCoupons: coupon[] = [
-  { id: "1", title: "Spa Day", description: "lormMovie Night", price: "$20" },
-  { id: "2", title: "Concert Tickets", description: "lormMovieMovieMovie Night", price: "$50" },
-  { id: "3", title: "Weekend Getaway", description: "lorMoviemMovie Night", price: "$150" },
-];
-
-interface coupon {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-}
+import { View, StyleSheet, Alert } from "react-native";
 
 export default function CouponListScreen() {
   const [page, setPage] = useState("myCoupons");
-  const [myCoupons, setMyCoupons] = useState<coupon[]>([])
-  const [loveCoupons, setLoveCoupons] = useState<coupon[]>([])
-  const updateUserPoint = useAuthStore((state: any) => state.updateUserPoint);
-  const user: user = useAuthStore((state: any) => state.user)
+  const [myCoupons, setMyCoupons] = useState<myCoupon[]>([]);
+  const [loveCoupons, setLoveCoupons] = useState<loveCoupon[]>([]);
+  const [issuedCoupons, setIssuedCoupons] = useState<loveCoupon[]>([]);
+  const getRecentUserInfo = useAuthStore(
+    (state: any) => state.getRecentUserInfo
+  );
+  const user: user = useAuthStore((state: any) => state.user);
 
   const getMyCoupons = async () => {
-    const { data, error } = await supabase.from("my_coupons").select().eq("user_id", user.id)
+    const { data, error } = await supabase
+      .from("my_coupons")
+      .select()
+      .eq("user_id", user.id);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -50,10 +30,13 @@ export default function CouponListScreen() {
     }
 
     setMyCoupons(data);
-  }
+  };
 
   const getLoveCoupons = async () => {
-    const { data, error } = await supabase.from("love_coupons").select().eq("user_id", user.love_id)
+    const { data, error } = await supabase
+      .from("love_coupons")
+      .select()
+      .eq("user_id", user.love_id);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -61,48 +44,65 @@ export default function CouponListScreen() {
     }
 
     setLoveCoupons(data);
-  }
+  };
 
-  const myCouponsList = ({ item }: { item: coupon }) => (
-    <TouchableOpacity
-      style={styles.couponItem}
-      onPress={() => alert(`You selected: ${item.title}`)}
-    >
-      <Text style={styles.couponText}>{item.title}</Text>
-    </TouchableOpacity>
-  );
+  const getIssuedCoupons = async () => {
+    const { data, error } = await supabase
+      .from("love_coupons")
+      .select()
+      .eq("user_id", user.id);
 
-  const buyCoupon = async () => {
-    console.log(`You selected`);
-    await updateUserPoint(1000);
+    if (error) {
+      console.error("Error fetching todos:", error.message);
+      return;
+    }
+
+    setIssuedCoupons(data);
+  };
+
+  const buyCoupon = async (coupon: loveCoupon) => {
+    // if (coupon.price > user.point) {
+    //   Alert.alert("포인트가 부족합니다.");
+    //   return;
+    // }
+
+    try {
+      await supabase.from("my_coupons").insert({
+        name: coupon.name,
+        description: coupon.description,
+        user_id: user.id,
+      });
+
+      await supabase
+        .from("users")
+        .update({ point: user.point - coupon.price })
+        .eq("id", user.id);
+
+      getRecentUserInfo(user.id);
+    } catch (error) {
+      console.error(error);
+    }
+
+    getMyCoupons();
+    setPage("myCoupons");
   };
 
   useEffect(() => {
-    getMyCoupons()
-    getLoveCoupons()
-  }, [])
+    getMyCoupons();
+    getLoveCoupons();
+    getIssuedCoupons();
+  }, []);
 
   return (
     <View style={styles.container}>
       <CouponTabs page={page} setPage={setPage} />
-      {page === "myCoupons" && (
-        <View style={styles.couponsContainer}>
-          <FlatList
-            data={myCoupons}
-            renderItem={myCouponsList}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      )}
-      {/* {page === "loveCoupons" && (
-        <View style={styles.couponsContainer}>
-          <FlatList
-            data={loveCoupons}
-            renderItem={(item: cou) => <LoveCoupon coupon={item} onPressEvent={buyCoupon} />}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      )} */}
+      <CouponList
+        page={page}
+        myCoupons={myCoupons}
+        loveCoupons={loveCoupons}
+        issuedCoupons={issuedCoupons}
+        buyCoupon={buyCoupon}
+      />
     </View>
   );
 }

@@ -27,21 +27,21 @@ export default function HomeScreen() {
   const offset = new Date().getTimezoneOffset() * 60000;
   const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
 
-  const addTodo = async () => {
-    if (text == "") return;
+  // const addTodo = async () => {
+  //   if (text == "") return;
 
-    const { error } = await supabase
-      .from("todos")
-      .insert({ title: text, user_id: user.id });
+  //   const { error } = await supabase
+  //     .from("todos")
+  //     .insert({ title: text, user_id: user.id });
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+  //   if (error) {
+  //     console.error(error);
+  //     return;
+  //   }
 
-    setText("");
-    getTodos();
-  };
+  //   setText("");
+  //   getTodos();
+  // };
 
   const removeTodo = async (todo: todo) => {
     const { error } = await supabase
@@ -123,9 +123,9 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    getTodos();
-  }, []);
+  // useEffect(() => {
+  //   getTodos();
+  // }, []);
 
   return (
     <View style={styles.container}>

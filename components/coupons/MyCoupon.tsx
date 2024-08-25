@@ -1,27 +1,19 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 
-export default function LoveCoupon({
-  coupon,
-  buyCoupon,
-}: {
-  coupon: loveCoupon;
-  buyCoupon: (coupon: loveCoupon) => void;
-}) {
+export default function MyCoupon({ coupon }: { coupon: myCoupon }) {
   return (
-    <TouchableOpacity style={styles.couponItem} onPress={() => buyCoupon(coupon)}>
-      <View style={styles.couponContent}>
-        <Text style={styles.couponText}>{coupon.title}</Text>
-        <Text style={styles.couponPrice}>{coupon.price}</Text>
-        <Text style={styles.couponPrice}>{coupon.description}</Text>
-      </View>
+    <TouchableOpacity
+      style={styles.couponItem}
+      onPress={() => alert(`You selected: ${coupon.name}`)}
+    >
+      <Text style={styles.couponText}>{coupon.name}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   couponItem: {
-    flexDirection: "column",
     padding: 16,
     marginBottom: 12,
     backgroundColor: "#eeeeee",
@@ -33,6 +25,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   couponContent: {
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   couponText: {

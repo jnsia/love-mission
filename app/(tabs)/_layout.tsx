@@ -7,7 +7,7 @@ import { Tabs } from "expo-router";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function HomeLayout() {
-  const user: user | null = useAuthStore((state: any) => state.user);
+  const user: user = useAuthStore((state: any) => state.user);
 
   return (
     <>
@@ -19,9 +19,7 @@ export default function HomeLayout() {
       <View style={styles.header}>
         <View style={styles.userPointContainer}>
           <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
-          {user !== null && (
-            <Text style={styles.userPoint}>{user.point + 1000} Coins</Text>
-          )}
+          {user && <Text style={styles.userPoint}>{user.point} Coins</Text>}
         </View>
       </View>
       <Tabs

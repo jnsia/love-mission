@@ -2,11 +2,10 @@ import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import useAuthStore from "@/stores/authStore";
-import { user } from "@/types/user";
 import { StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function RootLayout() {
-  const user: user | null = useAuthStore((state: any) => state.user);
+  const isLoggedIn: boolean = useAuthStore((state: any) => state.isLoggedIn);
   const getPIN = useAuthStore((state: any) => state.getPIN);
   const router = useRouter();
 
@@ -19,10 +18,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     // user 값에 따라 로그인 상태를 업데이트
-    if (user !== null) {
+    if (isLoggedIn !== null) {
       router.replace("/(tabs)");
     }
-  }, [user]);
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -34,7 +33,7 @@ export default function RootLayout() {
 
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
-          {user === null ? (
+          {isLoggedIn === null ? (
             <Stack.Screen
               name="(auth)/index"
               options={{ headerShown: false }}

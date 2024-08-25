@@ -1,3 +1,4 @@
+import { user } from "@/types/user";
 import { supabase } from "@/utils/supabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -8,7 +9,23 @@ const useAuthStore = create((set) => ({
   // count: 0
   // set((state: any) => ({count: state.count + 1}))
 
+  isLoggedIn: false,
   user: null,
+
+  getRecentUserInfo: async (userId: any) => {
+    const { data, error } = await supabase
+      .from("users")
+      .select()
+      .eq("id", userId);
+
+    if (error) {
+      console.error("Error fetching user:", error.message);
+      return;
+    }
+
+    const user: user = data[0];
+    set({ user: user });
+  },
 
   getPIN: async (state: any) => {
     const PIN = await AsyncStorage.getItem("JNoteS_PIN");
@@ -25,7 +42,10 @@ const useAuthStore = create((set) => ({
           return;
         }
 
-        set({ user: data[0] });
+        const user: user = data[0];
+
+        set({ isLoggedIn: true });
+        set({ user: user });
       } catch (error: any) {
         console.error("Error fetching user:", error.message);
       }
@@ -36,15 +56,9 @@ const useAuthStore = create((set) => ({
   },
 
   logout: async (state: any) => {
-    set({ user: null });
+    set({ isLoggedIn: null });
     await AsyncStorage.removeItem("JNoteS_PIN");
     router.replace("/(auth)");
-  },
-
-  updateUserPoint: async (point: number) => {
-    set((state: any) => ({
-      user: { ...state.user, point: state.user.point + point },
-    }));
   },
 }));
 

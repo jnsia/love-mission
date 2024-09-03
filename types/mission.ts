@@ -1,4 +1,4 @@
-export interface todo {
+export interface mission {
   id: number;
   title: string;
   completed: boolean;

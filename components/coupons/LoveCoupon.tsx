@@ -11,9 +11,9 @@ export default function LoveCoupon({
   return (
     <TouchableOpacity style={styles.couponItem} onPress={() => buyCoupon(coupon)}>
       <View style={styles.couponContent}>
-        <Text style={styles.couponText}>{coupon.title}</Text>
-        <Text style={styles.couponPrice}>{coupon.price}</Text>
-        <Text style={styles.couponPrice}>{coupon.description}</Text>
+        <Text style={styles.couponText}>{coupon.name}</Text>
+        <Text style={styles.couponText}>{coupon.description}</Text>
+        <Text style={styles.couponPrice}>{coupon.price} Point</Text>
       </View>
     </TouchableOpacity>
   );
@@ -36,11 +36,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   couponText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#11181C",
   },
   couponPrice: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0a7ea4",
     fontWeight: "bold",
   },

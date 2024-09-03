@@ -2,6 +2,7 @@ import useAuthStore from "@/stores/authStore";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function SettingScreen() {
+  const user = useAuthStore((state: any) => state.user);
   const logout = useAuthStore((state: any) => state.logout);
 
   const remove = async () => {
@@ -12,7 +13,7 @@ export default function SettingScreen() {
     <View style={styles.container}>
       <Text>Details</Text>
       <TouchableOpacity style={styles.submit} onPress={remove}>
-        <Text>인증</Text>
+        <Text>{user.id} 인증</Text>
       </TouchableOpacity>
     </View>
   );

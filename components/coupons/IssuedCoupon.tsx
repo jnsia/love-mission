@@ -1,19 +1,27 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
 import React from "react";
 
 export default function IssuedCoupon({ coupon }: { coupon: loveCoupon }) {
   return (
-    <TouchableOpacity
-      style={styles.couponItem}
-      onPress={() => alert(`IssuedCoupon: ${coupon.name}`)}
-    >
-      <Text style={styles.couponText}>{coupon.name}</Text>
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        style={styles.couponItem}
+        onPress={() => alert(`IssuedCoupon: ${coupon.name}`)}
+      >
+        <View style={styles.couponContent}>
+          <Text style={styles.couponText}>{coupon.name}</Text>
+          <Text style={styles.couponText}>{coupon.description}</Text>
+          <Text style={styles.couponPrice}>{coupon.price} Point</Text>
+        </View>
+      </TouchableOpacity>
+      {/* <Modal></Modal> */}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   couponItem: {
+    flexDirection: "column",
     padding: 16,
     marginBottom: 12,
     backgroundColor: "#eeeeee",
@@ -25,15 +33,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   couponContent: {
-    flexDirection: "row",
     justifyContent: "space-between",
   },
   couponText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#11181C",
   },
   couponPrice: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#0a7ea4",
     fontWeight: "bold",
   },

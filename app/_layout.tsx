@@ -9,16 +9,17 @@ export default function RootLayout() {
   const getPIN = useAuthStore((state: any) => state.getPIN);
   const router = useRouter();
 
+  const fetchUser = async () => {
+    await getPIN();
+  };
+
   useEffect(() => {
-    const fetchUser = async () => {
-      await getPIN();
-    };
     fetchUser();
   }, []);
 
   useEffect(() => {
     // user 값에 따라 로그인 상태를 업데이트
-    if (isLoggedIn !== null) {
+    if (isLoggedIn) {
       router.replace("/(tabs)");
     }
   }, [isLoggedIn]);
@@ -33,14 +34,14 @@ export default function RootLayout() {
 
       <View style={styles.container}>
         <Stack screenOptions={{ headerShown: false }}>
-          {isLoggedIn === null ? (
+          {isLoggedIn ? (
+            <Stack.Screen name="(tabs)" />
+          ) : (
+            // <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="(auth)/index"
               options={{ headerShown: false }}
             />
-          ) : (
-            // <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" />
           )}
           <Stack.Screen name="+not-found" />
         </Stack>

@@ -4,87 +4,64 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { supabase } from "@/utils/supabase";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { user } from "@/types/user";
 import useAuthStore from "@/stores/authStore";
-import { todo } from "@/types/todo";
+import { mission } from "@/types/mission";
 import theme from "@/constants/Theme";
-import { colors } from "@/constants/Colors";
-import SubmitButton from "@/components/common/SubmitButton";
-import MissionInput from "@/components/common/MissionInput";
+import { useFocusEffect } from "expo-router";
 
 export default function HomeScreen() {
-  const [todos, setTodos] = useState<todo[]>([]);
-  const [text, setText] = useState("");
+  const [missions, setMissions] = useState<mission[]>([]);
 
   const user: user = useAuthStore((state: any) => state.user);
+  const getRecentUserInfo = useAuthStore(
+    (state: any) => state.getRecentUserInfo
+  );
 
-  const offset = new Date().getTimezoneOffset() * 60000;
-  const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
+  const doneMission = async (mission: mission) => {
+    const offset = new Date().getTimezoneOffset() * 60000;
+    const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
 
-  // const addTodo = async () => {
-  //   if (text == "") return;
-
-  //   const { error } = await supabase
-  //     .from("todos")
-  //     .insert({ title: text, user_id: user.id });
-
-  //   if (error) {
-  //     console.error(error);
-  //     return;
-  //   }
-
-  //   setText("");
-  //   getTodos();
-  // };
-
-  const removeTodo = async (todo: todo) => {
-    const { error } = await supabase
-      .from("dones")
-      .insert({ title: todo.title, completed: todo.completed });
+    const { error } = await supabase.from("histories").insert({
+      date: today,
+      point: 100,
+      record: `${mission.title} 미션 성공`,
+      user_id: user.id,
+    });
 
     if (error) {
       console.error(error);
       return;
     }
 
-    const response = await supabase.from("todos").delete().eq("id", todo.id);
-    console.log(`Delete Todo: ${todo.title}`);
+    await supabase.from("missions").delete().eq("id", mission.id);
+    await supabase
+      .from("users")
+      .update({ point: user.point + 100 })
+      .eq("id", user.id);
 
-    getTodos();
+    getRecentUserInfo(user.id);
+    getMissions();
   };
 
-  const updateStatus = async (todo: todo) => {
-    const confirmText = todo.completed
-      ? "미션을 완료하지 않으셨나요~?"
-      : "미션을 완수하셨나요!";
-
+  const updateStatus = async (mission: mission) => {
     Alert.alert(
-      "미션 완료 여부 변경",
-      confirmText,
+      "미션 진행 여부",
+      "미션을 완수하셨나요?",
       [
         {
-          text: "취소",
-          style: "cancel",
+          text: "아니요...",
         },
         {
-          text: "확인",
-          onPress: async () => {
-            const { error } = await supabase
-              .from("todos")
-              .update({ completed: !todo.completed })
-              .eq("id", todo.id);
-
-            if (error) {
-              return;
-            }
-
-            getTodos();
+          text: "네!",
+          onPress: () => {
+            doneMission(mission);
+            getMissions();
           },
         },
       ],
@@ -92,70 +69,56 @@ export default function HomeScreen() {
     );
   };
 
-  const getTodos = async () => {
+  const getMissions = async () => {
     try {
       const { data, error } = await supabase
-        .from("todos")
-        .select("*")
+        .from("missions")
+        .select()
         .eq("user_id", user.id);
 
       if (error) {
-        console.error("Error fetching todos:", error.message);
+        console.error("Error fetching missions:", error.message);
         return;
       }
 
-      const newTodos: todo[] = [];
-
-      data.forEach((todo) => {
-        const { created_at } = todo;
-        const createDate = created_at.substring(0, 10);
-
-        if (createDate !== today) {
-          removeTodo(todo);
-        } else {
-          newTodos.push(todo);
-        }
-      });
-
-      setTodos(newTodos);
+      setMissions(data);
     } catch (error: any) {
-      console.error("Error fetching todos:", error.message);
+      console.error("Error fetching missions:", error.message);
     }
   };
 
-  // useEffect(() => {
-  //   getTodos();
-  // }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getMissions();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={todos}
-        keyExtractor={(todo: todo) => todo.id.toString()}
-        renderItem={({ item }) =>
-          item.completed ? (
-            <TouchableOpacity
-              style={styles.completedItem}
-              onPress={() => updateStatus(item)}
+      <View style={styles.guideBox}>
+        <Text style={styles.guideText}>연인이 당신에게 할당한 미션입니다!</Text>
+        <Text style={styles.guideText}>
+          어서 미션을 완료하여 포인트를 획득하세요.
+        </Text>
+      </View>
+      <ScrollView>
+        {missions.map((mission) => (
+          <TouchableOpacity
+            key={mission.id}
+            style={mission.completed ? styles.completedItem : styles.item}
+            onPress={() => updateStatus(mission)}
+          >
+            <Text
+              style={
+                mission.completed ? styles.completedItemText : styles.itemText
+              }
+              key={mission.id}
             >
-              <Text style={styles.completedItemText} key={item.id}>
-                {item.title}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => updateStatus(item)}
-            >
-              <Text key={item.id} style={styles.itemText}>
-                {item.title}
-              </Text>
-            </TouchableOpacity>
-          )
-        }
-      />
-      {/* <MissionInput text={text} setText={setText} /> */}
-      {/* <SubmitButton text="저장하기" onPressEvent={addTodo} /> */}
+              {mission.title} {mission.completed}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -172,10 +135,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#FF6347",
   },
-  item: {
-    padding: 15,
-    borderRadius: 8,
+  guideBox: {
+    alignItems: "center",
+    padding: 16,
     backgroundColor: theme.colors.button,
+    marginBottom: 16,
+  },
+  guideText: {
+    fontSize: 16,
+    color: theme.colors.text,
+  },
+  item: {
+    padding: 16,
+    backgroundColor: theme.colors.button,
+    borderRadius: 8,
     marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

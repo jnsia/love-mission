@@ -65,7 +65,9 @@ export default function LoveScreen() {
     <View style={styles.container}>
       <ScrollView>
         <TouchableOpacity style={styles.completedItem}>
-          <Text>졀재 대기 미션</Text>
+          <Text style={styles.itemText}>
+            완료한 미션은 이제 상대방의 결재를 받아야 합니다!
+          </Text>
         </TouchableOpacity>
         {missions.map((mission) => (
           <TouchableOpacity

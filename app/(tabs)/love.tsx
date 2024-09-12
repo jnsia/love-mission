@@ -64,9 +64,12 @@ export default function LoveScreen() {
   return (
     <View style={styles.container}>
       <ScrollView>
+        <TouchableOpacity style={styles.completedItem}>
+          <Text>졀재 대기 미션</Text>
+        </TouchableOpacity>
         {missions.map((mission) => (
           <TouchableOpacity
-          key={mission.id}
+            key={mission.id}
             style={mission.completed ? styles.completedItem : styles.item}
           >
             <Text
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
   completedItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "#CCCCCC",
+    backgroundColor: "green",
     marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

@@ -9,6 +9,7 @@
     },
     "preview": {
       "distribution": "internal",
+      "chennel": "preview",
       "android": {
         "image": "latest"
       }

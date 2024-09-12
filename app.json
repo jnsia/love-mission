@@ -15,7 +15,8 @@
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/ca363540-d8ae-4c34-8bb6-e7dedbea0f99"
     },
     "ios": {
       "supportsTablet": true
@@ -46,6 +47,9 @@
         "projectId": "ca363540-d8ae-4c34-8bb6-e7dedbea0f99"
       }
     },
-    "owner": "jnsia"
+    "owner": "jnsia",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
   }
 }

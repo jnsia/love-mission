@@ -6,13 +6,12 @@ import { mission } from "@/types/mission";
 import { user } from "@/types/user";
 import { supabase } from "@/utils/supabase";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   ScrollView,
 } from "react-native";
 

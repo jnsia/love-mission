@@ -100,6 +100,9 @@ export default function HomeScreen() {
         <Text style={styles.guideText}>
           어서 미션을 완료하여 포인트를 획득하세요.
         </Text>
+        <Text style={styles.guideText}>
+          누나! 이 어플의 변화를 지켜봐줘요~
+        </Text>
       </View>
       <ScrollView>
         {missions.map((mission) => (

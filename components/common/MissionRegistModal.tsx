@@ -1,0 +1,224 @@
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useState } from "react";
+import MissionInput from "./MissionInput";
+import SubmitButton from "./SubmitButton";
+import { user } from "@/types/user";
+import useAuthStore from "@/stores/authStore";
+import { supabase } from "@/utils/supabase";
+import RNPickerSelect from "react-native-picker-select";
+import CancelButton from "./CancelButton";
+import theme from "@/constants/Theme";
+
+export default function MissionRegistModal({
+  getMissions,
+  isModalVisible,
+  closeModal,
+}: {
+  getMissions: () => void;
+  isModalVisible: boolean;
+  closeModal: () => void;
+}) {
+  const [type, setType] = useState("special");
+  const [deadline, setDeadline] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [successPoint, setSuccessPoint] = useState("100");
+  const [failPoint, setFailPoint] = useState("0");
+
+  const user: user = useAuthStore((state: any) => state.user);
+
+  const registMission = async () => {
+    if (title == "") return;
+
+    const { error } = await supabase
+      .from("missions")
+      .insert({ title: title, type: type, user_id: user.love_id });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    getMissions();
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      visible={isModalVisible}
+      transparent={true}
+      onRequestClose={closeModal}
+    >
+      <TouchableWithoutFeedback onPress={closeModal}>
+        <View style={styles.modalOverlay}>
+          <ScrollView style={styles.modalView}>
+            <View style={styles.guideBox}>
+              {type === "special" && (
+                <Text style={styles.guideText}>
+                  특별 미션은 시간이 지나도 사라지지 않아요~
+                </Text>
+              )}
+              {type === "daily" && (
+                <Text style={styles.guideText}>
+                  일일 미션은 다음 날이 되면 사라져요!
+                </Text>
+              )}
+              {type === "emergency" && (
+                <Text style={styles.guideText}>
+                  긴급 미션은 미션의 마감기한을 설정할 수 있어요.
+                </Text>
+              )}
+            </View>
+
+            <Text style={styles.label}>미션 타입</Text>
+            <RNPickerSelect
+              onValueChange={(value) => setType(value)}
+              items={[
+                { label: "특별", value: "special" },
+                //   { label: "일일", value: "daily" },
+                //   { label: "긴급", value: "emergency" },
+              ]}
+              placeholder={{}}
+              style={pickerSelectStyles}
+            />
+
+            {type === "emergency" && (
+              <View>
+                <Text style={styles.label}>마감시간</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="YYYY-MM-DD HH-MM"
+                  value={deadline}
+                  onChangeText={setDeadline}
+                />
+              </View>
+            )}
+
+            <Text style={styles.label}>미션 제목</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="미션 제목을 입력하세요"
+              value={title}
+              onChangeText={setTitle}
+            />
+
+            {/* <Text style={styles.label}>미션 설명</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="미션 설명을 입력하세요"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          /> */}
+
+            {/* <Text style={styles.label}>성공 시 지급될 포인트</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="포인트 입력"
+            value={successPoint}
+            onChangeText={setSuccessPoint}
+            keyboardType="numeric"
+          />
+
+          <Text style={styles.label}>실패 시 차감될 포인트</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="포인트 입력"
+            value={failPoint}
+            onChangeText={setFailPoint}
+            keyboardType="numeric"
+          /> */}
+
+            <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+              <CancelButton text="취소하기" onPressEvent={closeModal} />
+              <SubmitButton text="저장하기" onPressEvent={registMission} />
+            </View>
+          </ScrollView>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  guideBox: {
+    alignItems: "center",
+    padding: 16,
+    backgroundColor: theme.colors.button,
+    marginBottom: 16,
+  },
+  guideText: {
+    fontSize: 14,
+    color: theme.colors.text,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // 배경을 반투명하게 설정
+  },
+  modalView: {
+    position: "absolute",
+    width: "100%",
+    bottom: 0,
+    padding: 16,
+    marginTop: 60,
+    backgroundColor: "white",
+  },
+  modalTextStyle: {
+    color: "#17191c",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 50,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+});
+
+const pickerSelectStyles = {
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30, // to ensure the text is never behind the icon
+    marginBottom: 15,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 10,
+    color: "black",
+    paddingRight: 16, // to ensure the text is never behind the icon
+    marginBottom: 16,
+  },
+};

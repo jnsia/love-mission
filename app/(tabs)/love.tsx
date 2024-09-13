@@ -1,4 +1,6 @@
 import MissionInput from "@/components/common/MissionInput";
+import MissionRegistButton from "@/components/common/MissionRegistButton";
+import MissionRegistModal from "@/components/common/MissionRegistModal";
 import SubmitButton from "@/components/common/SubmitButton";
 import theme from "@/constants/Theme";
 import useAuthStore from "@/stores/authStore";
@@ -13,29 +15,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 export default function LoveScreen() {
+  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
   const [missions, setMissions] = useState<mission[]>([]);
-  const [text, setText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const user: user = useAuthStore((state: any) => state.user);
-
-  const addMission = async () => {
-    if (text == "") return;
-
-    const { error } = await supabase
-      .from("missions")
-      .insert({ title: text, user_id: user.love_id });
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    setText("");
-    getMissions();
-  };
 
   const getMissions = async () => {
     try {
@@ -49,10 +38,30 @@ export default function LoveScreen() {
         return;
       }
 
-      setMissions(data);
+      const missions: mission[] = [];
+      const completedMissions: mission[] = [];
+
+      data.forEach((mission: mission) => {
+        if (mission.completed) {
+          completedMissions.push(mission);
+        } else {
+          missions.push(mission);
+        }
+      });
+
+      setMissions(missions);
+      setCompletedMissions(completedMissions);
     } catch (error: any) {
       console.error("Error fetching missions:", error.message);
     }
+  };
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
   };
 
   useFocusEffect(
@@ -64,29 +73,27 @@ export default function LoveScreen() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <TouchableOpacity style={styles.completedItem}>
-          <Text style={styles.itemText}>
-            완료한 미션은 이제 상대방의 결재를 받아야 합니다!
-          </Text>
-        </TouchableOpacity>
+        {completedMissions.map((mission) => (
+          <TouchableOpacity key={mission.id} style={styles.item}>
+            <Text style={styles.itemText} key={mission.id}>
+              {mission.title} {mission.completed}
+            </Text>
+          </TouchableOpacity>
+        ))}
         {missions.map((mission) => (
-          <TouchableOpacity
-            key={mission.id}
-            style={mission.completed ? styles.completedItem : styles.item}
-          >
-            <Text
-              style={
-                mission.completed ? styles.completedItemText : styles.itemText
-              }
-              key={mission.id}
-            >
+          <TouchableOpacity key={mission.id} style={styles.item}>
+            <Text style={styles.itemText} key={mission.id}>
               {mission.title} {mission.completed}
             </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <MissionInput text={text} setText={setText} />
-      <SubmitButton text="저장하기" onPressEvent={addMission} />
+      <MissionRegistModal
+        getMissions={getMissions}
+        isModalVisible={isModalVisible}
+        closeModal={closeModal}
+      />
+      <MissionRegistButton text="미션 등록하기" onPressEvent={openModal} />
     </View>
   );
 }
@@ -129,8 +136,43 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
+  warningItem: {
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: "red",
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
   completedItemText: {
     fontSize: 16,
     color: "white",
+  },
+  modalView: {
+    flex: 1,
+    marginTop: 80,
+    marginBottom: 80,
+    marginHorizontal: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTextStyle: {
+    color: "#17191c",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 50,
   },
 });

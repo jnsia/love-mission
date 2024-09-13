@@ -39,7 +39,11 @@ export default function HomeScreen() {
       return;
     }
 
-    await supabase.from("missions").delete().eq("id", mission.id);
+    await supabase
+      .from("missions")
+      .update({ complete: true })
+      .eq("id", mission.id);
+      
     await supabase
       .from("users")
       .update({ point: user.point + 100 })
@@ -100,9 +104,7 @@ export default function HomeScreen() {
         <Text style={styles.guideText}>
           어서 미션을 완료하여 포인트를 획득하세요.
         </Text>
-        <Text style={styles.guideText}>
-          누나! 이 어플의 변화를 지켜봐줘요~
-        </Text>
+        <Text style={styles.guideText}>누나! 이 어플의 변화를 지켜봐줘요~</Text>
       </View>
       <ScrollView>
         {missions.map((mission) => (

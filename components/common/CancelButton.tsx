@@ -2,7 +2,7 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import theme from "@/constants/Theme";
 
-export default function SubmitButton({
+export default function CancelButton({
   text,
   onPressEvent,
 }: {
@@ -20,14 +20,13 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: theme.colors.button,
+    borderWidth: 1,
     height: 48,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
   },
   buttonText: {
-    color: theme.colors.text,
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",

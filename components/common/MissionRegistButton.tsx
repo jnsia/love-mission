@@ -2,7 +2,7 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import theme from "@/constants/Theme";
 
-export default function SubmitButton({
+export default function MissionRegistButton({
   text,
   onPressEvent,
 }: {
@@ -18,7 +18,6 @@ export default function SubmitButton({
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
     justifyContent: 'center',
     backgroundColor: theme.colors.button,
     height: 48,

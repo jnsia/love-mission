@@ -29,7 +29,7 @@ export default function Todos() {
 
     const { error } = await supabase
       .from("todos")
-      .insert({ title: text, user_id: user.id });
+      .insert({ title: text, userId: user.id });
 
     if (error) {
       console.error(error);
@@ -94,7 +94,7 @@ export default function Todos() {
       const { data, error } = await supabase
         .from("todos")
         .select("*")
-        .eq("user_id", user.id);
+        .eq("userId", user.id);
 
       if (error) {
         console.error("Error fetching todos:", error.message);

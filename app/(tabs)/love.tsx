@@ -1,3 +1,4 @@
+import MissionInfoModal from "@/components/common/MissionInfoModal";
 import MissionInput from "@/components/common/MissionInput";
 import MissionRegistButton from "@/components/common/MissionRegistButton";
 import MissionRegistModal from "@/components/common/MissionRegistModal";
@@ -15,14 +16,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Modal,
-  TouchableWithoutFeedback,
 } from "react-native";
 
 export default function LoveScreen() {
-  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
   const [missions, setMissions] = useState<mission[]>([]);
+  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false);
+  const [selctedMissionId, setSelctedMissionId] = useState(0);
 
   const user: user = useAuthStore((state: any) => state.user);
 
@@ -31,7 +32,7 @@ export default function LoveScreen() {
       const { data, error } = await supabase
         .from("missions")
         .select("*")
-        .eq("user_id", user.love_id);
+        .eq("userId", user.love_id);
 
       if (error) {
         console.error("Error fetching missions:", error.message);
@@ -56,6 +57,15 @@ export default function LoveScreen() {
     }
   };
 
+  const clickMission = (mission: mission) => {
+    setSelctedMissionId(mission.id);
+    setIsMissionInfoVisible(true);
+  };
+
+  const closeMissionInfoModal = () => {
+    setIsMissionInfoVisible(false);
+  };
+
   const openModal = () => {
     setIsModalVisible(true);
   };
@@ -73,19 +83,41 @@ export default function LoveScreen() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {completedMissions.map((mission) => (
-          <TouchableOpacity key={mission.id} style={styles.item}>
-            <Text style={styles.itemText} key={mission.id}>
-              {mission.title} {mission.completed}
-            </Text>
-          </TouchableOpacity>
+        {completedMissions.map((mission: mission) => (
+          <View key={mission.id}>
+            <TouchableOpacity
+              style={styles.completedItem}
+              onPress={() => clickMission(mission)}
+            >
+              <Text style={styles.completedItemText}>{mission.title}</Text>
+            </TouchableOpacity>
+            {selctedMissionId == mission.id && (
+              <MissionInfoModal
+                getMissions={getMissions}
+                closeMissionInfoModal={closeMissionInfoModal}
+                isMissionInfoVisible={isMissionInfoVisible}
+                mission={mission}
+              />
+            )}
+          </View>
         ))}
         {missions.map((mission) => (
-          <TouchableOpacity key={mission.id} style={styles.item}>
-            <Text style={styles.itemText} key={mission.id}>
-              {mission.title} {mission.completed}
-            </Text>
-          </TouchableOpacity>
+          <View key={mission.id}>
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => clickMission(mission)}
+            >
+              <Text style={styles.itemText}>{mission.title}</Text>
+            </TouchableOpacity>
+            {selctedMissionId == mission.id && (
+              <MissionInfoModal
+                getMissions={getMissions}
+                closeMissionInfoModal={closeMissionInfoModal}
+                isMissionInfoVisible={isMissionInfoVisible}
+                mission={mission}
+              />
+            )}
+          </View>
         ))}
       </ScrollView>
       <MissionRegistModal

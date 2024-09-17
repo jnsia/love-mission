@@ -9,14 +9,13 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState } from "react";
-import MissionInput from "./MissionInput";
 import SubmitButton from "./SubmitButton";
 import { user } from "@/types/user";
 import useAuthStore from "@/stores/authStore";
 import { supabase } from "@/utils/supabase";
-import RNPickerSelect from "react-native-picker-select";
 import CancelButton from "./CancelButton";
 import theme from "@/constants/Theme";
+import { colors } from "@/constants/Colors";
 
 export default function MissionRegistModal({
   getMissions,
@@ -41,7 +40,7 @@ export default function MissionRegistModal({
 
     const { error } = await supabase
       .from("missions")
-      .insert({ title: title, type: type, user_id: user.love_id });
+      .insert({ title, description, type, successPoint, failPoint, userId: user.love_id });
 
     if (error) {
       console.error(error);
@@ -49,6 +48,10 @@ export default function MissionRegistModal({
     }
 
     getMissions();
+  };
+
+  const selectMissionType = (type: string) => {
+    setType(type);
   };
 
   return (
@@ -60,89 +63,112 @@ export default function MissionRegistModal({
     >
       <TouchableWithoutFeedback onPress={closeModal}>
         <View style={styles.modalOverlay}>
-          <ScrollView style={styles.modalView}>
-            <View style={styles.guideBox}>
-              {type === "special" && (
-                <Text style={styles.guideText}>
-                  특별 미션은 시간이 지나도 사라지지 않아요~
-                </Text>
-              )}
-              {type === "daily" && (
-                <Text style={styles.guideText}>
-                  일일 미션은 다음 날이 되면 사라져요!
-                </Text>
-              )}
-              {type === "emergency" && (
-                <Text style={styles.guideText}>
-                  긴급 미션은 미션의 마감기한을 설정할 수 있어요.
-                </Text>
-              )}
-            </View>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalView}>
+              <ScrollView>
+                <View style={styles.guideBox}>
+                  {type === "special" && (
+                    <Text style={styles.guideText}>
+                      특별 미션은 시간이 지나도 사라지지 않아요~
+                    </Text>
+                  )}
+                  {type === "daily" && (
+                    <Text style={styles.guideText}>
+                      일일 미션은 다음 날이 되면 사라져요!
+                    </Text>
+                  )}
+                  {type === "emergency" && (
+                    <Text style={styles.guideText}>
+                      긴급 미션은 미션의 마감기한을 설정할 수 있어요.
+                    </Text>
+                  )}
+                </View>
 
-            <Text style={styles.label}>미션 타입</Text>
-            <RNPickerSelect
-              onValueChange={(value) => setType(value)}
-              items={[
-                { label: "특별", value: "special" },
-                //   { label: "일일", value: "daily" },
-                //   { label: "긴급", value: "emergency" },
-              ]}
-              placeholder={{}}
-              style={pickerSelectStyles}
-            />
+                <Text style={styles.label}>미션 타입</Text>
+                <View style={styles.typeSelectBox}>
+                  <TouchableOpacity
+                    style={[
+                      styles.typeButton,
+                      type === "special" && styles.selectedTypeButton,
+                    ]}
+                    onPress={() => selectMissionType("special")}
+                  >
+                    <Text style={styles.typeText}>특별</Text>
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
+                    style={[
+                      styles.typeButton,
+                      type === "daily" && styles.selectedTypeButton,
+                    ]}
+                    onPress={() => selectMissionType("daily")}
+                  >
+                    <Text style={styles.typeText}>일일</Text>
+                  </TouchableOpacity> */}
+                  {/* <TouchableOpacity
+                    style={[
+                      styles.typeButton,
+                      type === "emergency" && styles.selectedTypeButton,
+                    ]}
+                    onPress={() => selectMissionType("emergency")}
+                  >
+                    <Text style={styles.typeText}>긴급</Text>
+                  </TouchableOpacity> */}
+                </View>
 
-            {type === "emergency" && (
-              <View>
-                <Text style={styles.label}>마감시간</Text>
+                {type === "emergency" && (
+                  <View>
+                    <Text style={styles.label}>마감시간</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="YYYY-MM-DD HH-MM"
+                      value={deadline}
+                      onChangeText={setDeadline}
+                    />
+                  </View>
+                )}
+
+                <Text style={styles.label}>미션 제목</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="YYYY-MM-DD HH-MM"
-                  value={deadline}
-                  onChangeText={setDeadline}
+                  placeholder="미션 제목을 입력하세요"
+                  value={title}
+                  onChangeText={setTitle}
                 />
-              </View>
-            )}
 
-            <Text style={styles.label}>미션 제목</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="미션 제목을 입력하세요"
-              value={title}
-              onChangeText={setTitle}
-            />
+                <Text style={styles.label}>미션 설명</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="미션 설명을 입력하세요"
+                  value={description}
+                  onChangeText={setDescription}
+                  multiline
+                />
 
-            {/* <Text style={styles.label}>미션 설명</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="미션 설명을 입력하세요"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          /> */}
+                <Text style={styles.label}>성공 시 지급될 포인트</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="포인트 입력"
+                  value={successPoint}
+                  onChangeText={setSuccessPoint}
+                  keyboardType="numeric"
+                />
 
-            {/* <Text style={styles.label}>성공 시 지급될 포인트</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="포인트 입력"
-            value={successPoint}
-            onChangeText={setSuccessPoint}
-            keyboardType="numeric"
-          />
+                <Text style={styles.label}>실패 시 차감될 포인트</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="포인트 입력"
+                  value={failPoint}
+                  onChangeText={setFailPoint}
+                  keyboardType="numeric"
+                />
 
-          <Text style={styles.label}>실패 시 차감될 포인트</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="포인트 입력"
-            value={failPoint}
-            onChangeText={setFailPoint}
-            keyboardType="numeric"
-          /> */}
-
-            <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
-              <CancelButton text="취소하기" onPressEvent={closeModal} />
-              <SubmitButton text="저장하기" onPressEvent={registMission} />
+                <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+                  <CancelButton text="취소하기" onPressEvent={closeModal} />
+                  <SubmitButton text="저장하기" onPressEvent={registMission} />
+                </View>
+              </ScrollView>
             </View>
-          </ScrollView>
+          </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -180,6 +206,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 50,
   },
+  typeSelectBox: {
+    flex: 1,
+    gap: 16,
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  typeButton: {
+    flex: 1,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#CCCCCC",
+    borderRadius: 10,
+  },
+  selectedTypeButton: {
+    borderColor: colors.deepRed, // 선택된 버튼의 border 색상
+  },
+  typeText: {
+    textAlign: "center",
+  },
   label: {
     fontSize: 16,
     fontWeight: "bold",
@@ -197,28 +242,3 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 });
-
-const pickerSelectStyles = {
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 4,
-    color: "black",
-    paddingRight: 30, // to ensure the text is never behind the icon
-    marginBottom: 15,
-  },
-  inputAndroid: {
-    fontSize: 16,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 10,
-    color: "black",
-    paddingRight: 16, // to ensure the text is never behind the icon
-    marginBottom: 16,
-  },
-};

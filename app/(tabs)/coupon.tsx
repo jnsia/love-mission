@@ -20,9 +20,9 @@ export default function CouponListScreen() {
 
   const getMyCoupons = async () => {
     const { data, error } = await supabase
-      .from("my_coupons")
+      .from("myCoupons")
       .select()
-      .eq("user_id", user.id);
+      .eq("userId", user.id);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -34,9 +34,9 @@ export default function CouponListScreen() {
 
   const getLoveCoupons = async () => {
     const { data, error } = await supabase
-      .from("love_coupons")
+      .from("loveCoupons")
       .select()
-      .eq("user_id", user.love_id);
+      .eq("userId", user.love_id);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -48,9 +48,9 @@ export default function CouponListScreen() {
 
   const getIssuedCoupons = async () => {
     const { data, error } = await supabase
-      .from("love_coupons")
+      .from("loveCoupons")
       .select()
-      .eq("user_id", user.id);
+      .eq("userId", user.id);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -67,10 +67,10 @@ export default function CouponListScreen() {
     }
 
     try {
-      await supabase.from("my_coupons").insert({
+      await supabase.from("myCoupons").insert({
         name: coupon.name,
         description: coupon.description,
-        user_id: user.id,
+        userId: user.id,
       });
 
       await supabase

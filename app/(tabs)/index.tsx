@@ -14,63 +14,26 @@ import useAuthStore from "@/stores/authStore";
 import { mission } from "@/types/mission";
 import theme from "@/constants/Theme";
 import { useFocusEffect } from "expo-router";
+import MissionInfoModal from "@/components/common/MissionInfoModal";
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([]);
+  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
+  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false);
+  const [selctedMissionId, setSelctedMissionId] = useState(0);
 
   const user: user = useAuthStore((state: any) => state.user);
   const getRecentUserInfo = useAuthStore(
     (state: any) => state.getRecentUserInfo
   );
 
-  const doneMission = async (mission: mission) => {
-    const offset = new Date().getTimezoneOffset() * 60000;
-    const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
+  const closeMissionInfoModal = () => {
+    setIsMissionInfoVisible(false)
+  }
 
-    const { error } = await supabase.from("histories").insert({
-      date: today,
-      point: 100,
-      record: `${mission.title} 미션 성공`,
-      user_id: user.id,
-    });
-
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    await supabase
-      .from("missions")
-      .update({ complete: true })
-      .eq("id", mission.id);
-      
-    await supabase
-      .from("users")
-      .update({ point: user.point + 100 })
-      .eq("id", user.id);
-
-    getRecentUserInfo(user.id);
-    getMissions();
-  };
-
-  const updateStatus = async (mission: mission) => {
-    Alert.alert(
-      "미션 진행 여부",
-      "미션을 완수하셨나요?",
-      [
-        {
-          text: "아니요...",
-        },
-        {
-          text: "네!",
-          onPress: () => {
-            doneMission(mission);
-            getMissions();
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+  const clickMission = async (mission: mission) => {
+    setSelctedMissionId(mission.id);
+    setIsMissionInfoVisible(true);
   };
 
   const getMissions = async () => {
@@ -78,14 +41,26 @@ export default function HomeScreen() {
       const { data, error } = await supabase
         .from("missions")
         .select()
-        .eq("user_id", user.id);
+        .eq("userId", user.id);
 
       if (error) {
         console.error("Error fetching missions:", error.message);
         return;
       }
 
-      setMissions(data);
+      const missions: mission[] = [];
+      const completedMissions: mission[] = [];
+
+      data.forEach((mission: mission) => {
+        if (mission.completed) {
+          completedMissions.push(mission);
+        } else {
+          missions.push(mission);
+        }
+      });
+
+      setMissions(missions);
+      setCompletedMissions(completedMissions);
     } catch (error: any) {
       console.error("Error fetching missions:", error.message);
     }
@@ -104,25 +79,66 @@ export default function HomeScreen() {
         <Text style={styles.guideText}>
           어서 미션을 완료하여 포인트를 획득하세요.
         </Text>
-        <Text style={styles.guideText}>누나! 이 어플의 변화를 지켜봐줘요~</Text>
       </View>
       <ScrollView>
-        {missions.map((mission) => (
-          <TouchableOpacity
-            key={mission.id}
-            style={mission.completed ? styles.completedItem : styles.item}
-            onPress={() => updateStatus(mission)}
-          >
-            <Text
-              style={
-                mission.completed ? styles.completedItemText : styles.itemText
-              }
-              key={mission.id}
-            >
-              {mission.title} {mission.completed}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <View>
+          {/* <Text>결재 대기 중인 미션</Text> */}
+          {completedMissions.map((mission) => (
+            <View key={mission.id}>
+              <TouchableOpacity
+                style={mission.completed ? styles.completedItem : styles.item}
+                onPress={() => clickMission(mission)}
+              >
+                <Text
+                  style={
+                    mission.completed
+                      ? styles.completedItemText
+                      : styles.itemText
+                  }
+                >
+                  {mission.title} {mission.completed}
+                </Text>
+              </TouchableOpacity>
+              {selctedMissionId == mission.id && (
+                <MissionInfoModal
+                  getMissions={getMissions}
+                  isMissionInfoVisible={isMissionInfoVisible}
+                  mission={mission}
+                  closeMissionInfoModal={closeMissionInfoModal}
+                />
+              )}
+            </View>
+          ))}
+        </View>
+        <View>
+          {/* <Text>남은 미션</Text> */}
+          {missions.map((mission) => (
+            <View key={mission.id}>
+              <TouchableOpacity
+                style={mission.completed ? styles.completedItem : styles.item}
+                onPress={() => clickMission(mission)}
+              >
+                <Text
+                  style={
+                    mission.completed
+                      ? styles.completedItemText
+                      : styles.itemText
+                  }
+                >
+                  {mission.title} {mission.completed}
+                </Text>
+              </TouchableOpacity>
+              {selctedMissionId == mission.id && (
+                <MissionInfoModal
+                  getMissions={getMissions}
+                  isMissionInfoVisible={isMissionInfoVisible}
+                  mission={mission}
+                  closeMissionInfoModal={closeMissionInfoModal}
+                />
+              )}
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -168,7 +184,7 @@ const styles = StyleSheet.create({
   completedItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "#CCCCCC",
+    backgroundColor: "green",
     marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },

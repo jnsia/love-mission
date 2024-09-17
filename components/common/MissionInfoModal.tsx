@@ -50,8 +50,8 @@ export default function MissionInfoModal({
 
     await supabase
       .from("users")
-      .update({ point: user.point + mission.successPoint })
-      .eq("id", user.love_id);
+      .update({ point: user.coin + mission.successPoint })
+      .eq("id", user.loveId);
 
     await supabase.from("missions").delete().eq("id", mission.id);
 

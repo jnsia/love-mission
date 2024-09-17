@@ -1,6 +1,6 @@
 import MissionInfoModal from "@/components/common/MissionInfoModal";
 import MissionInput from "@/components/common/MissionInput";
-import MissionRegistButton from "@/components/common/MissionRegistButton";
+import RegistButton from "@/components/common/RegistButton";
 import MissionRegistModal from "@/components/common/MissionRegistModal";
 import SubmitButton from "@/components/common/SubmitButton";
 import theme from "@/constants/Theme";
@@ -28,33 +28,29 @@ export default function LoveScreen() {
   const user: user = useAuthStore((state: any) => state.user);
 
   const getMissions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("missions")
-        .select("*")
-        .eq("userId", user.love_id);
+    const { data, error } = await supabase
+      .from("missions")
+      .select()
+      .eq("userId", user.loveId);
 
-      if (error) {
-        console.error("Error fetching missions:", error.message);
-        return;
-      }
-
-      const missions: mission[] = [];
-      const completedMissions: mission[] = [];
-
-      data.forEach((mission: mission) => {
-        if (mission.completed) {
-          completedMissions.push(mission);
-        } else {
-          missions.push(mission);
-        }
-      });
-
-      setMissions(missions);
-      setCompletedMissions(completedMissions);
-    } catch (error: any) {
+    if (error) {
       console.error("Error fetching missions:", error.message);
+      return;
     }
+
+    const missions: mission[] = [];
+    const completedMissions: mission[] = [];
+
+    data.forEach((mission: mission) => {
+      if (mission.completed) {
+        completedMissions.push(mission);
+      } else {
+        missions.push(mission);
+      }
+    });
+
+    setMissions(missions);
+    setCompletedMissions(completedMissions);
   };
 
   const clickMission = (mission: mission) => {
@@ -125,7 +121,7 @@ export default function LoveScreen() {
         isModalVisible={isModalVisible}
         closeModal={closeModal}
       />
-      <MissionRegistButton text="미션 등록하기" onPressEvent={openModal} />
+      <RegistButton text="미션 등록하기" onPressEvent={openModal} />
     </View>
   );
 }

@@ -1,21 +1,33 @@
-// screens/CouponListScreen.tsx
-import CouponList from "@/components/coupons/CouponList";
+import RegistButton from "@/components/common/RegistButton";
+import CouponInfoModal from "@/components/coupons/CouponInfoModal";
+import CouponIssueModal from "@/components/coupons/CouponIssueModal";
 import CouponTabs from "@/components/coupons/CouponTabs";
 import theme from "@/constants/Theme";
 import useAuthStore from "@/stores/authStore";
 import { user } from "@/types/user";
 import { supabase } from "@/utils/supabase";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 
 export default function CouponListScreen() {
   const [page, setPage] = useState("myCoupons");
-  const [myCoupons, setMyCoupons] = useState<myCoupon[]>([]);
-  const [loveCoupons, setLoveCoupons] = useState<loveCoupon[]>([]);
-  const [issuedCoupons, setIssuedCoupons] = useState<loveCoupon[]>([]);
+  const [myCoupons, setMyCoupons] = useState<coupon[]>([]);
+  const [loveCoupons, setLoveCoupons] = useState<coupon[]>([]);
+  const [issuedCoupons, setIssuedCoupons] = useState<coupon[]>([]);
   const getRecentUserInfo = useAuthStore(
     (state: any) => state.getRecentUserInfo
   );
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCouponInfoVisible, setIsCouponInfoVisible] = useState(false);
+  const [selectedCouponId, setSelectedCouponId] = useState(0);
+
   const user: user = useAuthStore((state: any) => state.user);
 
   const getMyCoupons = async () => {
@@ -36,7 +48,7 @@ export default function CouponListScreen() {
     const { data, error } = await supabase
       .from("loveCoupons")
       .select()
-      .eq("userId", user.love_id);
+      .eq("userId", user.loveId);
 
     if (error) {
       console.error("Error fetching todos:", error.message);
@@ -60,8 +72,8 @@ export default function CouponListScreen() {
     setIssuedCoupons(data);
   };
 
-  const buyCoupon = async (coupon: loveCoupon) => {
-    if (coupon.price > user.point) {
+  const buyCoupon = async (coupon: coupon) => {
+    if (coupon.price > user.coin) {
       Alert.alert("포인트가 부족합니다.");
       return;
     }
@@ -70,21 +82,34 @@ export default function CouponListScreen() {
       await supabase.from("myCoupons").insert({
         name: coupon.name,
         description: coupon.description,
+        price: coupon.price,
         userId: user.id,
       });
 
-      await supabase
-        .from("users")
-        .update({ point: user.point - coupon.price })
-        .eq("id", user.id);
-
-      getRecentUserInfo(user.id);
+      
     } catch (error) {
       console.error(error);
     }
 
     getMyCoupons();
     setPage("myCoupons");
+  };
+
+  const clickCoupon = (coupon: coupon) => {
+    setIsCouponInfoVisible(true);
+    setSelectedCouponId(coupon.id);
+  };
+
+  const closeCouponInfoModal = () => {
+    setIsCouponInfoVisible(false);
+  };
+
+  const openModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false);
   };
 
   useEffect(() => {
@@ -96,13 +121,84 @@ export default function CouponListScreen() {
   return (
     <View style={styles.container}>
       <CouponTabs page={page} setPage={setPage} />
-      <CouponList
-        page={page}
-        myCoupons={myCoupons}
-        loveCoupons={loveCoupons}
-        issuedCoupons={issuedCoupons}
-        buyCoupon={buyCoupon}
-      />
+      <ScrollView style={styles.couponsContainer}>
+        {page === "myCoupons" &&
+          myCoupons.map((coupon) => (
+            <View key={coupon.id}>
+              <TouchableOpacity
+                style={styles.couponItem}
+                onPress={() => clickCoupon(coupon)}
+              >
+                <Text style={styles.couponText}>{coupon.name}</Text>
+              </TouchableOpacity>
+              {selectedCouponId == coupon.id && (
+                <CouponInfoModal
+                  page={page}
+                  getCoupons={getMyCoupons}
+                  closeCouponInfoModal={closeCouponInfoModal}
+                  isCouponInfoVisible={isCouponInfoVisible}
+                  coupon={coupon}
+                />
+              )}
+            </View>
+          ))}
+        {page === "loveCoupons" &&
+          loveCoupons.map((coupon) => (
+            <View key={coupon.id}>
+              <TouchableOpacity
+                style={styles.couponItem}
+                onPress={() => clickCoupon(coupon)}
+              >
+                <View style={styles.couponContent}>
+                  <Text style={styles.couponText}>{coupon.name}</Text>
+                  <Text style={styles.couponPrice}>{coupon.price} Coin</Text>
+                </View>
+              </TouchableOpacity>
+              {selectedCouponId == coupon.id && (
+                <CouponInfoModal
+                  page={page}
+                  getCoupons={getMyCoupons}
+                  closeCouponInfoModal={closeCouponInfoModal}
+                  isCouponInfoVisible={isCouponInfoVisible}
+                  coupon={coupon}
+                />
+              )}
+            </View>
+          ))}
+        {page === "issuedCoupons" &&
+          issuedCoupons.map((coupon) => (
+            <View key={coupon.id}>
+              <TouchableOpacity
+                style={styles.couponItem}
+                onPress={() => clickCoupon(coupon)}
+              >
+                <View style={styles.couponContent}>
+                  <Text style={styles.couponText}>{coupon.name}</Text>
+                  <Text style={styles.couponPrice}>{coupon.price} Coin</Text>
+                </View>
+              </TouchableOpacity>
+              {selectedCouponId == coupon.id && (
+                <CouponInfoModal
+                  page={page}
+                  getCoupons={getMyCoupons}
+                  closeCouponInfoModal={closeCouponInfoModal}
+                  isCouponInfoVisible={isCouponInfoVisible}
+                  coupon={coupon}
+                />
+              )}
+            </View>
+          ))}
+      </ScrollView>
+      {page === "issuedCoupons" && (
+        <View>
+          <CouponIssueModal
+            getIssuedCoupons={getIssuedCoupons}
+            isModalVisible={isModalVisible}
+            closeModal={closeModal}
+          />
+          <RegistButton text="쿠폰 발행하기" onPressEvent={openModal} />
+        </View>
+      )}
     </View>
   );
 }
@@ -134,8 +230,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   couponContent: {
-    flexDirection: "row",
     justifyContent: "space-between",
+    gap: 4,
   },
   couponText: {
     fontSize: 18,

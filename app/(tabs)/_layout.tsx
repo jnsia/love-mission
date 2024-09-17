@@ -19,7 +19,7 @@ export default function HomeLayout() {
       <View style={styles.header}>
         <View style={styles.userPointContainer}>
           <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
-          {user && <Text style={styles.userPoint}>{user.point} Coins</Text>}
+          {user && <Text style={styles.userPoint}>{user.coin} Coin</Text>}
         </View>
       </View>
       <Tabs

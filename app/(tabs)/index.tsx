@@ -1,6 +1,4 @@
 import {
-  Alert,
-  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,7 +6,7 @@ import {
   View,
 } from "react-native";
 import { supabase } from "@/utils/supabase";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { user } from "@/types/user";
 import useAuthStore from "@/stores/authStore";
 import { mission } from "@/types/mission";
@@ -23,9 +21,6 @@ export default function HomeScreen() {
   const [selctedMissionId, setSelctedMissionId] = useState(0);
 
   const user: user = useAuthStore((state: any) => state.user);
-  const getRecentUserInfo = useAuthStore(
-    (state: any) => state.getRecentUserInfo
-  );
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)

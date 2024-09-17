@@ -2,7 +2,7 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import theme from "@/constants/Theme";
 
-export default function MissionRegistButton({
+export default function RegistButton({
   text,
   onPressEvent,
 }: {

@@ -44,6 +44,10 @@ export default function CouponIssueModal({
       return;
     }
 
+    setName("")
+    setDescription("")
+    setPrice("")
+
     getIssuedCoupons();
     closeModal();
   };

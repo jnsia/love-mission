@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "JNoteS",
-    "slug": "JNoteS",
+    "name": "LoveMission",
+    "slug": "LoveMission",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "LoveMission",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.jnsia.JNoteS"
+      "package": "com.jnsia.LoveMission"
     },
     "web": {
       "bundler": "metro",

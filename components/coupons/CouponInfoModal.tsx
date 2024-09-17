@@ -34,6 +34,7 @@ export default function CouponInfoModal({
   const useCoupon = async () => {
     try {
       await supabase.from("myCoupons").delete().eq("id", coupon.id);
+      getCoupons()
     } catch (error) {
       console.error(error);
     }

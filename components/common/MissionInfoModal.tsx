@@ -55,7 +55,8 @@ export default function MissionInfoModal({
 
     await supabase.from("missions").delete().eq("id", mission.id);
 
-    closeMissionInfoModal()
+    closeMissionInfoModal();
+    getMissions();
   };
 
   const changeCompleted = async () => {

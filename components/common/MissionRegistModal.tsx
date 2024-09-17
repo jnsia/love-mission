@@ -40,14 +40,29 @@ export default function MissionRegistModal({
 
     const { error } = await supabase
       .from("missions")
-      .insert({ title, description, type, successPoint, failPoint, userId: user.loveId });
+      .insert({
+        title,
+        description,
+        type,
+        successPoint,
+        failPoint,
+        userId: user.loveId,
+      });
 
     if (error) {
       console.error(error);
       return;
     }
 
+    setType("special")
+    setTitle("");
+    setDescription("")
+    setDeadline("");
+    setSuccessPoint("100");
+    setFailPoint("0");
+
     getMissions();
+    closeModal();
   };
 
   const selectMissionType = (type: string) => {

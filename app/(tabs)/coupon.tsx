@@ -51,7 +51,7 @@ export default function CouponListScreen() {
       .eq("userId", user.loveId);
 
     if (error) {
-      console.error("Error fetching todos:", error.message);
+      console.error("Error fetching loveCoupons:", error.message);
       return;
     }
 

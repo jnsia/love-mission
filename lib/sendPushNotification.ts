@@ -1,6 +1,4 @@
 export async function sendPushNotification(to: string, title: string, body: string) {
-  console.log('sendPushNotification')
-  
   const message = {
     to,
     sound: 'default',

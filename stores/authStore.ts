@@ -1,7 +1,6 @@
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { requestFcmToken } from '@/firebaseConfig'
 import { router } from 'expo-router'
 import { create } from 'zustand'
 

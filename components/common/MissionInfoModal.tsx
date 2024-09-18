@@ -35,20 +35,20 @@ export default function MissionInfoModal({
   const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const approveMission = async () => {
-    // const offset = new Date().getTimezoneOffset() * 60000;
-    // const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
+    const offset = new Date().getTimezoneOffset() * 60000;
+    const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
 
-    // const { error } = await supabase.from("histories").insert({
-    //   date: today,
-    //   point: 100,
-    //   record: `${mission.title} 미션 성공`,
-    //   userId: user.id,
-    // });
+    const { error } = await supabase.from("histories").insert({
+      date: today,
+      coin: mission.successCoin,
+      record: `${mission.title} 미션 성공`,
+      userId: user.loveId,
+    });
 
-    // if (error) {
-    //   console.error(error);
-    //   return;
-    // }
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     await supabase
       .from("users")

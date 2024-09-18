@@ -1,96 +1,83 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { supabase } from "@/utils/supabase";
-import { useCallback, useState } from "react";
-import { user } from "@/types/user";
-import useAuthStore from "@/stores/authStore";
-import { mission } from "@/types/mission";
-import theme from "@/constants/Theme";
-import { useFocusEffect } from "expo-router";
-import MissionInfoModal from "@/components/common/MissionInfoModal";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { supabase } from '@/utils/supabase'
+import { useCallback, useState } from 'react'
+import { user } from '@/types/user'
+import useAuthStore from '@/stores/authStore'
+import { mission } from '@/types/mission'
+import theme from '@/constants/Theme'
+import { router, useFocusEffect } from 'expo-router'
+import MissionInfoModal from '@/components/common/MissionInfoModal'
+import RegistButton from '@/components/common/RegistButton'
 
 export default function HomeScreen() {
-  const [missions, setMissions] = useState<mission[]>([]);
-  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
-  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false);
-  const [selctedMissionId, setSelctedMissionId] = useState(0);
+  const [missions, setMissions] = useState<mission[]>([])
+  const [completedMissions, setCompletedMissions] = useState<mission[]>([])
+  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
+  const [selctedMissionId, setSelctedMissionId] = useState(0)
 
-  const user: user = useAuthStore((state: any) => state.user);
+  const user: user = useAuthStore((state: any) => state.user)
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)
   }
 
   const clickMission = async (mission: mission) => {
-    setSelctedMissionId(mission.id);
-    setIsMissionInfoVisible(true);
-  };
+    setSelctedMissionId(mission.id)
+    setIsMissionInfoVisible(true)
+  }
 
   const getMissions = async () => {
     try {
-      const { data, error } = await supabase
-        .from("missions")
-        .select()
-        .eq("userId", user.id);
+      const { data, error } = await supabase.from('missions').select().eq('userId', user.id)
 
       if (error) {
-        console.error("index mission fetching fail:", error.message);
-        return;
+        console.error('index mission fetching fail:', error.message)
+        return
       }
 
-      const missions: mission[] = [];
-      const completedMissions: mission[] = [];
+      const missions: mission[] = []
+      const completedMissions: mission[] = []
 
       data.forEach((mission: mission) => {
         if (mission.completed) {
-          completedMissions.push(mission);
+          completedMissions.push(mission)
         } else {
-          missions.push(mission);
+          missions.push(mission)
         }
-      });
+      })
 
-      setMissions(missions);
-      setCompletedMissions(completedMissions);
+      setMissions(missions)
+      setCompletedMissions(completedMissions)
     } catch (error: any) {
-      console.error("Error fetching missions:", error.message);
+      console.error('index mission fetching fail:', error.message)
     }
-  };
+  }
+
+  const goMissionHistory = () => {
+    router.push('/(tabs)/history')
+  }
 
   useFocusEffect(
     useCallback(() => {
-      getMissions();
-    }, [])
-  );
+      getMissions()
+    }, []),
+  )
 
   return (
     <View style={styles.container}>
       <View style={styles.guideBox}>
         <Text style={styles.guideText}>연인이 당신에게 할당한 미션입니다!</Text>
-        <Text style={styles.guideText}>
-          어서 미션을 완료하여 코인를 획득하세요.
-        </Text>
+        <Text style={styles.guideText}>어서 미션을 완료하여 코인를 획득하세요.</Text>
       </View>
       <ScrollView>
         <View>
-          {/* <Text>결재 대기 중인 미션</Text> */}
           {completedMissions.map((mission) => (
             <View key={mission.id}>
               <TouchableOpacity
                 style={mission.completed ? styles.completedItem : styles.item}
                 onPress={() => clickMission(mission)}
               >
-                <Text
-                  style={
-                    mission.completed
-                      ? styles.completedItemText
-                      : styles.itemText
-                  }
-                >
+                <Text style={mission.completed ? styles.completedItemText : styles.itemText}>
                   {mission.title} {mission.completed}
                 </Text>
               </TouchableOpacity>
@@ -106,20 +93,13 @@ export default function HomeScreen() {
           ))}
         </View>
         <View>
-          {/* <Text>남은 미션</Text> */}
           {missions.map((mission) => (
             <View key={mission.id}>
               <TouchableOpacity
                 style={mission.completed ? styles.completedItem : styles.item}
                 onPress={() => clickMission(mission)}
               >
-                <Text
-                  style={
-                    mission.completed
-                      ? styles.completedItemText
-                      : styles.itemText
-                  }
-                >
+                <Text style={mission.completed ? styles.completedItemText : styles.itemText}>
                   {mission.title} {mission.completed}
                 </Text>
               </TouchableOpacity>
@@ -135,8 +115,9 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
+      <RegistButton text="미션 이력 보기" onPressEvent={goMissionHistory} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -147,12 +128,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#FF6347",
+    color: '#FF6347',
   },
   guideBox: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 16,
     backgroundColor: theme.colors.button,
     marginBottom: 16,
@@ -166,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.button,
     borderRadius: 8,
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -179,9 +160,9 @@ const styles = StyleSheet.create({
   completedItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "green",
+    backgroundColor: 'green',
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -189,6 +170,6 @@ const styles = StyleSheet.create({
   },
   completedItemText: {
     fontSize: 16,
-    color: "white",
+    color: 'white',
   },
-});
+})

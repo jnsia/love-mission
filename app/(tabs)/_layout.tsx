@@ -1,13 +1,17 @@
-import { colors } from "@/constants/Colors";
-import theme from "@/constants/Theme";
-import useAuthStore from "@/stores/authStore";
-import { user } from "@/types/user";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import { StatusBar, StyleSheet, Text, View } from "react-native";
+import { colors } from '@/constants/Colors'
+import theme from '@/constants/Theme'
+import useAuthStore from '@/stores/authStore'
+import useScreenStore from '@/stores/screenStore'
+import { user } from '@/types/user'
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'
+import { Tabs, useNavigation } from 'expo-router'
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 export default function HomeLayout() {
-  const user: user = useAuthStore((state: any) => state.user);
+  const user: user = useAuthStore((state: any) => state.user)
+  const isStacked: boolean = useScreenStore((state: any) => state.isStacked)
+
+  const navigation = useNavigation()
 
   return (
     <>
@@ -17,6 +21,11 @@ export default function HomeLayout() {
         // translucent={true}
       />
       <View style={styles.header}>
+        {isStacked && (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FontAwesome name="arrow-left" size={24} color={colors.deepRed} />
+          </TouchableOpacity>
+        )}
         <View style={styles.userCoinContainer}>
           <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
           {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
@@ -26,30 +35,30 @@ export default function HomeLayout() {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName: string = "";
+            let iconName: string = ''
 
-            if (route.name === "index") {
-              iconName = "clipboard";
-            } else if (route.name === "love") {
-              iconName = "heart";
-            } else if (route.name === "coupon") {
-              iconName = "ticket";
-            } else if (route.name === "setting") {
-              iconName = "cog";
+            if (route.name === 'index') {
+              iconName = 'clipboard'
+            } else if (route.name === 'love') {
+              iconName = 'heart'
+            } else if (route.name === 'coupon') {
+              iconName = 'ticket'
+            } else if (route.name === 'setting') {
+              iconName = 'cog'
             }
             // @ts-expect-error
-            return <FontAwesome name={iconName} size={size} color={color} />;
+            return <FontAwesome name={iconName} size={size} color={color} />
           },
-          tabBarActiveTintColor: "#ff3b3b", // 딥 레드
-          tabBarInactiveTintColor: "#d1d1d1", // 라이트 그레이
+          tabBarActiveTintColor: '#ff3b3b', // 딥 레드
+          tabBarInactiveTintColor: '#d1d1d1', // 라이트 그레이
           tabBarStyle: {
-            backgroundColor: "#1e2025", // 다크 그레이
+            backgroundColor: '#1e2025', // 다크 그레이
             borderTopWidth: 0,
             height: 72,
           },
           tabBarLabelStyle: {
             fontSize: 12,
-            fontWeight: "bold",
+            fontWeight: 'bold',
           },
           tabBarItemStyle: {
             borderRadius: 10,
@@ -60,48 +69,48 @@ export default function HomeLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "나의 미션",
+            title: '나의 미션',
           }}
         />
         <Tabs.Screen
           name="love"
           options={{
-            title: "연인의 미션",
+            title: '연인의 미션',
           }}
         />
         <Tabs.Screen
           name="coupon"
           options={{
-            title: "쿠폰",
+            title: '쿠폰',
           }}
         />
         <Tabs.Screen
           name="setting"
           options={{
-            title: "설정",
+            title: '설정',
           }}
         />
       </Tabs>
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.background,
     padding: 16,
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
   },
   userCoinContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 4,
     gap: 12,
   },
   userCoin: {
     minWidth: 36,
-    textAlign: "right",
+    textAlign: 'right',
     color: colors.deepRed,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-});
+})

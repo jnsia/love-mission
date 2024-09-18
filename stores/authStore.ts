@@ -1,8 +1,9 @@
-import { user } from "@/types/user";
-import { supabase } from "@/utils/supabase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import { create } from "zustand";
+import { user } from '@/types/user'
+import { supabase } from '@/utils/supabase'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { requestFcmToken } from '@/firebaseConfig'
+import { router } from 'expo-router'
+import { create } from 'zustand'
 
 const useAuthStore = create((set) => ({
   // Sample Code
@@ -11,55 +12,60 @@ const useAuthStore = create((set) => ({
 
   isLoggedIn: false,
   user: null,
+  loveFcmToken: null,
 
   getRecentUserInfo: async (userId: any) => {
-    const { data, error } = await supabase
-      .from("users")
-      .select()
-      .eq("id", userId);
+    const { data, error } = await supabase.from('users').select().eq('id', userId)
 
     if (error) {
-      console.error("Error fetching user:", error.message);
-      return;
+      console.error('Error fetching user:', error.message)
+      return
     }
 
-    const user: user = data[0];
-    set({ user: user });
+    const user: user = data[0]
+    set({ user: user })
   },
 
   getPIN: async (state: any) => {
-    const PIN = await AsyncStorage.getItem("JNoteS_PIN");
+    const PIN = await AsyncStorage.getItem('JNoteS_PIN')
 
-    if (PIN === "980309" || PIN === "950718") {
+    if (PIN === '980309' || PIN === '950718') {
       try {
-        const { data, error } = await supabase
-          .from("users")
-          .select()
-          .eq("pin", PIN);
+        const { data, error } = await supabase.from('users').select().eq('pin', PIN)
 
         if (error) {
-          console.error("Error fetching user:", error.message);
-          return;
+          console.error('Error fetching user:', error.message)
+          return
         }
 
-        const user: user = data[0];
+        const user: user = data[0]
 
-        set({ isLoggedIn: true });
-        set({ user: user });
+        set({ isLoggedIn: true })
+        set({ user: user })
       } catch (error: any) {
-        console.error("Error fetching user:", error.message);
+        console.error('Error fetching user:', error.message)
       }
     } else {
-      // PIN이 유효하지 않은 경우
-      set({ user: null });
+      return
     }
   },
 
-  logout: async (state: any) => {
-    set({ isLoggedIn: null });
-    await AsyncStorage.removeItem("JNoteS_PIN");
-    router.replace("/(auth)");
+  getLoveFcmToken: async (loveId: number) => {
+    const { data } = await supabase.from('users').select('fcmToken').eq('id', loveId)
+    
+    if (data == null) {
+      throw new Error("연인에 대한 정보 없음")
+    } else {
+      set({ loveFcmToken: data[0].fcmToken })
+    }
   },
-}));
 
-export default useAuthStore;
+  logout: async (userId: number) => {
+    set({ isLoggedIn: null })
+    await AsyncStorage.removeItem('JNoteS_PIN')
+    await supabase.from('users').update({ fcmToken: null }).eq('id', userId)
+    router.replace('/(auth)')
+  },
+}))
+
+export default useAuthStore

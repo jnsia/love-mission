@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "37881646414",
+    "project_id": "lovemission-521d4",
+    "storage_bucket": "lovemission-521d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:37881646414:android:d6bdb4910e3919c5bea21f",
+        "android_client_info": {
+          "package_name": "com.jnsia.JNoteS"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgWS-u4i50vewPdvh42Fe6dj5MPAVs1jI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

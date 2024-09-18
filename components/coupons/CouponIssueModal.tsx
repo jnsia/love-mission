@@ -16,6 +16,7 @@ import { supabase } from "@/utils/supabase";
 import CancelButton from "../common/CancelButton";
 import theme from "@/constants/Theme";
 import { colors } from "@/constants/Colors";
+import { sendPushNotification } from "@/lib/sendPushNotification";
 
 export default function CouponIssueModal({
   getIssuedCoupons,
@@ -31,6 +32,7 @@ export default function CouponIssueModal({
   const [price, setPrice] = useState("");
 
   const user: user = useAuthStore((state: any) => state.user);
+  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const issueCoupon = async () => {
     if (name == "") return;
@@ -43,6 +45,8 @@ export default function CouponIssueModal({
       console.error(error);
       return;
     }
+
+    await sendPushNotification(loveFcmToken, '연인이 새로운 쿠폰을 발행하였습니다!', name)
 
     setName("")
     setDescription("")
@@ -84,7 +88,7 @@ export default function CouponIssueModal({
                 <Text style={styles.label}>쿠폰 가격</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="포인트 입력"
+                  placeholder="코인 입력"
                   value={price}
                   onChangeText={setPrice}
                   keyboardType="numeric"

@@ -1,90 +1,82 @@
-import MissionInfoModal from "@/components/common/MissionInfoModal";
-import MissionInput from "@/components/common/MissionInput";
-import RegistButton from "@/components/common/RegistButton";
-import MissionRegistModal from "@/components/common/MissionRegistModal";
-import SubmitButton from "@/components/common/SubmitButton";
-import theme from "@/constants/Theme";
-import useAuthStore from "@/stores/authStore";
-import { mission } from "@/types/mission";
-import { user } from "@/types/user";
-import { supabase } from "@/utils/supabase";
-import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import MissionInfoModal from '@/components/common/MissionInfoModal'
+import RegistButton from '@/components/common/RegistButton'
+import MissionRegistModal from '@/components/common/MissionRegistModal'
+import theme from '@/constants/Theme'
+import useAuthStore from '@/stores/authStore'
+import { mission } from '@/types/mission'
+import { user } from '@/types/user'
+import { supabase } from '@/utils/supabase'
+import { useFocusEffect } from 'expo-router'
+import { useCallback, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { sendPushNotification } from '@/lib/sendPushNotification'
 
 export default function LoveScreen() {
-  const [missions, setMissions] = useState<mission[]>([]);
-  const [completedMissions, setCompletedMissions] = useState<mission[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false);
-  const [selctedMissionId, setSelctedMissionId] = useState(0);
+  const [missions, setMissions] = useState<mission[]>([])
+  const [completedMissions, setCompletedMissions] = useState<mission[]>([])
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
+  const [selctedMissionId, setSelctedMissionId] = useState(0)
 
-  const user: user = useAuthStore((state: any) => state.user);
+  const user: user = useAuthStore((state: any) => state.user)
+  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const getMissions = async () => {
-    const { data, error } = await supabase
-      .from("missions")
-      .select()
-      .eq("userId", user.loveId);
+    const { data, error } = await supabase.from('missions').select().eq('userId', user.loveId)
 
     if (error) {
-      console.error("Error fetching missions:", error.message);
-      return;
+      console.error('Error fetching missions:', error.message)
+      return
     }
 
-    const missions: mission[] = [];
-    const completedMissions: mission[] = [];
+    const missions: mission[] = []
+    const completedMissions: mission[] = []
 
     data.forEach((mission: mission) => {
       if (mission.completed) {
-        completedMissions.push(mission);
+        completedMissions.push(mission)
       } else {
-        missions.push(mission);
+        missions.push(mission)
       }
-    });
+    })
 
-    setMissions(missions);
-    setCompletedMissions(completedMissions);
-  };
+    setMissions(missions)
+    setCompletedMissions(completedMissions)
+  }
 
   const clickMission = (mission: mission) => {
-    setSelctedMissionId(mission.id);
-    setIsMissionInfoVisible(true);
-  };
+    setSelctedMissionId(mission.id)
+    setIsMissionInfoVisible(true)
+  }
 
   const closeMissionInfoModal = () => {
-    setIsMissionInfoVisible(false);
-  };
+    setIsMissionInfoVisible(false)
+  }
 
   const openModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
   const closeModal = () => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
+
+  const pressMorePress = () => {
+    sendPushNotification(loveFcmToken, "미션 수행 독촉 알림", "빨리 미션 수행 안해?!")
+  }
 
   useFocusEffect(
     useCallback(() => {
-      getMissions();
-    }, [])
-  );
+      getMissions()
+    }, []),
+  )
 
   return (
     <View style={styles.container}>
       <ScrollView>
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
-            <TouchableOpacity
-              style={styles.completedItem}
-              onPress={() => clickMission(mission)}
-            >
+            <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
               <Text style={styles.completedItemText}>{mission.title}</Text>
             </TouchableOpacity>
             {selctedMissionId == mission.id && (
@@ -99,10 +91,7 @@ export default function LoveScreen() {
         ))}
         {missions.map((mission) => (
           <View key={mission.id}>
-            <TouchableOpacity
-              style={styles.item}
-              onPress={() => clickMission(mission)}
-            >
+            <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
               <Text style={styles.itemText}>{mission.title}</Text>
             </TouchableOpacity>
             {selctedMissionId == mission.id && (
@@ -121,9 +110,27 @@ export default function LoveScreen() {
         isModalVisible={isModalVisible}
         closeModal={closeModal}
       />
+      <TouchableOpacity
+        style={{
+          backgroundColor: 'white',
+          marginBottom: 8,
+          alignItems: 'center',
+          padding: 12,
+          borderRadius: 5,
+        }}
+        onPress={pressMorePress}
+      >
+        <Text
+          style={{
+            fontWeight: 'bold',
+          }}
+        >
+          미션 독촉하기 (테스트 기능)
+        </Text>
+      </TouchableOpacity>
       <RegistButton text="미션 등록하기" onPressEvent={openModal} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -134,16 +141,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "#FF6347",
+    color: '#FF6347',
   },
   item: {
     padding: 15,
     borderRadius: 8,
     backgroundColor: theme.colors.button,
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -156,9 +163,9 @@ const styles = StyleSheet.create({
   completedItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "green",
+    backgroundColor: 'green',
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -167,9 +174,9 @@ const styles = StyleSheet.create({
   warningItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: "red",
+    backgroundColor: 'red',
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -177,18 +184,18 @@ const styles = StyleSheet.create({
   },
   completedItemText: {
     fontSize: 16,
-    color: "white",
+    color: 'white',
   },
   modalView: {
     flex: 1,
     marginTop: 80,
     marginBottom: 80,
     marginHorizontal: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 10,
     padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -198,9 +205,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalTextStyle: {
-    color: "#17191c",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: '#17191c',
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 50,
   },
-});
+})

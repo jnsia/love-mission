@@ -3,4 +3,5 @@ export interface user {
   nickname: string;
   coin: number;
   loveId: number;
+  fcmToken: string;
 }

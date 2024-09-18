@@ -129,7 +129,7 @@ export default function Todos() {
       <View style={styles.guideBox}>
         <Text style={styles.guideText}>연인이 당신에게 할당한 미션입니다!</Text>
         <Text style={styles.guideText}>
-          어서 미션을 완료하여 포인트를 획득하세요.
+          어서 미션을 완료하여 코인를 획득하세요.
         </Text>
       </View>
       <FlatList

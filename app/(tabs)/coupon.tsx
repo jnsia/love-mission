@@ -74,7 +74,7 @@ export default function CouponListScreen() {
 
   const buyCoupon = async (coupon: coupon) => {
     if (coupon.price > user.coin) {
-      Alert.alert("포인트가 부족합니다.");
+      Alert.alert("코인가 부족합니다.");
       return;
     }
 

@@ -18,6 +18,7 @@ import CancelButton from "./CancelButton";
 import theme from "@/constants/Theme";
 import { mission } from "@/types/mission";
 import { colors } from "@/constants/Colors";
+import { sendPushNotification } from "@/lib/sendPushNotification";
 
 export default function MissionInfoModal({
   getMissions,
@@ -31,6 +32,7 @@ export default function MissionInfoModal({
   mission: mission;
 }) {
   const user: user = useAuthStore((state: any) => state.user);
+  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const approveMission = async () => {
     // const offset = new Date().getTimezoneOffset() * 60000;
@@ -50,10 +52,12 @@ export default function MissionInfoModal({
 
     await supabase
       .from("users")
-      .update({ point: user.coin + mission.successPoint })
+      .update({ coin: user.coin + mission.successCoin })
       .eq("id", user.loveId);
 
     await supabase.from("missions").delete().eq("id", mission.id);
+
+    await sendPushNotification(loveFcmToken, `${mission.title} 미션 완료 처리되었습니다!`, `${mission.successCoin} Coin 지급 완료`)
 
     closeMissionInfoModal();
     getMissions();
@@ -65,13 +69,15 @@ export default function MissionInfoModal({
       .update({ completed: true })
       .eq("id", mission.id);
 
+    await sendPushNotification(loveFcmToken, `연인이 ${mission.title} 미션을 완료하였습니다!`, `미션 완료를 검토하여 코인을 지급하세요.`)
+
     getMissions();
   };
 
   const clickApproveButton = () => {
     Alert.alert(
       "연인이 미션을 완수하였나요?",
-      "승인하면 연인이 포인트를 획득할 수 있습니다.",
+      "승인하면 연인이 코인를 획득할 수 있습니다.",
       [
         {
           text: "반려",
@@ -90,7 +96,7 @@ export default function MissionInfoModal({
   const clickCompleteButton = () => {
     Alert.alert(
       "미션을 완수하셨나요?",
-      "미션 완수 후 연인의 결재를 받으면 포인트를 얻을 수 있습니다.",
+      "미션 완수 후 연인의 결재를 받으면 코인를 얻을 수 있습니다.",
       [
         {
           text: "아니요",
@@ -121,7 +127,7 @@ export default function MissionInfoModal({
               <Text style={styles.missionInfoText}>{mission.title}</Text>
             </View>
 
-            {mission.description != null && (
+            {mission.description != "" && (
               <View style={styles.missionInfo}>
                 <Text style={styles.label}>미션 설명</Text>
                 <Text style={styles.missionInfoText}>
@@ -131,14 +137,14 @@ export default function MissionInfoModal({
             )}
 
             <View style={styles.missionInfo}>
-              <Text style={styles.label}>성공 시 지급될 포인트</Text>
-              <Text style={styles.missionInfoText}>{mission.successPoint}</Text>
+              <Text style={styles.label}>성공 시 지급될 코인</Text>
+              <Text style={styles.missionInfoText}>{mission.successCoin}</Text>
             </View>
 
-            {mission.failPoint != 0 && (
+            {mission.failCoin != 0 && (
               <View style={styles.missionInfo}>
-                <Text style={styles.label}>실패 시 차감될 포인트</Text>
-                <Text style={styles.missionInfoText}>{mission.failPoint}</Text>
+                <Text style={styles.label}>실패 시 차감될 코인</Text>
+                <Text style={styles.missionInfoText}>{mission.failCoin}</Text>
               </View>
             )}
 

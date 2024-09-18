@@ -5,6 +5,6 @@ export interface mission {
   completed: boolean;
   userId: number;
   type: string;
-  successPoint: number;
-  failPoint: number;
+  successCoin: number;
+  failCoin: number;
 }

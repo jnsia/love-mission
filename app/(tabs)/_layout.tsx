@@ -17,9 +17,9 @@ export default function HomeLayout() {
         // translucent={true}
       />
       <View style={styles.header}>
-        <View style={styles.userPointContainer}>
+        <View style={styles.userCoinContainer}>
           <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
-          {user && <Text style={styles.userPoint}>{user.coin} Coin</Text>}
+          {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
         </View>
       </View>
       <Tabs
@@ -92,13 +92,13 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "flex-end",
   },
-  userPointContainer: {
+  userCoinContainer: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 4,
     gap: 12,
   },
-  userPoint: {
+  userCoin: {
     minWidth: 36,
     textAlign: "right",
     color: colors.deepRed,

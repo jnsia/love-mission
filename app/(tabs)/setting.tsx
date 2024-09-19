@@ -1,3 +1,4 @@
+import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
@@ -11,7 +12,6 @@ export default function SettingScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>Details</Text>
       <TouchableOpacity style={styles.submit} onPress={remove}>
         <Text>로그아웃...</Text>
       </TouchableOpacity>
@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.colors.background
   },
   submit: {
     paddingHorizontal: 24,

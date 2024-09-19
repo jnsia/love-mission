@@ -6,14 +6,14 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Alert,
-} from "react-native";
-import React, { useState } from "react";
-import SubmitButton from "../common/SubmitButton";
-import { user } from "@/types/user";
-import useAuthStore from "@/stores/authStore";
-import { supabase } from "@/utils/supabase";
-import CancelButton from "../common/CancelButton";
-import theme from "@/constants/Theme";
+} from 'react-native'
+import React, { useState } from 'react'
+import SubmitButton from '../common/SubmitButton'
+import { user } from '@/types/user'
+import useAuthStore from '@/stores/authStore'
+import { supabase } from '@/utils/supabase'
+import CancelButton from '../common/CancelButton'
+import theme from '@/constants/Theme'
 
 export default function CouponInfoModal({
   page,
@@ -22,87 +22,109 @@ export default function CouponInfoModal({
   closeCouponInfoModal,
   coupon,
 }: {
-  page: string;
-  getCoupons: () => void;
-  isCouponInfoVisible: boolean;
-  closeCouponInfoModal: () => void;
-  coupon: coupon;
+  page: string
+  getCoupons: () => void
+  isCouponInfoVisible: boolean
+  closeCouponInfoModal: () => void
+  coupon: coupon
 }) {
-  const user: user = useAuthStore((state: any) => state.user);
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo);
+  const user: user = useAuthStore((state: any) => state.user)
+  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
 
   const useCoupon = async () => {
     try {
-      await supabase.from("myCoupons").delete().eq("id", coupon.id);
+      await supabase.from('myCoupons').delete().eq('id', coupon.id)
+
+      await supabase
+        .from('missions')
+        .insert({
+          title: `${coupon.name} 쿠폰 사용!`,
+          type: 'coupon',
+          describe: coupon.description,
+          successCoin: 0,
+          failCoin: 0,
+        })
+        .eq('id', user.loveId)
+
       getCoupons()
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const buyCoupon = async () => {
     try {
-      await supabase.from("myCoupons").insert({
+      const offset = new Date().getTimezoneOffset() * 60000;
+    const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
+
+      await supabase.from('myCoupons').insert({
         name: coupon.name,
         description: coupon.description,
         price: coupon.price,
         userId: user.id,
+      })
+
+      await supabase.from("histories").insert({
+        date: today,
+        coin: -coupon.price,
+        record: `${coupon.name} 쿠폰 구매`,
+        userId: user.id,
       });
 
       await supabase
-        .from("users")
+        .from('users')
         .update({ coin: user.coin - coupon.price })
-        .eq("id", user.id);
+        .eq('id', user.id)
 
-      getRecentUserInfo(user.id);
-      getCoupons();
+      getRecentUserInfo(user.id)
+      getCoupons()
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const clickUseButton = () => {
     Alert.alert(
-      "쿠폰을 사용하시겠습니까?",
-      "",
+      '쿠폰을 사용하시겠습니까?',
+      '',
       [
         {
-          text: "아니요",
+          text: '아니요',
         },
         {
-          text: "네!",
+          text: '네!',
           onPress: () => {
-            useCoupon();
+            useCoupon()
           },
         },
       ],
-      { cancelable: false }
-    );
-  };
+      { cancelable: false },
+    )
+  }
 
   const clickBuyButton = () => {
     if (coupon.price > user.coin) {
-      Alert.alert("코인이 부족합니다!");
-      return;
+      Alert.alert('코인이 부족합니다!')
+      return
     }
 
     Alert.alert(
-      "쿠폰을 구매하시겠습니까?",
-      "",
+      '쿠폰을 구매하시겠습니까?',
+      '',
       [
         {
-          text: "아니요",
+          text: '아니요',
         },
         {
-          text: "네!",
+          text: '네!',
           onPress: () => {
-            buyCoupon();
+            buyCoupon()
           },
         },
       ],
-      { cancelable: false }
-    );
-  };
+      { cancelable: false },
+    )
+  }
 
   return (
     <Modal
@@ -129,22 +151,22 @@ export default function CouponInfoModal({
               <Text style={styles.couponInfoText}>{coupon.price} Coin</Text>
             </View>
 
-            {page === "myCoupons" && (
-              <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+            {page === 'myCoupons' && (
+              <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                 <CancelButton text="닫기" onPressEvent={closeCouponInfoModal} />
                 <SubmitButton text="사용하기" onPressEvent={clickUseButton} />
               </View>
             )}
 
-            {page === "loveCoupons" && (
-              <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+            {page === 'loveCoupons' && (
+              <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                 <CancelButton text="닫기" onPressEvent={closeCouponInfoModal} />
                 <SubmitButton text="구매하기" onPressEvent={clickBuyButton} />
               </View>
             )}
 
-            {page === "issuedCoupons" && (
-              <View style={{ flexDirection: "row", gap: 16, marginTop: 8 }}>
+            {page === 'issuedCoupons' && (
+              <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                 <CancelButton text="닫기" onPressEvent={closeCouponInfoModal} />
                 <SubmitButton text="사용하기" onPressEvent={clickUseButton} />
               </View>
@@ -153,12 +175,12 @@ export default function CouponInfoModal({
         </View>
       </TouchableWithoutFeedback>
     </Modal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   guideBox: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 16,
     backgroundColor: theme.colors.button,
     marginBottom: 16,
@@ -169,27 +191,27 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // 배경을 반투명하게 설정
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경을 반투명하게 설정
   },
   modalView: {
-    position: "absolute",
-    width: "100%",
+    position: 'absolute',
+    width: '100%',
     bottom: 0,
     padding: 16,
     marginTop: 60,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   modalTextStyle: {
-    color: "#17191c",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: '#17191c',
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 50,
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 8,
   },
   couponInfo: {
@@ -199,7 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-});
+})

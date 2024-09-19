@@ -7,7 +7,8 @@ import { mission } from '@/types/mission'
 import theme from '@/constants/Theme'
 import { router, useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/components/common/MissionInfoModal'
-import RegistButton from '@/components/common/RegistButton'
+import { fonts } from '@/constants/Fonts'
+import { colors } from '@/constants/Colors'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -42,7 +43,11 @@ export default function HomeScreen() {
         if (mission.completed) {
           completedMissions.push(mission)
         } else {
-          missions.push(mission)
+          if (mission.type == 'coupon') {
+            missions.unshift(mission)
+          } else {
+            missions.push(mission)
+          }
         }
       })
 
@@ -51,10 +56,6 @@ export default function HomeScreen() {
     } catch (error: any) {
       console.error('index mission fetching fail:', error.message)
     }
-  }
-
-  const goMissionHistory = () => {
-    router.push('/(tabs)/history')
   }
 
   useFocusEffect(
@@ -69,18 +70,36 @@ export default function HomeScreen() {
         <Text style={styles.guideText}>연인이 당신에게 할당한 미션입니다!</Text>
         <Text style={styles.guideText}>어서 미션을 완료하여 코인를 획득하세요.</Text>
       </View>
-      <ScrollView>
+      <ScrollView style={styles.missionsBox}>
         <View>
-          {completedMissions.map((mission) => (
+          {missions.map((mission) => (
             <View key={mission.id}>
-              <TouchableOpacity
-                style={mission.completed ? styles.completedItem : styles.item}
-                onPress={() => clickMission(mission)}
-              >
-                <Text style={mission.completed ? styles.completedItemText : styles.itemText}>
-                  {mission.title} {mission.completed}
-                </Text>
-              </TouchableOpacity>
+              {mission.type === 'coupon' ? (
+                <TouchableOpacity style={styles.couponItem} onPress={() => clickMission(mission)}>
+                  <Text style={{ ...styles.itemText, color: colors.deepRed }} numberOfLines={1}>
+                    빠른 시일 내에 해결해주세요!
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>쿠폰</Text>
+                    </View>
+                    <Text style={styles.couponItemText} numberOfLines={1}>
+                      {mission.title}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
+                  <View style={styles.badge}>
+                    {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
+                    {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
+                    {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
+                  </View>
+                  <Text style={styles.itemText} numberOfLines={1}>
+                    {mission.title}
+                  </Text>
+                </TouchableOpacity>
+              )}
               {selctedMissionId == mission.id && (
                 <MissionInfoModal
                   getMissions={getMissions}
@@ -93,14 +112,11 @@ export default function HomeScreen() {
           ))}
         </View>
         <View>
-          {missions.map((mission) => (
+          {completedMissions.map((mission) => (
             <View key={mission.id}>
-              <TouchableOpacity
-                style={mission.completed ? styles.completedItem : styles.item}
-                onPress={() => clickMission(mission)}
-              >
-                <Text style={mission.completed ? styles.completedItemText : styles.itemText}>
-                  {mission.title} {mission.completed}
+              <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
+                <Text style={styles.completedItemText} numberOfLines={1}>
+                  {mission.title}
                 </Text>
               </TouchableOpacity>
               {selctedMissionId == mission.id && (
@@ -115,7 +131,6 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
-      <RegistButton text="미션 이력 보기" onPressEvent={goMissionHistory} />
     </View>
   )
 }
@@ -132,44 +147,42 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#FF6347',
   },
+  missionsBox: {
+    marginTop: 16,
+  },
   guideBox: {
     alignItems: 'center',
     padding: 16,
     backgroundColor: theme.colors.button,
-    marginBottom: 16,
   },
   guideText: {
     fontSize: 16,
     color: theme.colors.text,
-  },
-  item: {
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  itemText: {
-    fontSize: 16,
-    color: theme.colors.text,
+    fontFamily: fonts.default,
   },
   completedItem: {
-    padding: 15,
+    padding: 16,
     borderRadius: 8,
     backgroundColor: 'green',
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
   },
   completedItemText: {
     fontSize: 16,
     color: 'white',
+    fontFamily: fonts.default,
+  },
+  badge: {
+    borderWidth: 1,
+    borderColor: theme.colors.text,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    marginRight: 8,
+    borderRadius: 10,
+  },
+  badgeText: {
+    fontFamily: fonts.default,
+    fontSize: 10,
+    color: theme.colors.text,
   },
 })

@@ -43,16 +43,18 @@ export default function HomeLayout() {
               iconName = 'heart'
             } else if (route.name === 'coupon') {
               iconName = 'ticket'
+            } else if (route.name === 'history') {
+              iconName = 'history'
             } else if (route.name === 'setting') {
               iconName = 'cog'
             }
             // @ts-expect-error
             return <FontAwesome name={iconName} size={size} color={color} />
           },
-          tabBarActiveTintColor: '#ff3b3b', // 딥 레드
-          tabBarInactiveTintColor: '#d1d1d1', // 라이트 그레이
+          tabBarActiveTintColor: colors.deepRed,
+          tabBarInactiveTintColor: colors.lightGray,
           tabBarStyle: {
-            backgroundColor: '#1e2025', // 다크 그레이
+            backgroundColor: colors.darkGray,
             borderTopWidth: 0,
             height: 72,
           },
@@ -82,6 +84,12 @@ export default function HomeLayout() {
           name="coupon"
           options={{
             title: '쿠폰',
+          }}
+        />
+        <Tabs.Screen
+          name="history"
+          options={{
+            title: '이력 관리',
           }}
         />
         <Tabs.Screen

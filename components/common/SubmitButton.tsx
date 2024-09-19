@@ -1,19 +1,20 @@
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
-import theme from "@/constants/Theme";
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
+import theme from '@/constants/Theme'
+import { fonts } from '@/constants/Fonts'
 
 export default function SubmitButton({
   text,
   onPressEvent,
 }: {
-  text: string;
-  onPressEvent: () => void;
+  text: string
+  onPressEvent: () => void
 }) {
   return (
     <TouchableOpacity style={styles.button} onPress={onPressEvent}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -29,7 +30,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.text,
     fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: fonts.default,
   },
-});
+})

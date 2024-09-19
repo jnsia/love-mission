@@ -10,11 +10,12 @@ export const colors = {
   light: {
     text: '#FFFFFF',
     // 미드나잇 블루
-    background: '#2a2d3e', // #121417 차콜 블랙도 괜찮은데... 
+    background: '#2a2d3e',
     tint: tintColorLight,
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    // 차콜 블랙
     button: "#121417"
   },
   dark: {

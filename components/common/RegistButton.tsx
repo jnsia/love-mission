@@ -1,6 +1,7 @@
 import { Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import theme from "@/constants/Theme";
+import { fonts } from "@/constants/Fonts";
 
 export default function RegistButton({
   text,
@@ -30,5 +31,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center",
+    fontFamily: fonts.default
   },
 });

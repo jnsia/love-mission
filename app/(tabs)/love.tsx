@@ -10,6 +10,8 @@ import { useFocusEffect } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { sendPushNotification } from '@/lib/sendPushNotification'
+import { fonts } from '@/constants/Fonts'
+import { colors } from '@/constants/Colors'
 
 export default function LoveScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -62,7 +64,7 @@ export default function LoveScreen() {
   }
 
   const pressMorePress = () => {
-    sendPushNotification(loveFcmToken, "미션 수행 독촉 알림", "빨리 미션 수행 안해?!")
+    sendPushNotification(loveFcmToken, '미션 수행 독촉 알림', '빨리 미션 수행 안해?!')
   }
 
   useFocusEffect(
@@ -77,7 +79,9 @@ export default function LoveScreen() {
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
             <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
-              <Text style={styles.completedItemText}>{mission.title}</Text>
+              <Text style={styles.completedItemText} numberOfLines={1}>
+                {mission.title}
+              </Text>
             </TouchableOpacity>
             {selctedMissionId == mission.id && (
               <MissionInfoModal
@@ -92,7 +96,14 @@ export default function LoveScreen() {
         {missions.map((mission) => (
           <View key={mission.id}>
             <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
-              <Text style={styles.itemText}>{mission.title}</Text>
+              <View style={styles.badge}>
+                {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
+                {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
+                {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
+              </View>
+              <Text style={styles.itemText} numberOfLines={1}>
+                {mission.title}
+              </Text>
             </TouchableOpacity>
             {selctedMissionId == mission.id && (
               <MissionInfoModal
@@ -146,18 +157,32 @@ const styles = StyleSheet.create({
     color: '#FF6347',
   },
   item: {
-    padding: 15,
-    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
     backgroundColor: theme.colors.button,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  couponItem: {
+    padding: 16,
+    backgroundColor: theme.colors.button,
+    borderRadius: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: colors.deepRed,
+    gap: 8,
   },
   itemText: {
     fontSize: 16,
+    flex: 1,
+    color: theme.colors.text,
+    fontFamily: fonts.default,
+  },
+  couponItemText: {
+    fontSize: 16,
+    flex: 1,
+    fontFamily: fonts.defaultBold,
     color: theme.colors.text,
   },
   completedItem: {
@@ -165,49 +190,30 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'green',
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
   },
   warningItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: 'red',
+    backgroundColor: colors.deepRed,
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
   },
   completedItemText: {
     fontSize: 16,
     color: 'white',
+    fontFamily: fonts.default,
   },
-  modalView: {
-    flex: 1,
-    marginTop: 80,
-    marginBottom: 80,
-    marginHorizontal: 20,
-    backgroundColor: 'white',
+  badge: {
+    borderWidth: 1,
+    borderColor: theme.colors.text,
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    marginRight: 8,
     borderRadius: 10,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
-  modalTextStyle: {
-    color: '#17191c',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 50,
+  badgeText: {
+    fontFamily: fonts.default,
+    fontSize: 10,
+    color: theme.colors.text,
   },
 })

@@ -33,7 +33,7 @@ const useAuthStore = create((set) => ({
         const { data, error } = await supabase.from('users').select().eq('pin', PIN)
 
         if (error) {
-          console.error('Error fetching user:', error.message)
+          console.error('유저 조회 중 에러:', error.message)
           return
         }
 
@@ -42,7 +42,7 @@ const useAuthStore = create((set) => ({
         set({ isLoggedIn: true })
         set({ user: user })
       } catch (error: any) {
-        console.error('Error fetching user:', error.message)
+        console.error('에러인가:', error.message)
       }
     } else {
       return

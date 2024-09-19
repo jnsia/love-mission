@@ -17,6 +17,7 @@ import CancelButton from './CancelButton'
 import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
 import { sendPushNotification } from '@/lib/sendPushNotification'
+import { fonts } from '@/constants/Fonts'
 
 export default function MissionRegistModal({
   getMissions,
@@ -105,15 +106,12 @@ export default function MissionRegistModal({
                   >
                     <Text style={styles.typeText}>특별</Text>
                   </TouchableOpacity>
-                  {/* <TouchableOpacity
-                    style={[
-                      styles.typeButton,
-                      type === "daily" && styles.selectedTypeButton,
-                    ]}
-                    onPress={() => selectMissionType("daily")}
+                  <TouchableOpacity
+                    style={[styles.typeButton, type === 'daily' && styles.selectedTypeButton]}
+                    onPress={() => selectMissionType('daily')}
                   >
                     <Text style={styles.typeText}>일일</Text>
-                  </TouchableOpacity> */}
+                  </TouchableOpacity>
                   {/* <TouchableOpacity
                     style={[
                       styles.typeButton,
@@ -195,6 +193,7 @@ const styles = StyleSheet.create({
   guideText: {
     fontSize: 14,
     color: theme.colors.text,
+    fontFamily: fonts.default,
   },
   modalOverlay: {
     flex: 1,
@@ -209,12 +208,6 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 60,
     backgroundColor: 'white',
-  },
-  modalTextStyle: {
-    color: '#17191c',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 50,
   },
   typeSelectBox: {
     flex: 1,
@@ -234,11 +227,13 @@ const styles = StyleSheet.create({
   },
   typeText: {
     textAlign: 'center',
+    fontFamily: fonts.default,
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    fontFamily: fonts.default,
   },
   input: {
     borderWidth: 1,
@@ -246,6 +241,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 16,
+    fontFamily: fonts.default,
   },
   buttonContainer: {
     flexDirection: 'row',

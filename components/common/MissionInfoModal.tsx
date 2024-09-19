@@ -196,6 +196,10 @@ export default function MissionInfoModal({
                       text="닫기"
                       onPressEvent={closeMissionInfoModal}
                     />
+                    <SubmitButton
+                      text="미션 완료 처리"
+                      onPressEvent={clickApproveButton}
+                    />
                   </View>
                 )}
               </View>

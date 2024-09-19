@@ -2,7 +2,7 @@ import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 import useAuthStore from '@/stores/authStore'
-import { StatusBar, StyleSheet, View } from 'react-native'
+import { StatusBar, StyleSheet } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import { supabase } from '@/utils/supabase'
 import { user } from '@/types/user'
@@ -12,15 +12,28 @@ import theme from '@/constants/Theme'
 import { setCustomText } from 'react-native-global-props'
 
 export default function RootLayout() {
-  const isLoggedIn: boolean = useAuthStore((state: any) => state.isLoggedIn)
   const user: user = useAuthStore((state: any) => state.user)
+  const isLoggedIn: boolean = useAuthStore((state: any) => state.isLoggedIn)
+  const setIsLoggedIn = useAuthStore((state: any) => state.setIsLoggedIn)
   const getPIN = useAuthStore((state: any) => state.getPIN)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
+  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
 
   const router = useRouter()
 
   async function registerForPushNotificationsAsync() {
     const { status } = await Notifications.requestPermissionsAsync()
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    })
+    
+    // 인앱에서 알림을 받았을 경우...
+    // 로직 짜기 어려움
 
     if (status !== 'granted') {
       alert('푸시 알림을 허용해주세요!')
@@ -32,23 +45,14 @@ export default function RootLayout() {
     // Supabase에 푸시 토큰 저장
     const { error } = await supabase.from('users').update({ fcmToken: token }).eq('id', user.id)
 
+    getRecentUserInfo(user.id)
+
     if (error) console.error('토큰 저장 오류:', error)
   }
 
-  const fetchUser = async () => {
-    await getPIN()
-  }
-
   useEffect(() => {
-    fetchUser()
+    getPIN()
   }, [])
-
-  useEffect(() => {
-    if (user != null) {
-      registerForPushNotificationsAsync()
-      getLoveFcmToken(user.loveId)
-    }
-  }, [user])
 
   const [loaded, error] = useFonts({
     pretendard: require('@/assets/fonts/Pretendard-Regular.ttf'),
@@ -56,9 +60,19 @@ export default function RootLayout() {
   })
 
   useEffect(() => {
-    // user 값에 따라 로그인 상태를 업데이트
-    if (isLoggedIn && loaded) {
+    if (user != null) {
+      getLoveFcmToken(user.loveId)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (!loaded) return
+
+    if (isLoggedIn) {
+      registerForPushNotificationsAsync()
       router.replace('/(tabs)')
+    } else {
+      router.replace('/(auth)')
     }
   }, [isLoggedIn, loaded])
 
@@ -87,18 +101,10 @@ export default function RootLayout() {
         translucent={true} // 상태바를 투명하게 설정
         backgroundColor="transparent" // 상태바의 배경을 투명하게 설정
       />
-      {loaded && (
-        <View style={styles.container}>
-          <Stack screenOptions={{ headerShown: false }}>
-            {isLoggedIn ? (
-              <Stack.Screen name="(tabs)" />
-            ) : (
-              <Stack.Screen name="(auth)/index" options={{ headerShown: false }} />
-            )}
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </View>
-      )}
+      <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
+        {isLoggedIn ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="auth/index" />}
+        {/* <Stack.Screen name="+not-found" /> */}
+      </Stack>
     </>
   )
 }

@@ -4,7 +4,7 @@ export async function sendPushNotification(to: string, title: string, body: stri
     sound: 'default',
     title,
     body,
-    data: {},
+    data: { screen: 'history' },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {

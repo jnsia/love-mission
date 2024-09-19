@@ -61,7 +61,7 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       getMissions()
-    }, []),
+    }, [user]),
   )
 
   return (

@@ -31,7 +31,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.jnsia.JNoteS",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "bundler": "metro",

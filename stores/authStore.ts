@@ -13,6 +13,10 @@ const useAuthStore = create((set) => ({
   user: null,
   loveFcmToken: null,
 
+  setIsLoggedIn: (state: boolean) => {
+    set({ isLoggedIn: state })
+  },
+
   getRecentUserInfo: async (userId: any) => {
     const { data, error } = await supabase.from('users').select().eq('id', userId)
 
@@ -51,19 +55,19 @@ const useAuthStore = create((set) => ({
 
   getLoveFcmToken: async (loveId: number) => {
     const { data } = await supabase.from('users').select('fcmToken').eq('id', loveId)
-    
+
     if (data == null) {
-      throw new Error("연인에 대한 정보 없음")
+      throw new Error('연인에 대한 정보 없음')
     } else {
       set({ loveFcmToken: data[0].fcmToken })
     }
   },
 
   logout: async (userId: number) => {
-    set({ isLoggedIn: null })
+    set({ isLoggedIn: false })
     await AsyncStorage.removeItem('JNoteS_PIN')
     await supabase.from('users').update({ fcmToken: null }).eq('id', userId)
-    router.replace('/(auth)')
+    router.replace('/auth')
   },
 }))
 

@@ -57,7 +57,7 @@ export default function MissionInfoModal({
 
     await supabase.from("missions").delete().eq("id", mission.id);
 
-    await sendPushNotification(loveFcmToken, `${mission.title} 미션 완료 처리되었습니다!`, `${mission.successCoin} Coin 지급 완료`)
+    await sendPushNotification(loveFcmToken, `${mission.title} 미션 완료 처리되었습니다!`, `${mission.successCoin} Coin 지급 완료`, 'history')
 
     closeMissionInfoModal();
     getMissions();
@@ -69,7 +69,7 @@ export default function MissionInfoModal({
       .update({ completed: true })
       .eq("id", mission.id);
 
-    await sendPushNotification(loveFcmToken, `연인이 ${mission.title} 미션을 완료하였습니다!`, `미션 완료를 검토하여 코인을 지급하세요.`)
+    await sendPushNotification(loveFcmToken, `연인이 ${mission.title} 미션을 완료하였습니다!`, `미션 완료를 검토하여 코인을 지급하세요.`, 'love')
 
     getMissions();
   };

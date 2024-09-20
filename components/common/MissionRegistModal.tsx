@@ -55,7 +55,7 @@ export default function MissionRegistModal({
       return
     }
 
-    await sendPushNotification(loveFcmToken, '연인이 미션을 등록하였습니다!', title)
+    await sendPushNotification(loveFcmToken, '연인이 미션을 등록하였습니다!', title, 'home')
 
     setType('special')
     setTitle('')

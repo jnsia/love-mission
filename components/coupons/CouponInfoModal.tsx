@@ -14,6 +14,7 @@ import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/utils/supabase'
 import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
+import { sendPushNotification } from '@/lib/sendPushNotification'
 
 export default function CouponInfoModal({
   page,
@@ -30,6 +31,7 @@ export default function CouponInfoModal({
 }) {
   const user: user = useAuthStore((state: any) => state.user)
   const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const useCoupon = async () => {
     try {
@@ -46,6 +48,13 @@ export default function CouponInfoModal({
         })
         .eq('id', user.loveId)
 
+      await sendPushNotification(
+        loveFcmToken,
+        `연인이 ${coupon.name} 쿠폰을 사용하였습니다!`,
+        `${coupon.name} 미션을 수행해주세요.`,
+        'home'
+      )
+
       getCoupons()
     } catch (error) {
       console.error(error)
@@ -54,8 +63,8 @@ export default function CouponInfoModal({
 
   const buyCoupon = async () => {
     try {
-      const offset = new Date().getTimezoneOffset() * 60000;
-    const today = new Date(Date.now() - offset).toISOString().substring(0, 10);
+      const offset = new Date().getTimezoneOffset() * 60000
+      const today = new Date(Date.now() - offset).toISOString().substring(0, 10)
 
       await supabase.from('myCoupons').insert({
         name: coupon.name,
@@ -64,12 +73,12 @@ export default function CouponInfoModal({
         userId: user.id,
       })
 
-      await supabase.from("histories").insert({
+      await supabase.from('histories').insert({
         date: today,
         coin: -coupon.price,
         record: `${coupon.name} 쿠폰 구매`,
         userId: user.id,
-      });
+      })
 
       await supabase
         .from('users')

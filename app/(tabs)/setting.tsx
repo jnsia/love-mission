@@ -13,7 +13,9 @@ export default function SettingScreen() {
   }
 
   const fcmTest = () => {
-    sendPushNotification(user.fcmToken, 'test', 'fcm 테스트를 위한 sendPushNotification')
+    setTimeout(() => {
+      sendPushNotification(user.fcmToken, 'test', 'fcm 테스트를 위한 sendPushNotification', 'home')
+    }, 3000)
   }
 
   return (

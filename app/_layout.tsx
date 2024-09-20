@@ -2,7 +2,7 @@ import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 import useAuthStore from '@/stores/authStore'
-import { StatusBar, StyleSheet } from 'react-native'
+import { Alert, StatusBar, StyleSheet } from 'react-native'
 import * as Notifications from 'expo-notifications'
 import { supabase } from '@/utils/supabase'
 import { user } from '@/types/user'
@@ -26,12 +26,12 @@ export default function RootLayout() {
 
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
+        shouldShowAlert: false,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
       }),
     })
-    
+
     // 인앱에서 알림을 받았을 경우...
     // 로직 짜기 어려움
 
@@ -52,6 +52,37 @@ export default function RootLayout() {
 
   useEffect(() => {
     getPIN()
+
+    const notificationReceivedListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        const content = notification.request.content
+        // console.log()
+        Alert.alert(
+          content.title || '정체불명의 인앱 메세지',
+          `해당 페이지로 이동하시겠습니까?`,
+          [
+            {
+              text: '아니요',
+            },
+            {
+              text: '네!',
+              onPress: () => {
+                if (content.data && content.data.screen) {
+                  router.replace(content.data.screen)
+                } else {
+                  router.replace('/(tabs)')
+                }
+              },
+            },
+          ],
+          { cancelable: false },
+        )
+      },
+    )
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationReceivedListener)
+    }
   }, [])
 
   const [loaded, error] = useFonts({
@@ -102,8 +133,8 @@ export default function RootLayout() {
         backgroundColor="transparent" // 상태바의 배경을 투명하게 설정
       />
       <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
-        {isLoggedIn ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="auth/index" />}
-        {/* <Stack.Screen name="+not-found" /> */}
+        {isLoggedIn ? <Stack.Screen name="(tabs)" /> : <Stack.Screen name="(auth)" />}
+        <Stack.Screen name="+not-found" />
       </Stack>
     </>
   )

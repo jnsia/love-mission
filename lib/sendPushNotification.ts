@@ -1,10 +1,15 @@
-export async function sendPushNotification(to: string, title: string, body: string) {
+export async function sendPushNotification(
+  to: string,
+  title: string,
+  body: string,
+  screen: string,
+) {
   const message = {
     to,
     sound: 'default',
     title,
     body,
-    data: { screen: 'history' },
+    data: { screen: screen },
   }
 
   await fetch('https://exp.host/--/api/v2/push/send', {

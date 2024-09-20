@@ -64,7 +64,7 @@ export default function LoveScreen() {
   }
 
   const pressMorePress = () => {
-    sendPushNotification(loveFcmToken, '미션 수행 독촉 알림', '빨리 미션 수행 안해?!')
+    sendPushNotification(loveFcmToken, '미션 수행 독촉 알림', '빨리 미션 수행 안해?!', 'home')
   }
 
   useFocusEffect(
@@ -100,6 +100,7 @@ export default function LoveScreen() {
                 {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
                 {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
                 {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
+                {mission.type == 'coupon' && <Text style={styles.badgeText}>쿠폰</Text>}
               </View>
               <Text style={styles.itemText} numberOfLines={1}>
                 {mission.title}

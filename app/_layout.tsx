@@ -27,8 +27,8 @@ export default function RootLayout() {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
       }),
     })
 
@@ -67,7 +67,6 @@ export default function RootLayout() {
     const notificationReceivedListener = Notifications.addNotificationReceivedListener(
       (notification) => {
         const content = notification.request.content
-        // console.log(content)
         Alert.alert(
           content.title || '정체불명의 인앱 메세지',
           `해당 페이지로 이동하시겠습니까?`,

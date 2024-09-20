@@ -22,9 +22,11 @@ export default function SettingScreen() {
       <TouchableOpacity style={styles.submit} onPress={remove}>
         <Text style={styles.text}>로그아웃...</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.submit} onPress={fcmTest}>
-        <Text style={styles.text}>fcmTest...</Text>
-      </TouchableOpacity>
+      {user.id === 1 && (
+        <TouchableOpacity style={styles.submit} onPress={fcmTest}>
+          <Text style={styles.text}>fcmTest...</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

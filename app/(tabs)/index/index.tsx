@@ -94,7 +94,6 @@ export default function HomeScreen() {
                     {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
                     {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
                     {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
-                    {mission.type == 'coupon' && <Text style={styles.badgeText}>쿠폰</Text>}
                   </View>
                   <Text style={styles.itemText} numberOfLines={1}>
                     {mission.title}

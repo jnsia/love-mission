@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native'
 
-export default function AuthScreen() {
+export default function SignInScreen() {
   const [pin, setPin] = useState('')
   const [checkPin, setCheckPin] = useState(true)
 
@@ -130,11 +130,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 2,
   },
   buttonText: {
     fontSize: 16,

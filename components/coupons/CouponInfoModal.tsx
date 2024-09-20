@@ -52,7 +52,7 @@ export default function CouponInfoModal({
         loveFcmToken,
         `연인이 ${coupon.name} 쿠폰을 사용하였습니다!`,
         `${coupon.name} 미션을 수행해주세요.`,
-        'home'
+        'home',
       )
 
       getCoupons()

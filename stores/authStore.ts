@@ -67,7 +67,7 @@ const useAuthStore = create((set) => ({
     set({ isLoggedIn: false })
     await AsyncStorage.removeItem('JNoteS_PIN')
     await supabase.from('users').update({ fcmToken: null }).eq('id', userId)
-    router.replace('/(auth)')
+    router.replace('/auth/auth')
   },
 }))
 

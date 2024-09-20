@@ -9,9 +9,6 @@ import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-nativ
 
 export default function HomeLayout() {
   const user: user = useAuthStore((state: any) => state.user)
-  const isStacked: boolean = useScreenStore((state: any) => state.isStacked)
-
-  const navigation = useNavigation()
 
   return (
     <>
@@ -21,11 +18,6 @@ export default function HomeLayout() {
         // translucent={true}
       />
       <View style={styles.header}>
-        {isStacked && (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FontAwesome name="arrow-left" size={24} color={colors.deepRed} />
-          </TouchableOpacity>
-        )}
         <View style={styles.userCoinContainer}>
           <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
           {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}

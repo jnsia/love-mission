@@ -15,15 +15,18 @@ import { supabase } from '@/utils/supabase'
 import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { sendPushNotification } from '@/lib/sendPushNotification'
+import { router } from 'expo-router'
 
 export default function CouponInfoModal({
   page,
+  setPage,
   getCoupons,
   isCouponInfoVisible,
   closeCouponInfoModal,
   coupon,
 }: {
   page: string
+  setPage: React.Dispatch<React.SetStateAction<string>>
   getCoupons: () => void
   isCouponInfoVisible: boolean
   closeCouponInfoModal: () => void
@@ -35,27 +38,26 @@ export default function CouponInfoModal({
 
   const useCoupon = async () => {
     try {
-      await supabase.from('myCoupons').delete().eq('id', coupon.id)
-
-      await supabase
-        .from('missions')
-        .insert({
-          title: `${coupon.name} 쿠폰 사용!`,
-          type: 'coupon',
-          describe: coupon.description,
-          successCoin: 0,
-          failCoin: 0,
-        })
-        .eq('id', user.loveId)
+      const { data, error } = await supabase.from('missions').insert({
+        title: `${coupon.name} 쿠폰 사용!`,
+        type: 'coupon',
+        description: coupon.description,
+        successCoin: 0,
+        failCoin: 0,
+        userId: user.loveId,
+      })
 
       await sendPushNotification(
         loveFcmToken,
         `연인이 ${coupon.name} 쿠폰을 사용하였습니다!`,
         `${coupon.name} 미션을 수행해주세요.`,
-        'home',
+        'index',
       )
 
+      await supabase.from('myCoupons').delete().eq('id', coupon.id)
+
       getCoupons()
+      router.replace('/(tabs)/love')
     } catch (error) {
       console.error(error)
     }
@@ -85,10 +87,20 @@ export default function CouponInfoModal({
         .update({ coin: user.coin - coupon.price })
         .eq('id', user.id)
 
+      closeCouponInfoModal()
       getRecentUserInfo(user.id)
+      setPage('myCoupons')
       getCoupons()
     } catch (error) {
       console.error(error)
+    }
+  }
+
+  const deleteCoupon = async () => {
+    const { data, error } = await supabase.from('loveCoupon').delete().eq('id', coupon.id)
+
+    if (error) {
+      console.error('쿠폰 삭제 중 문제 발생')
     }
   }
 
@@ -135,6 +147,25 @@ export default function CouponInfoModal({
     )
   }
 
+  const clickDeleteButton = () => {
+    Alert.alert(
+      '쿠폰을 삭제하시겠습니까?',
+      '',
+      [
+        {
+          text: '아니요',
+        },
+        {
+          text: '네!',
+          onPress: () => {
+            deleteCoupon()
+          },
+        },
+      ],
+      { cancelable: false },
+    )
+  }
+
   return (
     <Modal
       animationType="fade"
@@ -150,10 +181,12 @@ export default function CouponInfoModal({
               <Text style={styles.couponInfoText}>{coupon.name}</Text>
             </View>
 
-            <View style={styles.couponInfo}>
-              <Text style={styles.label}>쿠폰 설명</Text>
-              <Text style={styles.couponInfoText}>{coupon.description}</Text>
-            </View>
+            {coupon.description && (
+              <View style={styles.couponInfo}>
+                <Text style={styles.label}>쿠폰 설명</Text>
+                <Text style={styles.couponInfoText}>{coupon.description}</Text>
+              </View>
+            )}
 
             <View style={styles.couponInfo}>
               <Text style={styles.label}>쿠폰 가격</Text>
@@ -177,7 +210,7 @@ export default function CouponInfoModal({
             {page === 'issuedCoupons' && (
               <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                 <CancelButton text="닫기" onPressEvent={closeCouponInfoModal} />
-                <SubmitButton text="사용하기" onPressEvent={clickUseButton} />
+                <SubmitButton text="삭제하기" onPressEvent={clickDeleteButton} />
               </View>
             )}
           </ScrollView>

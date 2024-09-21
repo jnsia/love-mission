@@ -32,7 +32,7 @@ const useAuthStore = create((set) => ({
   getPIN: async (state: any) => {
     const PIN = await AsyncStorage.getItem('JNoteS_PIN')
 
-    if (PIN === '980309' || PIN === '950718') {
+    if (PIN === '980309' || PIN === '950718' || PIN === '000000' || PIN === '111111') {
       try {
         const { data, error } = await supabase.from('users').select().eq('pin', PIN)
 
@@ -67,6 +67,7 @@ const useAuthStore = create((set) => ({
     set({ isLoggedIn: false })
     await AsyncStorage.removeItem('JNoteS_PIN')
     await supabase.from('users').update({ fcmToken: null }).eq('id', userId)
+    set({ user: null })
     router.replace('/auth/signIn')
   },
 }))

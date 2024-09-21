@@ -6,9 +6,10 @@ import useAuthStore from '@/stores/authStore'
 import { mission } from '@/types/mission'
 import theme from '@/constants/Theme'
 import { router, useFocusEffect } from 'expo-router'
-import MissionInfoModal from '@/components/common/MissionInfoModal'
+import MissionInfoModal from '@/components/mission/MissionInfoModal'
 import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
+import GuideView from '@/components/coupon/GuideView'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -66,10 +67,9 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.guideBox}>
-        <Text style={styles.guideText}>연인이 당신에게 할당한 미션입니다!</Text>
-        <Text style={styles.guideText}>어서 미션을 완료하여 코인를 획득하세요.</Text>
-      </View>
+      <GuideView
+        texts={['연인이 당신에게 할당한 미션입니다!', '어서 미션을 완료하여 코인를 획득하세요.']}
+      />
       <ScrollView style={styles.missionsBox}>
         <View>
           {missions.map((mission) => (
@@ -115,6 +115,9 @@ export default function HomeScreen() {
           {completedMissions.map((mission) => (
             <View key={mission.id}>
               <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>완료</Text>
+                </View>
                 <Text style={styles.completedItemText} numberOfLines={1}>
                   {mission.title}
                 </Text>
@@ -190,9 +193,11 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   completedItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
     borderRadius: 8,
-    backgroundColor: 'green',
+    backgroundColor: '#06c270',
     marginBottom: 10,
   },
   completedItemText: {

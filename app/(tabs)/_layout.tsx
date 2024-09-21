@@ -29,7 +29,7 @@ export default function HomeLayout() {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName: string = ''
 
-            if (route.name === 'index') {
+            if (route.name === '(index)') {
               iconName = 'clipboard'
             } else if (route.name === 'love') {
               iconName = 'heart'
@@ -61,7 +61,7 @@ export default function HomeLayout() {
         })}
       >
         <Tabs.Screen
-          name="index"
+          name="(index)"
           options={{
             title: '나의 미션',
           }}

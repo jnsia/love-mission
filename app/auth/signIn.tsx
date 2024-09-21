@@ -1,4 +1,6 @@
 import { colors } from '@/constants/Colors'
+import { fonts } from '@/constants/Fonts'
+import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
 import { FontAwesome } from '@expo/vector-icons'
@@ -85,17 +87,17 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: 40,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#121417', // 차콜 블랙
+    backgroundColor: theme.colors.background,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#FF6347',
+    fontFamily: fonts.defaultBold,
   },
   inputContainer: {
     width: '100%',
@@ -117,16 +119,15 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     fontSize: 18,
-    color: '#333',
   },
   warningText: {
-    color: 'red',
+    color: colors.deepRed,
     marginBottom: 10,
   },
   button: {
+    width: '100%',
     backgroundColor: '#FF6347',
-    paddingVertical: 15,
-    paddingHorizontal: 25,
+    paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',

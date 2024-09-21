@@ -1,14 +1,14 @@
 import RegistButton from '@/components/common/RegistButton'
-import CouponInfoModal from '@/components/coupons/CouponInfoModal'
-import CouponIssueModal from '@/components/coupons/CouponIssueModal'
-import CouponTabs from '@/components/coupons/CouponTabs'
-import { colors } from '@/constants/Colors'
+import CouponInfoModal from '@/components/coupon/CouponInfoModal'
+import CouponIssueModal from '@/components/coupon/CouponIssueModal'
+import CouponTabs from '@/components/coupon/CouponTabs'
 import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
-import React, { useEffect, useState } from 'react'
-import { View, StyleSheet, Alert, ScrollView, TouchableOpacity, Text } from 'react-native'
+import { useFocusEffect } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native'
 
 export default function CouponListScreen() {
   const [page, setPage] = useState('myCoupons')
@@ -72,11 +72,13 @@ export default function CouponListScreen() {
     setIsModalVisible(false)
   }
 
-  useEffect(() => {
-    getMyCoupons()
-    getLoveCoupons()
-    getIssuedCoupons()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      getMyCoupons()
+      getLoveCoupons()
+      getIssuedCoupons()
+    }, []),
+  )
 
   return (
     <View style={styles.container}>
@@ -91,6 +93,7 @@ export default function CouponListScreen() {
               {selectedCouponId == coupon.id && (
                 <CouponInfoModal
                   page={page}
+                  setPage={setPage}
                   getCoupons={getMyCoupons}
                   closeCouponInfoModal={closeCouponInfoModal}
                   isCouponInfoVisible={isCouponInfoVisible}
@@ -111,6 +114,7 @@ export default function CouponListScreen() {
               {selectedCouponId == coupon.id && (
                 <CouponInfoModal
                   page={page}
+                  setPage={setPage}
                   getCoupons={getMyCoupons}
                   closeCouponInfoModal={closeCouponInfoModal}
                   isCouponInfoVisible={isCouponInfoVisible}
@@ -124,13 +128,16 @@ export default function CouponListScreen() {
             <View key={coupon.id}>
               <TouchableOpacity style={styles.couponItem} onPress={() => clickCoupon(coupon)}>
                 <View style={styles.couponContent}>
-                  <Text style={styles.couponText} numberOfLines={1}>{coupon.name}</Text>
+                  <Text style={styles.couponText} numberOfLines={1}>
+                    {coupon.name}
+                  </Text>
                   <Text style={styles.couponPrice}>{coupon.price} Coin</Text>
                 </View>
               </TouchableOpacity>
               {selectedCouponId == coupon.id && (
                 <CouponInfoModal
                   page={page}
+                  setPage={setPage}
                   getCoupons={getMyCoupons}
                   closeCouponInfoModal={closeCouponInfoModal}
                   isCouponInfoVisible={isCouponInfoVisible}

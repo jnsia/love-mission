@@ -9,15 +9,16 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import SubmitButton from './SubmitButton'
+import SubmitButton from '../common/SubmitButton'
 import { user } from '@/types/user'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/utils/supabase'
-import CancelButton from './CancelButton'
+import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import { fonts } from '@/constants/Fonts'
+import GuideView from '../coupon/GuideView'
 
 export default function MissionRegistModal({
   getMissions,
@@ -84,19 +85,13 @@ export default function MissionRegistModal({
           <TouchableWithoutFeedback>
             <View style={styles.modalView}>
               <ScrollView>
-                <View style={styles.guideBox}>
-                  {type === 'special' && (
-                    <Text style={styles.guideText}>특별 미션은 시간이 지나도 사라지지 않아요~</Text>
-                  )}
-                  {type === 'daily' && (
-                    <Text style={styles.guideText}>일일 미션은 다음 날이 되면 사라져요!</Text>
-                  )}
-                  {type === 'emergency' && (
-                    <Text style={styles.guideText}>
-                      긴급 미션은 미션의 마감기한을 설정할 수 있어요.
-                    </Text>
-                  )}
-                </View>
+                {type === 'special' && (
+                  <GuideView texts={["특별 미션은 시간이 지나도 사라지지 않아요~"]} />
+                )}
+                {type === 'daily' && <GuideView texts={["일일 미션은 다음 날이 되면 사라져요!"]} />}
+                {type === 'emergency' && (
+                  <GuideView texts={["긴급 미션은 미션의 마감기한을 설정할 수 있어요."]} />
+                )}
 
                 <Text style={styles.label}>미션 타입</Text>
                 <View style={styles.typeSelectBox}>
@@ -161,14 +156,18 @@ export default function MissionRegistModal({
                   keyboardType="numeric"
                 />
 
-                <Text style={styles.label}>실패 시 차감될 코인</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="코인 입력"
-                  value={failCoin}
-                  onChangeText={setFailCoin}
-                  keyboardType="numeric"
-                />
+                {type !== 'special' && (
+                  <View>
+                    <Text style={styles.label}>실패 시 차감될 코인</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="코인 입력"
+                      value={failCoin}
+                      onChangeText={setFailCoin}
+                      keyboardType="numeric"
+                    />
+                  </View>
+                )}
 
                 <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                   <CancelButton text="취소하기" onPressEvent={closeModal} />
@@ -184,17 +183,6 @@ export default function MissionRegistModal({
 }
 
 const styles = StyleSheet.create({
-  guideBox: {
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    marginBottom: 16,
-  },
-  guideText: {
-    fontSize: 14,
-    color: theme.colors.text,
-    fontFamily: fonts.default,
-  },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',

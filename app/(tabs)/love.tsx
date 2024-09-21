@@ -1,6 +1,6 @@
-import MissionInfoModal from '@/components/common/MissionInfoModal'
+import MissionInfoModal from '@/components/mission/MissionInfoModal'
 import RegistButton from '@/components/common/RegistButton'
-import MissionRegistModal from '@/components/common/MissionRegistModal'
+import MissionRegistModal from '@/components/mission/MissionRegistModal'
 import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { mission } from '@/types/mission'
@@ -79,6 +79,9 @@ export default function LoveScreen() {
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
             <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>쿠폰</Text>
+              </View>
               <Text style={styles.completedItemText} numberOfLines={1}>
                 {mission.title}
               </Text>
@@ -187,6 +190,8 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
   },
   completedItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 15,
     borderRadius: 8,
     backgroundColor: 'green',

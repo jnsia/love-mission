@@ -103,6 +103,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (user != null) {
+      registerForPushNotificationsAsync()
       getLoveFcmToken(user.loveId)
     }
   }, [user])
@@ -111,7 +112,6 @@ export default function RootLayout() {
     if (!loaded) return
 
     if (isLoggedIn) {
-      registerForPushNotificationsAsync()
       router.replace('/(tabs)')
     } else {
       router.replace('/auth')

@@ -1,3 +1,4 @@
+import RegistButton from '@/components/common/RegistButton'
 import theme from '@/constants/Theme'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import useAuthStore from '@/stores/authStore'
@@ -13,21 +14,17 @@ export default function SettingScreen() {
   }
 
   const fcmTest = () => {
-    setTimeout(() => {
-      sendPushNotification(user.fcmToken, 'test', 'fcm 테스트를 위한 sendPushNotification', 'home')
-    }, 3000)
+    sendPushNotification(user.fcmToken, 'test', 'fcm 테스트를 위한 sendPushNotification', 'index')
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{user.id}</Text>
-      <TouchableOpacity style={styles.submit} onPress={remove}>
-        <Text style={styles.text}>로그아웃...</Text>
-      </TouchableOpacity>
-      {user.id === 1 && (
-        <TouchableOpacity style={styles.submit} onPress={fcmTest}>
-          <Text style={styles.text}>fcmTest...</Text>
-        </TouchableOpacity>
+      <RegistButton text="로그아웃" onPressEvent={remove} />
+      {[3, 4].includes(user.id) && (
+        <View>
+          <Text>{user.id || "null"}</Text>
+          <RegistButton text="FCM 테스트 버튼" onPressEvent={fcmTest} />
+        </View>
       )}
     </View>
   )
@@ -36,8 +33,8 @@ export default function SettingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: theme.colors.background,
   },
   submit: {

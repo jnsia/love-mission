@@ -29,6 +29,27 @@ const useAuthStore = create((set) => ({
     set({ user: user })
   },
 
+  signIn: async (email: string) => {
+    try {
+      const { data, error } = await supabase.from('users').select().eq('email', email)
+
+      if (error) {
+        console.error('유저 조회 중 에러:', error.message)
+        return null
+      }
+
+      const user: user = data[0]
+
+      set({ user: user })
+      set({ isLoggedIn: true })
+
+      return user
+    } catch (error: any) {
+      console.error('에러인가:', error.message)
+      return null
+    }
+  },
+
   getPIN: async (state: any) => {
     const PIN = await AsyncStorage.getItem('JNoteS_PIN')
 

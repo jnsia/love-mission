@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     color: '#FF6347',
   },
   missionsBox: {
-    marginTop: 16,
+    // marginTop: 16,
   },
   guideBox: {
     alignItems: 'center',

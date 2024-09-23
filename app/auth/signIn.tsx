@@ -1,85 +1,146 @@
-import { colors } from '@/constants/Colors'
-import { fonts } from '@/constants/Fonts'
-import theme from '@/constants/Theme'
-import useAuthStore from '@/stores/authStore'
-import { user } from '@/types/user'
-import { FontAwesome } from '@expo/vector-icons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
 import {
-  Animated,
-  StatusBar,
-  StyleSheet,
+  View,
   Text,
+  StyleSheet,
+  Image,
   TextInput,
   TouchableOpacity,
-  View,
+  Dimensions,
+  Platform,
+  BackHandler,
+  Modal,
+  PermissionsAndroid,
+  Alert,
+  Animated,
 } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
+import { useFocusEffect } from '@react-navigation/native'
+import { colors } from '@/constants/Colors'
+import theme from '@/constants/Theme'
+import { FontAwesome } from '@expo/vector-icons'
+import { user } from '@/types/user'
+import useAuthStore from '@/stores/authStore'
+import { router } from 'expo-router'
+import { fonts } from '@/constants/Fonts'
 
 export default function SignInScreen() {
-  const [pin, setPin] = useState('')
-  const [checkPin, setCheckPin] = useState(true)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
-  const [animation] = useState(new Animated.Value(1))
+  const [eamilInputAnimation] = useState(new Animated.Value(1))
+  const [passwordInputAnimation] = useState(new Animated.Value(1))
 
-  const user = useAuthStore((state: any) => state.user)
-  const isLoggedIn = useAuthStore((state: any) => state.isLoggedIn)
-  const getPIN = useAuthStore((state: any) => state.getPIN)
+  const user: user = useAuthStore((state: any) => state.user)
+  const signIn = useAuthStore((state: any) => state.signIn)
 
-  const handleFocus = () => {
-    Animated.spring(animation, {
-      toValue: 1.1,
+  const handleEmailInputFocus = () => {
+    Animated.spring(eamilInputAnimation, {
+      toValue: 1.05,
       friction: 3,
       useNativeDriver: true,
     }).start()
   }
 
-  const handleBlur = () => {
-    Animated.spring(animation, {
+  const handlePasswordInputFocus = () => {
+    Animated.spring(passwordInputAnimation, {
+      toValue: 1.05,
+      friction: 3,
+      useNativeDriver: true,
+    }).start()
+  }
+
+  const handleEmailInputBlur = () => {
+    Animated.spring(eamilInputAnimation, {
       toValue: 1,
       friction: 3,
       useNativeDriver: true,
     }).start()
   }
 
-  const signIn = async () => {
-    if (pin.length !== 6) {
-      setCheckPin(true)
-      return
+  const handlePasswordInputBlur = () => {
+    Animated.spring(passwordInputAnimation, {
+      toValue: 1,
+      friction: 3,
+      useNativeDriver: true,
+    }).start()
+  }
+
+  const clickSignInButton = async () => {
+    if (email === '') {
+      return Alert.alert('이메일을 입력해 주세요.')
     }
 
-    await AsyncStorage.setItem('JNoteS_PIN', pin)
-    await getPIN()
+    if (password === '') {
+      return Alert.alert('비밀번호를 입력해 주세요.')
+    }
 
-    if (user === null) {
-      setCheckPin(false)
+    const userInfo: user = await signIn(email)
+
+    if (userInfo == null) {
+      return Alert.alert('가입된 회원이 아니거나 비밀번호가 틀립니다.')
+    }
+
+    setEmail('')
+    setPassword('')
+
+    if (userInfo.loveId == null) {
+      router.replace('/auth/connect')
     } else {
-      setCheckPin(true)
       router.replace('/(tabs)')
     }
   }
 
+  const clickSignUpButton = async () => {
+    router.replace('/auth/signUp')
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>남자친구/여자친구의 생년월일을 입력해주세요!</Text>
-      <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
-        <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} />
+      <Text style={styles.title}>Love Mission</Text>
+      <Animated.View
+        style={[styles.inputContainer, { transform: [{ scale: eamilInputAnimation }] }]}
+      >
         <TextInput
           style={styles.input}
-          placeholder="000000"
-          value={pin}
-          onChangeText={setPin}
-          keyboardType="numeric"
-          maxLength={6}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          placeholder="이메일"
+          value={email}
+          onChangeText={setEmail}
+          onFocus={handleEmailInputFocus}
+          onBlur={handleEmailInputBlur}
         />
       </Animated.View>
-      {!checkPin && <Text style={styles.warningText}>연인의 생년월일을 다시 확인해주세요.</Text>}
-      <TouchableOpacity style={styles.button} onPress={signIn}>
-        <Text style={styles.buttonText}>인증</Text>
+      <Animated.View
+        style={[styles.inputContainer, { transform: [{ scale: passwordInputAnimation }] }]}
+      >
+        <TextInput
+          style={styles.input}
+          placeholder="비밀번호"
+          value={password}
+          onChangeText={setPassword}
+          onFocus={handlePasswordInputFocus}
+          onBlur={handlePasswordInputBlur}
+        />
+      </Animated.View>
+      <TouchableOpacity style={styles.button} onPress={clickSignInButton}>
+        <Text style={styles.buttonText}>로그인</Text>
       </TouchableOpacity>
+      <View style={{ gap: 8, marginTop: 16 }}>
+        <View style={styles.optionBox}>
+          {/* <Text
+            style={styles.text}
+            onPress={() => {
+              console.log('이메일/비밀번호 찾기')
+            }}
+          >
+            이메일/비밀번호 찾기
+          </Text> */}
+          <Text style={styles.text} onPress={clickSignUpButton}>
+            회원가입
+          </Text>
+        </View>
+      </View>
     </View>
   )
 }
@@ -87,38 +148,42 @@ export default function SignInScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    justifyContent: 'center',
     backgroundColor: theme.colors.background,
   },
   title: {
-    fontSize: 24,
+    fontSize: 48,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#FF6347',
+    color: colors.deepRed,
     fontFamily: fonts.defaultBold,
   },
-  inputContainer: {
+  optionBox: {
     width: '100%',
+    paddingHorizontal: 8,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  inputContainer: {
     alignItems: 'center',
+    flexDirection: 'row',
     backgroundColor: '#FFF',
     borderRadius: 8,
     borderColor: colors.deepRed,
-    borderWidth: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 1,
     marginBottom: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 16,
+    gap: 24,
   },
   input: {
-    flex: 1,
+    width: '100%',
     height: 50,
-    fontSize: 18,
+    fontFamily: fonts.default,
+  },
+  text: {
+    color: colors.lightGray,
+    fontFamily: fonts.default,
   },
   warningText: {
     color: colors.deepRed,
@@ -126,7 +191,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#FF6347',
+    backgroundColor: colors.deepRed,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',

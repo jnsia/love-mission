@@ -14,7 +14,6 @@ import { setCustomText } from 'react-native-global-props'
 export default function RootLayout() {
   const user: user = useAuthStore((state: any) => state.user)
   const isLoggedIn: boolean = useAuthStore((state: any) => state.isLoggedIn)
-  const setIsLoggedIn = useAuthStore((state: any) => state.setIsLoggedIn)
   const getPIN = useAuthStore((state: any) => state.getPIN)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
   const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
@@ -111,8 +110,8 @@ export default function RootLayout() {
   useEffect(() => {
     if (!loaded) return
 
-    if (isLoggedIn) {
-      router.replace('/(tabs)')
+    if (isLoggedIn && user != null) {
+      router.replace('/(tabs)/(index)')
     } else {
       router.replace('/auth')
     }

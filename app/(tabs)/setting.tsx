@@ -20,7 +20,7 @@ export default function SettingScreen() {
   return (
     <View style={styles.container}>
       <RegistButton text="로그아웃" onPressEvent={remove} />
-      {[3, 4].includes(user.id) && (
+      {[3, 4].includes(user?.id) && (
         <View>
           <Text>{user.id || "null"}</Text>
           <RegistButton text="FCM 테스트 버튼" onPressEvent={fcmTest} />

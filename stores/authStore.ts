@@ -1,3 +1,4 @@
+import { registerForPushNotificationsAsync } from '@/lib/sendPushNotification'
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -29,48 +30,52 @@ const useAuthStore = create((set) => ({
     set({ user: user })
   },
 
-  signIn: async (email: string) => {
-    try {
-      const { data, error } = await supabase.from('users').select().eq('email', email)
+  getUserInfoByEmail: async (email: any) => {
+    const { data, error } = await supabase.from('users').select().eq('email', email)
 
-      if (error) {
-        console.error('유저 조회 중 에러:', error.message)
+    if (error) {
+      console.error('Error fetching user:', error.message)
+      return
+    }
+
+    const user: user = data[0]
+    set({ user: user })
+
+    return user
+  },
+
+  signIn: async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+      if (error) return null
+
+      const { data } = await supabase.from('users').select().eq('email', email)
+
+      if (data == null) {
         return null
       }
 
       const user: user = data[0]
+
+      await AsyncStorage.setItem('isLoggedInLoveMission', user?.email)
+
+      // FCM 토큰 발급 및 저장
+      const token = await registerForPushNotificationsAsync()
+
+      await supabase.from('users').update({ fcmToken: token }).eq('id', user.id)
+
+      if (token) {
+        user.fcmToken = token
+      }
 
       set({ user: user })
       set({ isLoggedIn: true })
 
       return user
     } catch (error: any) {
-      console.error('에러인가:', error.message)
+      console.error('로그인 중 에러:', error.message)
       return null
-    }
-  },
-
-  getPIN: async (state: any) => {
-    const PIN = await AsyncStorage.getItem('JNoteS_PIN')
-
-    if (PIN === '980309' || PIN === '950718' || PIN === '000000' || PIN === '111111') {
-      try {
-        const { data, error } = await supabase.from('users').select().eq('pin', PIN)
-
-        if (error) {
-          console.error('유저 조회 중 에러:', error.message)
-          return
-        }
-
-        const user: user = data[0]
-
-        set({ isLoggedIn: true })
-        set({ user: user })
-      } catch (error: any) {
-        console.error('에러인가:', error.message)
-      }
-    } else {
-      return
     }
   },
 
@@ -86,7 +91,7 @@ const useAuthStore = create((set) => ({
 
   logout: async (userId: number) => {
     set({ isLoggedIn: false })
-    await AsyncStorage.removeItem('JNoteS_PIN')
+    await AsyncStorage.removeItem('isLoggedInLoveMission')
     await supabase.from('users').update({ fcmToken: null }).eq('id', userId)
     set({ user: null })
     router.replace('/auth/signIn')

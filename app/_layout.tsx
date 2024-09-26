@@ -2,97 +2,24 @@ import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 import useAuthStore from '@/stores/authStore'
-import { Alert, Platform, StatusBar, StyleSheet } from 'react-native'
-import * as Notifications from 'expo-notifications'
-import { supabase } from '@/utils/supabase'
+import { StatusBar, StyleSheet } from 'react-native'
 import { user } from '@/types/user'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import theme from '@/constants/Theme'
 import { setCustomText } from 'react-native-global-props'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { settingNotificationListeners } from '@/lib/sendPushNotification'
 
 export default function RootLayout() {
   const user: user = useAuthStore((state: any) => state.user)
-  const isLoggedIn: boolean = useAuthStore((state: any) => state.isLoggedIn)
-  const getPIN = useAuthStore((state: any) => state.getPIN)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+  const getUserInfoByEmail = useAuthStore((state: any) => state.getUserInfoByEmail)
 
   const router = useRouter()
 
-  async function registerForPushNotificationsAsync() {
-    const { status } = await Notifications.requestPermissionsAsync()
-
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-      }),
-    })
-
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      })
-    }
-
-    if (status !== 'granted') {
-      alert('푸시 알림을 허용해주세요!')
-      return
-    }
-
-    const token = (await Notifications.getExpoPushTokenAsync()).data
-
-    // Supabase에 푸시 토큰 저장
-    const { error } = await supabase.from('users').update({ fcmToken: token }).eq('id', user.id)
-
-    getRecentUserInfo(user.id)
-
-    if (error) console.error('토큰 저장 오류:', error)
-  }
-
   useEffect(() => {
-    getPIN()
-
-    const notificationResponseReceivedListener =
-      Notifications.addNotificationResponseReceivedListener(async () => {
-        router.replace('/(tabs)')
-      })
-
-    const notificationReceivedListener = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        const content = notification.request.content
-        Alert.alert(
-          content.title || '정체불명의 인앱 메세지',
-          `해당 페이지로 이동하시겠습니까?`,
-          [
-            {
-              text: '아니요',
-            },
-            {
-              text: '네!',
-              onPress: () => {
-                if (content.data && content.data.screen) {
-                  router.replace(content.data.screen)
-                } else {
-                  router.replace('/(tabs)')
-                }
-              },
-            },
-          ],
-          { cancelable: false },
-        )
-      },
-    )
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationReceivedListener)
-      Notifications.removeNotificationSubscription(notificationResponseReceivedListener)
-    }
+    settingNotificationListeners()
   }, [])
 
   const [loaded, error] = useFonts({
@@ -100,27 +27,31 @@ export default function RootLayout() {
     pretendardBold: require('@/assets/fonts/Pretendard-Bold.ttf'),
   })
 
-  useEffect(() => {
-    if (user != null) {
-      registerForPushNotificationsAsync()
-      getLoveFcmToken(user.loveId)
-    }
-  }, [user])
-
-  useEffect(() => {
+  const authProcess = async () => {
     if (!loaded) return
 
-    if (isLoggedIn && user != null) {
-      router.replace('/(tabs)/(index)')
+    const isLoggedIn = await AsyncStorage.getItem('isLoggedInLoveMission')
+
+    if (isLoggedIn) {
+      const user: user = await getUserInfoByEmail(isLoggedIn)
+
+      if (user.loveId == null) {
+        router.replace('/auth/connect')
+      } else {
+        await getLoveFcmToken(user.loveId)
+        router.replace('/(tabs)/(index)')
+      }
     } else {
       router.replace('/auth')
     }
-  }, [isLoggedIn, loaded])
 
-  useEffect(() => {
     if (loaded || error) {
       SplashScreen.hideAsync()
     }
+  }
+
+  useEffect(() => {
+    authProcess()
   }, [loaded, error])
 
   if (!loaded && !error) {

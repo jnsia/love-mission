@@ -18,6 +18,7 @@ export default function HomeScreen() {
   const [selctedMissionId, setSelctedMissionId] = useState(0)
 
   const user: user = useAuthStore((state: any) => state.user)
+  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)
@@ -61,6 +62,10 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      if (user == null) return
+      if (user.loveId == null) {
+        getRecentUserInfo(user.id)
+      }
       getMissions()
     }, [user]),
   )

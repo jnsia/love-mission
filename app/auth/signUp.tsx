@@ -4,6 +4,8 @@ import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
 import theme from '@/constants/Theme'
 import { router } from 'expo-router'
+import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/utils/supabase'
 
 const regex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
 
@@ -63,6 +65,19 @@ export default function SignUpScreen() {
       return
     }
 
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    })
+
+    if (error) {
+      console.error(error)
+      Alert.alert('이미 가입된 이메일입니다.')
+      return
+    }
+
+    await supabase.from('users').insert({ email: email })
+
     nextStep()
   }
 
@@ -120,12 +135,15 @@ export default function SignUpScreen() {
           <TouchableOpacity style={styles.button} onPress={clickSignUpButton}>
             <Text style={styles.buttonText}>회원가입</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/auth/signIn')}>
+            <Text style={styles.backButtonText}>뒤로가기</Text>
+          </TouchableOpacity>
         </View>
       )}
       {step === 2 && (
         <View>
           <Text style={styles.title}>가입이 완료되었습니다.</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.replace('/auth/signIn')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/signIn')}>
             <Text style={styles.buttonText}>로그인 하기</Text>
           </TouchableOpacity>
         </View>
@@ -184,8 +202,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   button: {
-    width: '100%',
-    backgroundColor: '#FF6347',
+    backgroundColor: colors.deepRed,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -193,6 +210,20 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+  backButton: {
+    borderWidth: 1,
+    borderColor: colors.lightGray,
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
+  },
+  backButtonText: {
     fontSize: 16,
     color: '#FFF',
     fontWeight: 'bold',

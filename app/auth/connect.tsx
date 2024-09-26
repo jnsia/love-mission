@@ -1,31 +1,28 @@
+import { useState, useEffect } from 'react'
+import { Alert, Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FontAwesome } from '@expo/vector-icons'
 import { colors } from '@/constants/Colors'
 import { fonts } from '@/constants/Fonts'
 import theme from '@/constants/Theme'
+import RegistButton from '@/components/common/RegistButton'
 import useAuthStore from '@/stores/authStore'
+import { supabase } from '@/utils/supabase'
 import { user } from '@/types/user'
-import { FontAwesome } from '@expo/vector-icons'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { router } from 'expo-router'
-import { useEffect, useState } from 'react'
-import {
-  Animated,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { sendPushNotification } from '@/lib/sendPushNotification'
 
 export default function ConnectScreen() {
-  const [pin, setPin] = useState('')
-  const [checkPin, setCheckPin] = useState(true)
-
+  const [secret, setSecret] = useState('')
+  const [generatedSecret, setgeneratedSecret] = useState('')
   const [animation] = useState(new Animated.Value(1))
 
-  const user = useAuthStore((state: any) => state.user)
-  const isLoggedIn = useAuthStore((state: any) => state.isLoggedIn)
-  const getPIN = useAuthStore((state: any) => state.getPIN)
+  const user: user = useAuthStore((state: any) => state.user)
+  const logout = useAuthStore((state: any) => state.logout)
+
+  useEffect(() => {
+    if (secret.length === 6) {
+      handleCompleteSecret()
+    }
+  }, [secret])
 
   const handleFocus = () => {
     Animated.spring(animation, {
@@ -43,43 +40,161 @@ export default function ConnectScreen() {
     }).start()
   }
 
-  const signIn = async () => {
-    if (pin.length !== 6) {
-      setCheckPin(true)
+  const clickGenerateButton = async () => {
+    const secret = Math.floor(100000 + Math.random() * 900000).toString()
+
+    try {
+      await supabase.from('users').update({ secret: secret }).eq('id', user.id)
+    } catch (err) {
+      console.error(err)
       return
     }
 
-    await AsyncStorage.setItem('JNoteS_PIN', pin)
-    await getPIN()
+    setgeneratedSecret(secret)
+  }
 
-    if (user === null) {
-      setCheckPin(false)
-    } else {
-      setCheckPin(true)
-      router.replace('/(tabs)')
+  const clickCancleButton = async () => {
+    try {
+      await supabase.from('users').update({ secret: null }).eq('id', user.id)
+    } catch (err) {
+      console.error(err)
+      return
     }
+
+    setgeneratedSecret('')
+  }
+
+  const connectLove = async (love: user) => {
+    await supabase.from('users').update({ loveId: love.id }).eq('id', user.id)
+    await supabase.from('users').update({ loveId: user.id }).eq('id', love.id)
+
+    await sendPushNotification(
+      love.fcmToken,
+      '연인과 연결되었습니다.',
+      'Love Mission을 즐겨주세요!',
+      'index',
+    )
+
+    await supabase.from('users').update({ secret: null }).eq('id', love.id)
+  }
+
+  const clickConnectButton = async () => {
+    if (secret.length !== 6) return
+
+    const { data, error } = await supabase.from('users').select().eq('secret', secret)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    const user = data[0]
+
+    if (user == null) {
+      Alert.alert('잘못된 암호입니다.')
+    } else {
+      Alert.alert(
+        `${user.email} 님과 연결되었습니다.`,
+        '연결을 진행하시겠습니까?',
+        [
+          {
+            text: '아니요.',
+          },
+          {
+            text: '네!',
+            onPress: () => {
+              connectLove(user)
+            },
+          },
+        ],
+        { cancelable: false },
+      )
+    }
+  }
+
+  const clickLogoutButton = async () => {
+    await logout(user.id)
+  }
+
+  const handleCompleteSecret = () => {
+    Animated.timing(animation, {
+      toValue: 1.2,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      Animated.spring(animation, {
+        toValue: 1,
+        friction: 5,
+        useNativeDriver: true,
+      }).start()
+    })
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>남자친구/여자친구의 생년월일을 입력해주세요!</Text>
-      <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
-        <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="000000"
-          value={pin}
-          onChangeText={setPin}
-          keyboardType="numeric"
-          maxLength={6}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        />
-      </Animated.View>
-      {!checkPin && <Text style={styles.warningText}>연인의 생년월일을 다시 확인해주세요.</Text>}
-      <TouchableOpacity style={styles.button} onPress={signIn}>
-        <Text style={styles.buttonText}>인증</Text>
-      </TouchableOpacity>
+      {generatedSecret == '' ? (
+        <View>
+          <Text style={styles.title}>암호를 발급하거나 입력해주세요!</Text>
+          <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
+            {/* <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} /> */}
+            <View style={styles.secretContainer}>
+              {Array(6)
+                .fill(0)
+                .map((_, i) => (
+                  <View
+                    key={i}
+                    style={
+                      secret[i] ? { ...styles.secretBox, ...styles.secretFilled } : styles.secretBox
+                    }
+                  >
+                    <Text style={styles.secretText}>{secret[i] || ''}</Text>
+                  </View>
+                ))}
+            </View>
+            <TextInput
+              style={styles.hiddenInput}
+              value={secret}
+              onChangeText={setSecret}
+              keyboardType="numeric"
+              maxLength={6}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              autoFocus
+            />
+          </Animated.View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={clickGenerateButton}>
+              <Text style={styles.buttonText}>암호 생성</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={clickConnectButton}>
+              <Text style={styles.buttonText}>암호 제출</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View>
+          <Text style={styles.title}>암호를 생성하였습니다!</Text>
+          <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
+            {/* <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} /> */}
+            <View style={styles.secretContainer}>
+              {generatedSecret.split('').map((value, index) => (
+                <View
+                  key={value + index * index}
+                  style={{ ...styles.secretBox, ...styles.secretFilled }}
+                >
+                  <Text style={styles.secretText}>{value}</Text>
+                </View>
+              ))}
+            </View>
+          </Animated.View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={clickCancleButton}>
+              <Text style={styles.buttonText}>생성 취소</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+      <RegistButton text="다시 로그인하기" onPressEvent={clickLogoutButton} />
     </View>
   )
 }
@@ -88,7 +203,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: theme.colors.background,
   },
   title: {
@@ -97,29 +211,50 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#FF6347',
     fontFamily: fonts.defaultBold,
+    textAlign: 'center',
   },
   inputContainer: {
-    width: '100%',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  hiddenInput: {
+    position: 'absolute',
+    width: 280,
+    height: 52,
+    opacity: 0,
+    letterSpacing: 32,
+    fontSize: 24,
+  },
+  secretContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  secretBox: {
+    width: 40,
+    height: 52,
+    borderWidth: 2,
+    borderColor: colors.deepRed,
+    borderRadius: 8,
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFF',
-    borderRadius: 8,
-    borderColor: colors.deepRed,
-    borderWidth: 2,
-    marginBottom: 10,
-    paddingHorizontal: 15,
   },
-  input: {
-    flex: 1,
-    height: 50,
-    fontSize: 18,
+  secretFilled: {
+    borderColor: '#FF6347',
   },
-  warningText: {
-    color: colors.deepRed,
-    marginBottom: 10,
+  secretText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF6347',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 16,
   },
   button: {
-    width: '100%',
+    flex: 1,
     backgroundColor: '#FF6347',
     paddingVertical: 16,
     borderRadius: 8,

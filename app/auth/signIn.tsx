@@ -32,7 +32,6 @@ export default function SignInScreen() {
   const [eamilInputAnimation] = useState(new Animated.Value(1))
   const [passwordInputAnimation] = useState(new Animated.Value(1))
 
-  const user: user = useAuthStore((state: any) => state.user)
   const signIn = useAuthStore((state: any) => state.signIn)
 
   const handleEmailInputFocus = () => {
@@ -76,7 +75,8 @@ export default function SignInScreen() {
       return Alert.alert('비밀번호를 입력해 주세요.')
     }
 
-    const userInfo: user = await signIn(email)
+    const userInfo: user = await signIn(email, password)
+    console.log(userInfo)
 
     if (userInfo == null) {
       return Alert.alert('가입된 회원이 아니거나 비밀번호가 틀립니다.')
@@ -86,7 +86,7 @@ export default function SignInScreen() {
     setPassword('')
 
     if (userInfo.loveId == null) {
-      router.replace('/auth/connect')
+      router.replace("/auth/connect")
     } else {
       router.replace('/(tabs)')
     }
@@ -105,6 +105,7 @@ export default function SignInScreen() {
         <TextInput
           style={styles.input}
           placeholder="이메일"
+          keyboardType='email-address'
           value={email}
           onChangeText={setEmail}
           onFocus={handleEmailInputFocus}
@@ -117,6 +118,7 @@ export default function SignInScreen() {
         <TextInput
           style={styles.input}
           placeholder="비밀번호"
+          secureTextEntry
           value={password}
           onChangeText={setPassword}
           onFocus={handlePasswordInputFocus}

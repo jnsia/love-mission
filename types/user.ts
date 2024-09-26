@@ -5,4 +5,5 @@ export interface user {
   coin: number;
   loveId: number;
   fcmToken: string;
+  secret: string;
 }

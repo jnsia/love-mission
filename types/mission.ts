@@ -8,3 +8,12 @@ export interface mission {
   successCoin: number;
   failCoin: number;
 }
+
+export interface failedMission {
+  id: number;
+  title: string;
+  date: string;
+  userId: number;
+  type: string;
+  coin: number;
+}

@@ -3,18 +3,21 @@ import { supabase } from '@/utils/supabase'
 import { useCallback, useState } from 'react'
 import { user } from '@/types/user'
 import useAuthStore from '@/stores/authStore'
-import { mission } from '@/types/mission'
+import { failedMission, mission } from '@/types/mission'
 import theme from '@/constants/Theme'
 import { router, useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/components/mission/MissionInfoModal'
 import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
 import GuideView from '@/components/coupon/GuideView'
+import FailedMissionInfoModal from '@/components/mission/FailedMissionInfoModal'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
+  const [failedMissions, setFailedMissions] = useState<failedMission[]>([])
   const [completedMissions, setCompletedMissions] = useState<mission[]>([])
   const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
+  const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] = useState(false)
   const [selctedMissionId, setSelctedMissionId] = useState(0)
 
   const user: user = useAuthStore((state: any) => state.user)
@@ -22,6 +25,20 @@ export default function HomeScreen() {
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)
+  }
+
+  const closeFailedMissionInfoModal = () => {
+    try {
+      failedMissions.forEach(async (failedMission) => {
+        await supabase.from("failedMissions").delete().eq('id', failedMission.id)
+      })
+    } catch (error) {
+      console.error(error)
+      return
+    }
+
+    setFailedMissions([])
+    setIsFailedMissionInfoVisible(false)
   }
 
   const clickMission = async (mission: mission) => {
@@ -60,6 +77,20 @@ export default function HomeScreen() {
     }
   }
 
+  const getFailedMissions = async () => {
+    const { data, error } = await supabase.from('failedMissions').select().eq('userId', user.id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    if (data.length > 0) {
+      setFailedMissions(data)
+      setIsFailedMissionInfoVisible(true)
+    }
+  }
+
   useFocusEffect(
     useCallback(() => {
       if (user == null) return
@@ -67,6 +98,7 @@ export default function HomeScreen() {
         getRecentUserInfo(user.id)
       }
       getMissions()
+      getFailedMissions()
     }, [user]),
   )
 
@@ -139,6 +171,11 @@ export default function HomeScreen() {
           ))}
         </View>
       </ScrollView>
+      <FailedMissionInfoModal
+        failedMissions={failedMissions}
+        isFailedMissionInfoVisible={isFailedMissionInfoVisible}
+        closeFailedMissionInfoModal={closeFailedMissionInfoModal}
+      />
     </View>
   )
 }

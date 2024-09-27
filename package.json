@@ -12,7 +12,8 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "build-android-dev": "eas build --platform android --profile development",
-    "build-android-pre": "eas build --platform android --profile preview"
+    "build-android-pre": "eas build --platform android --profile preview",
+    "build-android-product": "eas build --platform android --profile production"
   },
   "jest": {
     "preset": "jest-expo"

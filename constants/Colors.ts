@@ -9,6 +9,7 @@ const tintColorDark = '#fff';
 export const colors = {
   light: {
     text: '#FFFFFF',
+    subText: '#CCCCCC',
     // 미드나잇 블루
     background: '#2a2d3e',
     tint: tintColorLight,

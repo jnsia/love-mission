@@ -27,8 +27,6 @@ export default function InputBox({
         onChangeText={onChangeText}
         multiline={multiline || false}
         keyboardType={keyboardType || 'default'}
-
-        inputMode='numeric'
       />
       {isTextNull && <Text style={styles.warningText}>{label}을 입력해주세요.</Text>}
     </View>

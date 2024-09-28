@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: theme.colors.button,
     borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 8,
     gap: 4,
   },
   coinItem: {

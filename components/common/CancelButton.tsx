@@ -1,19 +1,19 @@
-import { Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
-import theme from "@/constants/Theme";
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
+import theme from '@/constants/Theme'
 
 export default function CancelButton({
   text,
   onPressEvent,
 }: {
-  text: string;
-  onPressEvent: () => void;
+  text: string
+  onPressEvent: () => void
 }) {
   return (
     <TouchableOpacity style={styles.button} onPress={onPressEvent}>
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -24,10 +24,11 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 20,
     borderRadius: 5,
+    backgroundColor: theme.colors.text,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-});
+})

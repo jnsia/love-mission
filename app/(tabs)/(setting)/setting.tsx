@@ -4,6 +4,7 @@ import theme from '@/constants/Theme'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
+import { router } from 'expo-router'
 import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
@@ -15,13 +16,17 @@ export default function SettingScreen() {
 
   const clickSendOpinionButton = () => {
     setModalVisible(true)
-  } 
+  }
 
   const closeSendOpinionModal = () => {
     setModalVisible(false)
-  } 
+  }
 
-  const remove = async () => {
+  const clickScheduleButton = () => {
+    router.push('/(setting)/schedule')
+  }
+
+  const clickLogoutButton = async () => {
     await logout(user.id)
   }
 
@@ -31,14 +36,10 @@ export default function SettingScreen() {
 
   return (
     <View style={styles.container}>
+      <RegistButton text="일일 미션 자동 등록" onPressEvent={clickScheduleButton} />
       <RegistButton text="의견 보내기" onPressEvent={clickSendOpinionButton} />
-      <RegistButton text="로그아웃" onPressEvent={remove} />
-      {[3, 4].includes(user?.id) && (
-        <View>
-          <Text>{user.id || "null"}</Text>
-          <RegistButton text="FCM 테스트 버튼" onPressEvent={fcmTest} />
-        </View>
-      )}
+      <RegistButton text="로그아웃" onPressEvent={clickLogoutButton} />
+      {[3, 4].includes(user?.id) && <RegistButton text="FCM 테스트 버튼" onPressEvent={fcmTest} />}
       <OpinionSendModal isVisible={modalVisible} closeModal={closeSendOpinionModal} />
     </View>
   )

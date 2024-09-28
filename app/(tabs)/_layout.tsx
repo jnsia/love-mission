@@ -37,7 +37,7 @@ export default function HomeLayout() {
               iconName = 'ticket'
             } else if (route.name === 'history') {
               iconName = 'history'
-            } else if (route.name === 'setting') {
+            } else if (route.name === '(setting)') {
               iconName = 'cog'
             }
             // @ts-expect-error
@@ -85,7 +85,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="setting"
+          name="(setting)"
           options={{
             title: '설정',
           }}

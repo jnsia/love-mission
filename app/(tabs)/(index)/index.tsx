@@ -11,6 +11,7 @@ import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
 import GuideView from '@/components/coupon/GuideView'
 import FailedMissionInfoModal from '@/components/mission/FailedMissionInfoModal'
+import Badge from '@/components/common/Badge'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -30,7 +31,7 @@ export default function HomeScreen() {
   const closeFailedMissionInfoModal = () => {
     try {
       failedMissions.forEach(async (failedMission) => {
-        await supabase.from("failedMissions").delete().eq('id', failedMission.id)
+        await supabase.from('failedMissions').delete().eq('id', failedMission.id)
       })
     } catch (error) {
       console.error(error)
@@ -107,19 +108,17 @@ export default function HomeScreen() {
       <GuideView
         texts={['연인이 당신에게 할당한 미션입니다!', '어서 미션을 완료하여 코인를 획득하세요.']}
       />
-      <ScrollView style={styles.missionsBox}>
+      <ScrollView>
         <View>
           {missions.map((mission) => (
             <View key={mission.id}>
               {mission.type === 'coupon' ? (
                 <TouchableOpacity style={styles.couponItem} onPress={() => clickMission(mission)}>
-                  <Text style={{ ...styles.itemText, color: colors.deepRed }} numberOfLines={1}>
+                  <Text style={{ ...styles.itemText, color: colors.accent }} numberOfLines={1}>
                     빠른 시일 내에 해결해주세요!
                   </Text>
                   <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.badge}>
-                      <Text style={styles.badgeText}>쿠폰</Text>
-                    </View>
+                    <Badge type="coupon" />
                     <Text style={styles.couponItemText} numberOfLines={1}>
                       {mission.title}
                     </Text>
@@ -127,11 +126,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
-                  <View style={styles.badge}>
-                    {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
-                    {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
-                    {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
-                  </View>
+                  <Badge type={mission.type} />
                   <Text style={styles.itemText} numberOfLines={1}>
                     {mission.title}
                   </Text>
@@ -152,9 +147,7 @@ export default function HomeScreen() {
           {completedMissions.map((mission) => (
             <View key={mission.id}>
               <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>완료</Text>
-                </View>
+                <Badge type="complete" />
                 <Text style={styles.completedItemText} numberOfLines={1}>
                   {mission.title}
                 </Text>
@@ -192,19 +185,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#FF6347',
   },
-  missionsBox: {
-    // marginTop: 16,
-  },
-  guideBox: {
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: theme.colors.button,
-  },
-  guideText: {
-    fontSize: 16,
-    color: theme.colors.text,
-    fontFamily: fonts.default,
-  },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -219,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     gap: 8,
   },
   itemText: {
@@ -239,26 +219,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderRadius: 8,
-    backgroundColor: '#06c270',
+    backgroundColor: colors.success,
     marginBottom: 10,
   },
   completedItemText: {
     fontSize: 16,
     color: 'white',
     fontFamily: fonts.default,
-  },
-  badge: {
-    borderWidth: 1,
-    borderColor: theme.colors.text,
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    marginRight: 8,
-    borderRadius: 10,
-  },
-  badgeText: {
-    fontFamily: fonts.default,
-    fontSize: 10,
-    color: theme.colors.text,
   },
 })

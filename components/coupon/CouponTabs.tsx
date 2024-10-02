@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
   },
   selectedTab: {
     borderBottomWidth: 4,
-    borderBottomColor: colors.deepRed, // 선택된 탭의 스타일
+    borderBottomColor: colors.accent, // 선택된 탭의 스타일
   },
   tabText: {
     fontSize: 14,
     color: '#777', // 비선택된 탭의 텍스트 색상
   },
   selectedTabText: {
-    color: colors.deepRed, // 선택된 탭의 텍스트 색상
+    color: colors.accent, // 선택된 탭의 텍스트 색상
     fontWeight: 'bold',
     fontFamily: fonts.default,
   },

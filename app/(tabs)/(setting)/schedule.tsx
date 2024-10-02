@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     gap: 8,
   },
   itemText: {
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   warningItem: {
     padding: 15,
     borderRadius: 8,
-    backgroundColor: colors.deepRed,
+    backgroundColor: colors.accent,
     marginBottom: 10,
   },
   completedItemText: {

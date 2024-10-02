@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   warningText: {
     fontSize: 12,
-    color: colors.deepRed,
+    color: colors.accent,
     paddingTop: 4,
     paddingLeft: 10,
   },

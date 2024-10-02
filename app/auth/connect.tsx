@@ -65,17 +65,47 @@ export default function ConnectScreen() {
   }
 
   const connectLove = async (love: user) => {
-    await supabase.from('users').update({ loveId: love.id }).eq('id', user.id)
-    await supabase.from('users').update({ loveId: user.id }).eq('id', love.id)
+    try {
+      await supabase.from('users').update({ loveId: love.id }).eq('id', user.id)
+      await supabase.from('users').update({ loveId: user.id }).eq('id', love.id)
 
-    await sendPushNotification(
-      love.fcmToken,
-      '연인과 연결되었습니다.',
-      'Love Mission을 즐겨주세요!',
-      'index',
-    )
+      await supabase.from('missions').insert({
+        title: '연인 꼭 안아주기!',
+        description: '',
+        type: 'special',
+        successCoin: 100,
+        failCoin: 0,
+        userId: user.loveId,
+      })
 
-    await supabase.from('users').update({ secret: null }).eq('id', love.id)
+      await supabase.from('missions').insert({
+        title: '연인 꼭 안아주기!',
+        description: '',
+        type: 'special',
+        successCoin: 100,
+        failCoin: 0,
+        userId: love.id,
+      })
+
+      await supabase
+      .from('loveCoupons')
+      .insert({ name: "뽀뽀 해줘!", description: "", price: 100, userId: user.id })
+
+      await supabase
+      .from('loveCoupons')
+      .insert({ name: "뽀뽀 해줘!", description: "", price: 100, userId: love.id })
+
+      await sendPushNotification(
+        love.fcmToken,
+        '연인과 연결되었습니다.',
+        '러브미!션을 즐겨주세요!',
+        'index',
+      )
+
+      await supabase.from('users').update({ secret: null }).eq('id', love.id)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const clickConnectButton = async () => {
@@ -234,7 +264,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 52,
     borderWidth: 2,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',

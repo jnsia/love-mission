@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     // marginBottom: 10,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
   },
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: colors.deepRed,
+    color: colors.accent,
   },
 })

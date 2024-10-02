@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     fontSize: 48,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: colors.deepRed,
+    color: colors.accent,
     fontFamily: fonts.defaultBold,
   },
   optionBox: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFF',
     borderRadius: 8,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 16,
@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.default,
   },
   warningText: {
-    color: colors.deepRed,
+    color: colors.accent,
     marginBottom: 10,
   },
   button: {
     width: '100%',
-    backgroundColor: colors.deepRed,
+    backgroundColor: colors.accent,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',

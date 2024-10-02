@@ -12,6 +12,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
+import Badge from '@/components/common/Badge'
 
 export default function LoveScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -79,9 +80,7 @@ export default function LoveScreen() {
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
             <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>쿠폰</Text>
-              </View>
+              <Badge type="coupon" />
               <Text style={styles.completedItemText} numberOfLines={1}>
                 {mission.title}
               </Text>
@@ -99,12 +98,7 @@ export default function LoveScreen() {
         {missions.map((mission) => (
           <View key={mission.id}>
             <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
-              <View style={styles.badge}>
-                {mission.type == 'special' && <Text style={styles.badgeText}>특별</Text>}
-                {mission.type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
-                {mission.type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
-                {mission.type == 'coupon' && <Text style={styles.badgeText}>쿠폰</Text>}
-              </View>
+              <Badge type={mission.type} />
               <Text style={styles.itemText} numberOfLines={1}>
                 {mission.title}
               </Text>
@@ -140,7 +134,7 @@ export default function LoveScreen() {
             fontWeight: 'bold',
           }}
         >
-          미션 독촉하기 (테스트 기능)
+          미션 수행 독촉하기
         </Text>
       </TouchableOpacity>
       <RegistButton text="미션 등록하기" onPressEvent={openModal} />
@@ -168,58 +162,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 8,
   },
-  couponItem: {
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    borderRadius: 8,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: colors.deepRed,
-    gap: 8,
-  },
   itemText: {
     fontSize: 16,
     flex: 1,
     color: theme.colors.text,
     fontFamily: fonts.default,
   },
-  couponItemText: {
-    fontSize: 16,
-    flex: 1,
-    fontFamily: fonts.defaultBold,
-    color: theme.colors.text,
-  },
   completedItem: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
     borderRadius: 8,
-    backgroundColor: 'green',
     marginBottom: 10,
-  },
-  warningItem: {
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: colors.deepRed,
-    marginBottom: 10,
+    backgroundColor: colors.success,
   },
   completedItemText: {
     fontSize: 16,
     color: 'white',
     fontFamily: fonts.default,
-  },
-  badge: {
-    borderWidth: 1,
-    borderColor: theme.colors.text,
-    justifyContent: 'center',
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    marginRight: 8,
-    borderRadius: 10,
-  },
-  badgeText: {
-    fontFamily: fonts.default,
-    fontSize: 10,
-    color: theme.colors.text,
   },
 })

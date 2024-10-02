@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   selectedTypeButton: {
-    borderColor: colors.deepRed, // 선택된 버튼의 border 색상
+    borderColor: colors.accent, // 선택된 버튼의 border 색상
   },
   typeText: {
     textAlign: 'center',

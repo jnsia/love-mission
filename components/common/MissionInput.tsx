@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFF",
     borderRadius: 8,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     borderWidth: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },

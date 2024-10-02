@@ -28,8 +28,9 @@ export const colors = {
     tabIconSelected: tintColorDark,
     button: "#121417"
   },
-  // deepRed: "#ff3b3b",
-  deepRed: '#FF6347',
+  success: '#06c270',
+  // accent: "#ff3b3b",
+  accent: '#FF6347',
   darkGray: "#1e2025",
   lightGray: "#d1d1d1",
 };

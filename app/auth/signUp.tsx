@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFF',
     borderRadius: 8,
-    borderColor: colors.deepRed,
+    borderColor: colors.accent,
     borderWidth: 1,
     paddingHorizontal: 16,
   },
@@ -197,12 +197,12 @@ const styles = StyleSheet.create({
   },
   warningText: {
     fontSize: 12,
-    color: colors.deepRed,
+    color: colors.accent,
     paddingLeft: 12,
     marginTop: 4,
   },
   button: {
-    backgroundColor: colors.deepRed,
+    backgroundColor: colors.accent,
     paddingVertical: 16,
     borderRadius: 8,
     alignItems: 'center',

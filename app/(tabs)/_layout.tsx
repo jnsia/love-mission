@@ -19,7 +19,7 @@ export default function HomeLayout() {
       />
       <View style={styles.header}>
         <View style={styles.userCoinContainer}>
-          <FontAwesome5 name="coins" size={24} color={colors.deepRed} />
+          <FontAwesome5 name="coins" size={24} color={colors.accent} />
           {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
         </View>
       </View>
@@ -43,7 +43,7 @@ export default function HomeLayout() {
             // @ts-expect-error
             return <FontAwesome name={iconName} size={size} color={color} />
           },
-          tabBarActiveTintColor: colors.deepRed,
+          tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.lightGray,
           tabBarStyle: {
             backgroundColor: colors.darkGray,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   userCoin: {
     minWidth: 36,
     textAlign: 'right',
-    color: colors.deepRed,
+    color: colors.accent,
     fontWeight: 'bold',
   },
 })

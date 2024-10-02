@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "LoveMission",
+    "name": "러브미!션",
     "slug": "JNoteS",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -51,7 +51,7 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Pretendard-Regular.ttf"]
+          "fonts": ["./assets/fonts/Pretendard-Regular.ttf", "./assets/fonts/Pretendard-Bold.ttf"]
         }
       ]
     ],

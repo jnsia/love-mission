@@ -134,7 +134,7 @@ export default function CouponIssueModal({
 const styles = StyleSheet.create({
   warningText: {
     fontSize: 12,
-    color: colors.deepRed,
+    color: colors.accent,
     paddingTop: 4,
     paddingLeft: 10,
   },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   selectedTypeButton: {
-    borderColor: colors.deepRed, // 선택된 버튼의 border 색상
+    borderColor: colors.accent, // 선택된 버튼의 border 색상
   },
   typeText: {
     textAlign: 'center',

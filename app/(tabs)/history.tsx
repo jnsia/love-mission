@@ -17,7 +17,11 @@ export default function History() {
   const user: user = useAuthStore((state: any) => state.user)
 
   const getHistories = async () => {
-    const { data, error } = await supabase.from('histories').select().eq('userId', user.id)
+    const { data, error } = await supabase
+      .from('histories')
+      .select()
+      .eq('userId', user.id)
+      .order('createdAt', { ascending: false })
 
     if (error) {
       console.error('히스토리 조회 중 에러')

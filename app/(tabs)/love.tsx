@@ -13,6 +13,7 @@ import { sendPushNotification } from '@/lib/sendPushNotification'
 import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
 import Badge from '@/components/common/Badge'
+import MissionButton from '@/components/mission/MissionButton'
 
 export default function LoveScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -79,12 +80,7 @@ export default function LoveScreen() {
       <ScrollView>
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
-            <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
-              <Badge type="coupon" />
-              <Text style={styles.completedItemText} numberOfLines={1}>
-                {mission.title}
-              </Text>
-            </TouchableOpacity>
+            <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
             {selctedMissionId == mission.id && (
               <MissionInfoModal
                 getMissions={getMissions}
@@ -97,12 +93,7 @@ export default function LoveScreen() {
         ))}
         {missions.map((mission) => (
           <View key={mission.id}>
-            <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
-              <Badge type={mission.type} />
-              <Text style={styles.itemText} numberOfLines={1}>
-                {mission.title}
-              </Text>
-            </TouchableOpacity>
+            <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
             {selctedMissionId == mission.id && (
               <MissionInfoModal
                 getMissions={getMissions}
@@ -153,32 +144,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#FF6347',
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  itemText: {
-    fontSize: 16,
-    flex: 1,
-    color: theme.colors.text,
-    fontFamily: fonts.default,
-  },
-  completedItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    backgroundColor: colors.success,
-  },
-  completedItemText: {
-    fontSize: 16,
-    color: 'white',
-    fontFamily: fonts.default,
   },
 })

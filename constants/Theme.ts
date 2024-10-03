@@ -2,7 +2,7 @@
 import { colors } from "./Colors";
 
 const theme = {
-  colors: colors.light, // light 모드를 기본 색상으로 사용합니다.
+  colors: colors.dark, // dark 모드를 기본 색상으로 사용
   spacing: {
     small: 8,
     medium: 16,

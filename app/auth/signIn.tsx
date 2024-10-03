@@ -76,7 +76,6 @@ export default function SignInScreen() {
     }
 
     const userInfo: user = await signIn(email, password)
-    console.log(userInfo)
 
     if (userInfo == null) {
       return Alert.alert('가입된 회원이 아니거나 비밀번호가 틀립니다.')

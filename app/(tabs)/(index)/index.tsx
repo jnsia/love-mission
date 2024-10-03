@@ -12,6 +12,9 @@ import { colors } from '@/constants/Colors'
 import GuideView from '@/components/coupon/GuideView'
 import FailedMissionInfoModal from '@/components/mission/FailedMissionInfoModal'
 import Badge from '@/components/common/Badge'
+import MissionContainer from '@/components/mission/MissionButton'
+import MissionButton from '@/components/mission/MissionButton'
+import CouponMissionButton from '@/components/mission/CouponMissionButton'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -112,25 +115,10 @@ export default function HomeScreen() {
         <View>
           {missions.map((mission) => (
             <View key={mission.id}>
-              {mission.type === 'coupon' ? (
-                <TouchableOpacity style={styles.couponItem} onPress={() => clickMission(mission)}>
-                  <Text style={{ ...styles.itemText, color: colors.accent }} numberOfLines={1}>
-                    빠른 시일 내에 해결해주세요!
-                  </Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Badge type="coupon" />
-                    <Text style={styles.couponItemText} numberOfLines={1}>
-                      {mission.title}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+              {mission.type == 'coupon' ? (
+                <CouponMissionButton mission={mission} clickMission={() => clickMission(mission)} />
               ) : (
-                <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
-                  <Badge type={mission.type} />
-                  <Text style={styles.itemText} numberOfLines={1}>
-                    {mission.title}
-                  </Text>
-                </TouchableOpacity>
+                <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
               )}
               {selctedMissionId == mission.id && (
                 <MissionInfoModal
@@ -146,12 +134,7 @@ export default function HomeScreen() {
         <View>
           {completedMissions.map((mission) => (
             <View key={mission.id}>
-              <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
-                <Badge type="complete" />
-                <Text style={styles.completedItemText} numberOfLines={1}>
-                  {mission.title}
-                </Text>
-              </TouchableOpacity>
+              <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
               {selctedMissionId == mission.id && (
                 <MissionInfoModal
                   getMissions={getMissions}
@@ -184,47 +167,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     color: '#FF6347',
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  couponItem: {
-    padding: 16,
-    backgroundColor: theme.colors.button,
-    borderRadius: 8,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: colors.accent,
-    gap: 8,
-  },
-  itemText: {
-    fontSize: 16,
-    flex: 1,
-    color: theme.colors.text,
-    fontFamily: fonts.default,
-  },
-  couponItemText: {
-    fontSize: 16,
-    flex: 1,
-    fontFamily: fonts.defaultBold,
-    color: theme.colors.text,
-  },
-  completedItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: colors.success,
-    marginBottom: 10,
-  },
-  completedItemText: {
-    fontSize: 16,
-    color: 'white',
-    fontFamily: fonts.default,
   },
 })

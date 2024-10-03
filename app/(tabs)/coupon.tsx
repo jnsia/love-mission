@@ -7,7 +7,7 @@ import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
 import { useFocusEffect } from 'expo-router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native'
 
 export default function CouponListScreen() {
@@ -15,7 +15,6 @@ export default function CouponListScreen() {
   const [myCoupons, setMyCoupons] = useState<coupon[]>([])
   const [loveCoupons, setLoveCoupons] = useState<coupon[]>([])
   const [issuedCoupons, setIssuedCoupons] = useState<coupon[]>([])
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isCouponInfoVisible, setIsCouponInfoVisible] = useState(false)
   const [selectedCouponId, setSelectedCouponId] = useState(0)

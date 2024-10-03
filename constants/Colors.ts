@@ -7,7 +7,7 @@ const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
 export const colors = {
-  light: {
+  dark: {
     text: '#FFFFFF',
     subText: '#CCCCCC',
     // 미드나잇 블루
@@ -19,7 +19,7 @@ export const colors = {
     // 차콜 블랙
     button: "#121417"
   },
-  dark: {
+  light: {
     text: '#ECEDEE',
     background: '#151718',
     tint: tintColorDark,

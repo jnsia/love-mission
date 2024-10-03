@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
 
 import { useFocusEffect } from '@react-navigation/native'
 import theme from '@/constants/Theme'
@@ -8,10 +8,13 @@ import useAuthStore from '@/stores/authStore'
 import HistoryTabs from '@/components/history/HistoryTabs'
 import { supabase } from '@/utils/supabase'
 import { fonts } from '@/constants/Fonts'
+import HistoryInfoModal from '@/components/history/HistoryInfoModal'
 
 export default function History() {
   const [page, setPage] = useState('missions')
   // const [type, setType] = useState('전체')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedHistoryId, setSelctedHistoryId] = useState(0)
   const [histories, setHistories] = useState<history[]>([])
 
   const user: user = useAuthStore((state: any) => state.user)
@@ -29,6 +32,15 @@ export default function History() {
     }
 
     setHistories(data)
+  }
+
+  const clickHistory = (historyId: number) => {
+    setIsModalVisible(true)
+    setSelctedHistoryId(historyId)
+  }
+
+  const closeModal = () => {
+    setIsModalVisible(false)
   }
 
   useFocusEffect(
@@ -89,27 +101,49 @@ export default function History() {
         {page === 'missions' && (
           <View>
             {histories.map((history) => (
-              <View key={history.id}>
-                <View style={styles.item}>
-                  <Text style={styles.itemText}>{history.record}</Text>
-                  <Text style={styles.itemSubText}>{history.date}</Text>
-                </View>
-              </View>
+              <TouchableOpacity
+                key={history.id}
+                style={styles.item}
+                onPress={() => clickHistory(history.id)}
+              >
+                <Text style={styles.itemText}>{history.record}</Text>
+                <Text style={styles.itemSubText}>{history.date}</Text>
+                {selectedHistoryId == history.id && (
+                  <HistoryInfoModal
+                    isModalVisible={isModalVisible}
+                    closeModal={closeModal}
+                    history={history}
+                  />
+                )}
+              </TouchableOpacity>
             ))}
           </View>
         )}
         {page === 'coins' && (
           <View>
             {histories.map((history) => (
-              <View key={history.id}>
-                <View style={styles.coinItem}>
-                  <View style={{ gap: 4 }}>
-                    <Text style={styles.itemText}>{history.record}</Text>
-                    <Text style={styles.itemSubText}>{history.date}</Text>
-                  </View>
-                  <Text style={styles.itemText}>+ {history.coin} Coin</Text>
+              <TouchableOpacity
+                key={history.id}
+                style={styles.coinItem}
+                onPress={() => clickHistory(history.id)}
+              >
+                <View style={{ flex: 1, gap: 4, flexWrap: 'nowrap', marginRight: 12 }}>
+                  <Text style={styles.itemText} numberOfLines={1}>
+                    {history.record}
+                  </Text>
+                  <Text style={styles.itemSubText}>{history.date}</Text>
                 </View>
-              </View>
+                <Text style={styles.itemText}>
+                  {history.coin > 0 ? `+${history.coin}` : history.coin} Coin
+                </Text>
+                {selectedHistoryId == history.id && (
+                  <HistoryInfoModal
+                    isModalVisible={isModalVisible}
+                    closeModal={closeModal}
+                    history={history}
+                  />
+                )}
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -164,6 +198,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   item: {
+    overflow: 'hidden',
     padding: 16,
     backgroundColor: theme.colors.button,
     borderRadius: 8,
@@ -180,12 +215,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     color: theme.colors.text,
     fontFamily: fonts.default,
   },
   itemSubText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#cccccc',
     fontFamily: fonts.default,
   },

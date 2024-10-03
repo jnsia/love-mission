@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TextInput, KeyboardTypeOptions } from 'react-native'
 import React from 'react'
 import { colors } from '@/constants/Colors'
+import { fonts } from '@/constants/Fonts'
 
 export default function InputBox({
   label,
@@ -38,7 +39,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     fontWeight: 'bold',
     marginBottom: 8,
   },

@@ -2,6 +2,7 @@ import RegistButton from '@/components/common/RegistButton'
 import CouponInfoModal from '@/components/coupon/CouponInfoModal'
 import CouponIssueModal from '@/components/coupon/CouponIssueModal'
 import CouponTabs from '@/components/coupon/CouponTabs'
+import { fonts } from '@/constants/Fonts'
 import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
@@ -166,12 +167,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: theme.colors.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#11181C',
-  },
   couponsContainer: {
     marginTop: 16,
   },
@@ -190,24 +185,14 @@ const styles = StyleSheet.create({
   },
   couponText: {
     flex: 1,
-    fontSize: 16,
+    fontSize: fonts.size.body,
     marginRight: 4,
     color: theme.colors.text,
-    fontFamily: 'pretendard',
+    fontFamily: fonts.default,
   },
   couponPrice: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     color: theme.colors.text,
-    fontWeight: 'bold',
-  },
-  contentContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  contentText: {
-    fontSize: 24,
     fontWeight: 'bold',
   },
 })

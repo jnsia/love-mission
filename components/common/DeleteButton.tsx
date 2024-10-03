@@ -2,6 +2,7 @@ import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
+import { fonts } from '@/constants/Fonts'
 
 export default function DeleteButton({
   text,
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     borderColor: colors.accent,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     textAlign: 'center',
     color: colors.accent,

@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemText: {
-    fontSize: 16,
+    fontSize: 14,
     flex: 1,
     color: theme.colors.text,
     fontFamily: fonts.default,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   completedItemText: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'white',
     fontFamily: fonts.default,
   },

@@ -18,6 +18,7 @@ import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import InputBox from './InputBox'
+import { fonts } from '@/constants/Fonts'
 
 export default function CouponIssueModal({
   getIssuedCoupons,
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     marginBottom: 8,
   },

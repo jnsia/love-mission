@@ -159,13 +159,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   itemText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     flex: 1,
     color: theme.colors.text,
     fontFamily: fonts.default,
   },
   couponItemText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     flex: 1,
     fontFamily: fonts.defaultBold,
     color: theme.colors.text,
@@ -185,7 +189,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   completedItemText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     color: 'white',
     fontFamily: fonts.default,
   },

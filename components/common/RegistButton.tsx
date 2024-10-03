@@ -28,7 +28,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: theme.colors.text,
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: fonts.default,

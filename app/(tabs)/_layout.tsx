@@ -1,11 +1,13 @@
 import { colors } from '@/constants/Colors'
 import theme from '@/constants/Theme'
 import useAuthStore from '@/stores/authStore'
-import useScreenStore from '@/stores/screenStore'
 import { user } from '@/types/user'
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'
-import { Tabs, useNavigation } from 'expo-router'
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Tabs } from 'expo-router'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-3115269616339333/8194454946'
 
 export default function HomeLayout() {
   const user: user = useAuthStore((state: any) => state.user)
@@ -48,10 +50,10 @@ export default function HomeLayout() {
           tabBarStyle: {
             backgroundColor: colors.darkGray,
             borderTopWidth: 0,
-            height: 72,
+            height: 64,
           },
           tabBarLabelStyle: {
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: 'bold',
           },
           tabBarItemStyle: {
@@ -81,7 +83,7 @@ export default function HomeLayout() {
         <Tabs.Screen
           name="history"
           options={{
-            title: '이력 관리',
+            title: '기록',
           }}
         />
         <Tabs.Screen
@@ -91,6 +93,13 @@ export default function HomeLayout() {
           }}
         />
       </Tabs>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
     </>
   )
 }

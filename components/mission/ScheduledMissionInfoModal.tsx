@@ -15,6 +15,7 @@ import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { mission } from '@/types/mission'
 import DeleteButton from '../common/DeleteButton'
+import { fonts } from '@/constants/Fonts'
 
 export default function ScheduledMissionInfoModal({
   getMissions,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     marginBottom: 8,
   },

@@ -20,6 +20,7 @@ import { mission } from '@/types/mission'
 import { colors } from '@/constants/Colors'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import DeleteButton from '../common/DeleteButton'
+import { fonts } from '@/constants/Fonts'
 
 export default function MissionInfoModal({
   getMissions,
@@ -189,7 +190,7 @@ export default function MissionInfoModal({
               <View>
                 {mission.completed ? (
                   <View style={{ alignItems: 'center', gap: 16, marginTop: 8 }}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>승인 대기 중 입니다...</Text>
+                    <Text style={{ fontSize: fonts.size.body, fontWeight: 'bold' }}>승인 대기 중 입니다...</Text>
                     <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                       <CancelButton text="닫기" onPressEvent={closeMissionInfoModal} />
                     </View>
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     marginBottom: 8,
   },

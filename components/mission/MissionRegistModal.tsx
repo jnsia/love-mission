@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.default,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     marginBottom: 8,
     fontFamily: fonts.default,

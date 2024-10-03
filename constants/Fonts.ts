@@ -1,4 +1,7 @@
 export const fonts = {
   default: 'pretendard',
-  defaultBold: 'pretendardBold'
+  defaultBold: 'pretendardBold',
+  size: {
+    body: 14
+  }
 }

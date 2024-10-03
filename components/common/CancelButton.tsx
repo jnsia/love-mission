@@ -1,6 +1,7 @@
 import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import theme from '@/constants/Theme'
+import { fonts } from '@/constants/Fonts'
 
 export default function CancelButton({
   text,
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.text,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     textAlign: 'center',
   },

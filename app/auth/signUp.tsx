@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.default,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     marginBottom: 4,
     color: colors.lightGray,
     fontFamily: fonts.defaultBold,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     color: '#FFF',
     fontWeight: 'bold',
   },
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   backButtonText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     color: '#FFF',
     fontWeight: 'bold',
   },

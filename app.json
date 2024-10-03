@@ -70,5 +70,8 @@
     "runtimeVersion": {
       "policy": "appVersion"
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3115269616339333~1662364869"
   }
 }

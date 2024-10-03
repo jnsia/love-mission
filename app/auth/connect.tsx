@@ -292,7 +292,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
+
+
     color: '#FFF',
     fontWeight: 'bold',
   },

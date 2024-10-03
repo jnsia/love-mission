@@ -16,6 +16,7 @@ import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { sendPushNotification } from '@/lib/sendPushNotification'
 import { router } from 'expo-router'
+import { fonts } from '@/constants/Fonts'
 
 export default function CouponInfoModal({
   page,
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   label: {
-    fontSize: 16,
+    fontSize: fonts.size.body,
     fontWeight: 'bold',
     marginBottom: 8,
   },

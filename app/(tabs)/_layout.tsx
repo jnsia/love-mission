@@ -1,17 +1,14 @@
+import Header from '@/components/common/Header'
 import { colors } from '@/constants/Colors'
 import theme from '@/constants/Theme'
-import useAuthStore from '@/stores/authStore'
-import { user } from '@/types/user'
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { StatusBar, StyleSheet } from 'react-native'
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
 
-const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-3115269616339333/8194454946'
+// const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-3115269616339333/8194454946'
 
 export default function HomeLayout() {
-  const user: user = useAuthStore((state: any) => state.user)
-
   return (
     <>
       <StatusBar
@@ -19,12 +16,6 @@ export default function HomeLayout() {
         backgroundColor="#1c1f2a" // 상태바 배경색
         // translucent={true}
       />
-      <View style={styles.header}>
-        <View style={styles.userCoinContainer}>
-          <FontAwesome5 name="coins" size={24} color={colors.accent} />
-          {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
-        </View>
-      </View>
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
@@ -66,40 +57,50 @@ export default function HomeLayout() {
           name="(index)"
           options={{
             title: '나의 미션',
+            headerShown: true,
+            header: () => <Header />,
           }}
         />
         <Tabs.Screen
           name="love"
           options={{
             title: '연인의 미션',
+            headerShown: true,
+            header: () => <Header />,
           }}
         />
         <Tabs.Screen
           name="coupon"
           options={{
             title: '쿠폰',
+            headerShown: true,
+            header: () => <Header />,
           }}
         />
         <Tabs.Screen
           name="history"
           options={{
             title: '기록',
+            headerShown: true,
+            header: () => <Header />,
           }}
         />
         <Tabs.Screen
           name="(setting)"
           options={{
             title: '설정',
+            headerShown: true,
+            header: () => <Header />,
           }}
         />
       </Tabs>
-      <BannerAd
+      {/* <BannerAd
         unitId={adUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}
-      />
+      /> */}
     </>
   )
 }

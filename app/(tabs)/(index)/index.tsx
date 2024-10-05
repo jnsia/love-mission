@@ -1,6 +1,14 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  Alert,
+  BackHandler,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { supabase } from '@/utils/supabase'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { user } from '@/types/user'
 import useAuthStore from '@/stores/authStore'
 import { failedMission, mission } from '@/types/mission'
@@ -15,6 +23,7 @@ import Badge from '@/components/common/Badge'
 import MissionContainer from '@/components/mission/MissionButton'
 import MissionButton from '@/components/mission/MissionButton'
 import CouponMissionButton from '@/components/mission/CouponMissionButton'
+import { useRoute } from '@react-navigation/native'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -26,6 +35,8 @@ export default function HomeScreen() {
 
   const user: user = useAuthStore((state: any) => state.user)
   const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+
+  const route = useRoute()
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)
@@ -103,6 +114,23 @@ export default function HomeScreen() {
       }
       getMissions()
       getFailedMissions()
+
+      const backAction = () => {
+        Alert.alert('앱을 종료하시겠습니까?', '', [
+          {
+            text: '아니요',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: '예', onPress: () => BackHandler.exitApp() },
+        ])
+
+        return true // true를 반환해야 기본 뒤로가기를 막음
+      }
+
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
+
+      return () => backHandler.remove() // 컴포넌트가 unmount 될 때 이벤트 리스너 제거
     }, [user]),
   )
 

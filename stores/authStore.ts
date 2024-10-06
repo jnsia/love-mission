@@ -1,4 +1,4 @@
-import { registerForPushNotificationsAsync } from '@/lib/sendPushNotification'
+import { registerForPushNotificationsAsync } from '@/lib/pushNotification'
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
 import AsyncStorage from '@react-native-async-storage/async-storage'

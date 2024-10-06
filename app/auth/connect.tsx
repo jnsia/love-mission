@@ -8,7 +8,7 @@ import RegistButton from '@/components/common/RegistButton'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/utils/supabase'
 import { user } from '@/types/user'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 
 export default function ConnectScreen() {
   const [secret, setSecret] = useState('')

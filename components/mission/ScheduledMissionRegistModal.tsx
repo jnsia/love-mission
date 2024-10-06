@@ -14,7 +14,7 @@ import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/utils/supabase'
 import CancelButton from '../common/CancelButton'
 import { colors } from '@/constants/Colors'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 import { fonts } from '@/constants/Fonts'
 
 export default function ScheduledMissionRegistModal({

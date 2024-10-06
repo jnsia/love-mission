@@ -14,7 +14,7 @@ import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/utils/supabase'
 import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 import { router } from 'expo-router'
 import { fonts } from '@/constants/Fonts'
 

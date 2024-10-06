@@ -9,17 +9,20 @@ import * as SplashScreen from 'expo-splash-screen'
 import theme from '@/constants/Theme'
 import { setCustomText } from 'react-native-global-props'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { settingNotificationListeners } from '@/lib/sendPushNotification'
+import { setNotificationListeners } from '@/lib/pushNotification'
+import BannerAdvertisement from '@/components/advertisement/BannerAdvertisement'
+import { initMobileAds, setRewardAdvertisement } from '@/lib/advertisement'
 
 export default function RootLayout() {
-  const user: user = useAuthStore((state: any) => state.user)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
   const getUserInfoByEmail = useAuthStore((state: any) => state.getUserInfoByEmail)
 
   const router = useRouter()
 
   useEffect(() => {
-    settingNotificationListeners()
+    initMobileAds()
+    setNotificationListeners()
+    // setRewardAdvertisement()
   }, [])
 
   const [loaded, error] = useFonts({
@@ -78,6 +81,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
+      <BannerAdvertisement />
     </>
   )
 }

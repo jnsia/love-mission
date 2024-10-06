@@ -16,7 +16,7 @@ import { supabase } from '@/utils/supabase'
 import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 import InputBox from './InputBox'
 import { fonts } from '@/constants/Fonts'
 

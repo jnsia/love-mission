@@ -1,7 +1,7 @@
 import RegistButton from '@/components/common/RegistButton'
 import OpinionSendModal from '@/components/setting/OpinionSendModal'
 import theme from '@/constants/Theme'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
 import { router } from 'expo-router'

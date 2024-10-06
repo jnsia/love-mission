@@ -12,8 +12,8 @@ import { fonts } from '@/constants/Fonts'
 import { colors } from '@/constants/Colors'
 import GuideView from '@/components/coupon/GuideView'
 import ScheduledMissionRegistModal from '@/components/mission/ScheduledMissionRegistModal'
-import CancelButton from '@/components/common/CancelButton'
 import ScheduledMissionInfoModal from '@/components/mission/ScheduledMissionInfoModal'
+import CloseButton from '@/components/common/CloseButton'
 
 export default function ScheduleScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -123,7 +123,7 @@ export default function ScheduleScreen() {
       />
       <View style={{ marginBottom: 10 }}>
         <RegistButton text="일일 미션 예약하기" onPressEvent={openModal} />
-        <CancelButton text="닫기" onPressEvent={() => router.back()} />
+        <CloseButton text="닫기" onPressEvent={() => router.back()} />
       </View>
     </View>
   )
@@ -161,14 +161,12 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: fonts.size.body,
 
-
     flex: 1,
     color: theme.colors.text,
     fontFamily: fonts.default,
   },
   couponItemText: {
     fontSize: fonts.size.body,
-
 
     flex: 1,
     fontFamily: fonts.defaultBold,
@@ -190,7 +188,6 @@ const styles = StyleSheet.create({
   },
   completedItemText: {
     fontSize: fonts.size.body,
-
 
     color: 'white',
     fontFamily: fonts.default,

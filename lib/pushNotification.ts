@@ -26,7 +26,7 @@ export async function sendPushNotification(
   })
 }
 
-export async function settingNotificationListeners() {
+export async function setNotificationListeners() {
   const notificationResponseReceivedListener =
     Notifications.addNotificationResponseReceivedListener(async () => {
       router.replace('/(tabs)')

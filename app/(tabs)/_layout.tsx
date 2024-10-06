@@ -1,12 +1,10 @@
+import BannerAdvertisement from '@/components/advertisement/BannerAdvertisement'
 import Header from '@/components/common/Header'
 import { colors } from '@/constants/Colors'
 import theme from '@/constants/Theme'
 import { FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import { StatusBar, StyleSheet } from 'react-native'
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
-
-const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-3115269616339333/8194454946'
 
 export default function HomeLayout() {
   return (
@@ -94,33 +92,6 @@ export default function HomeLayout() {
           }}
         />
       </Tabs>
-      <BannerAd
-        unitId={adUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
-        }}
-      />
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: theme.colors.background,
-    padding: 16,
-    alignItems: 'flex-end',
-  },
-  userCoinContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-    gap: 12,
-  },
-  userCoin: {
-    minWidth: 36,
-    textAlign: 'right',
-    color: colors.accent,
-    fontWeight: 'bold',
-  },
-})

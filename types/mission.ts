@@ -7,6 +7,7 @@ export interface mission {
   type: string;
   successCoin: number;
   failCoin: number;
+  createdAt: string
 }
 
 export interface failedMission {

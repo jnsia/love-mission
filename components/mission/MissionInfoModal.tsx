@@ -18,7 +18,7 @@ import CancelButton from '../common/CancelButton'
 import theme from '@/constants/Theme'
 import { mission } from '@/types/mission'
 import { colors } from '@/constants/Colors'
-import { sendPushNotification } from '@/lib/sendPushNotification'
+import { sendPushNotification } from '@/lib/pushNotification'
 import DeleteButton from '../common/DeleteButton'
 import { fonts } from '@/constants/Fonts'
 
@@ -165,10 +165,17 @@ export default function MissionInfoModal({
               <Text style={styles.missionInfoText}>{mission.title}</Text>
             </View>
 
-            {mission.description != '' && (
+            {(mission.description != null && mission.description != '') && (
               <View style={styles.missionInfo}>
                 <Text style={styles.label}>미션 설명</Text>
                 <Text style={styles.missionInfoText}>{mission.description}</Text>
+              </View>
+            )}
+
+            {mission.createdAt != '' && (
+              <View style={styles.missionInfo}>
+                <Text style={styles.label}>미션 등록 날짜</Text>
+                <Text style={styles.missionInfoText}>{mission.createdAt.substring(0, 10)}</Text>
               </View>
             )}
 
@@ -190,7 +197,9 @@ export default function MissionInfoModal({
               <View>
                 {mission.completed ? (
                   <View style={{ alignItems: 'center', gap: 16, marginTop: 8 }}>
-                    <Text style={{ fontSize: fonts.size.body, fontWeight: 'bold' }}>승인 대기 중 입니다...</Text>
+                    <Text style={{ fontSize: fonts.size.body, fontWeight: 'bold' }}>
+                      승인 대기 중 입니다...
+                    </Text>
                     <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                       <CancelButton text="닫기" onPressEvent={closeMissionInfoModal} />
                     </View>

@@ -1,3 +1,7 @@
+import useAuthStore from '@/stores/authStore'
+import { user } from '@/types/user'
+import { supabase } from '@/utils/supabase'
+import { Alert } from 'react-native'
 import MobileAds, {
   MaxAdContentRating,
   RewardedAd,
@@ -5,7 +9,7 @@ import MobileAds, {
   TestIds,
 } from 'react-native-google-mobile-ads'
 
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-3115269616339333/7283099461'
+const rewardAdUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-3115269616339333/7283099461'
 
 const configureAdMob = async () => {
   await MobileAds().setRequestConfiguration({
@@ -15,7 +19,7 @@ const configureAdMob = async () => {
   })
 }
 
-export const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+export const rewarded = RewardedAd.createForAdRequest(rewardAdUnitId, {
   requestNonPersonalizedAdsOnly: true,
 })
 
@@ -29,15 +33,26 @@ export function initMobileAds() {
     })
 }
 
-export function setRewardAdvertisement() {
-  const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-    console.log('Load Reward Advertisement')
-  })
+export function setRewardAdvertisement(user: user, getUserInfoByEmail: (email: string) => void) {
+  const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {})
 
   const unsubscribeEarned = rewarded.addAdEventListener(
     RewardedAdEventType.EARNED_REWARD,
-    (reward) => {
-      console.log('User earned reward of ', reward)
+    async (reward) => {
+      console.log(reward)
+
+      const { error } = await supabase
+        .from('users')
+        .update({ coin: user.coin + 100 })
+        .eq('id', user.id)
+
+      if (error) {
+        console.log(error)
+        return
+      }
+
+      getUserInfoByEmail(user.email)
+      Alert.alert('100Coin 지급 되었습니다!')
     },
   )
 

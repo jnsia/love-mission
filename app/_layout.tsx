@@ -14,6 +14,7 @@ import BannerAdvertisement from '@/components/advertisement/BannerAdvertisement'
 import { initMobileAds, setRewardAdvertisement } from '@/lib/advertisement'
 
 export default function RootLayout() {
+  const user: user = useAuthStore((state: any) => state.user)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
   const getUserInfoByEmail = useAuthStore((state: any) => state.getUserInfoByEmail)
 
@@ -22,8 +23,8 @@ export default function RootLayout() {
   useEffect(() => {
     initMobileAds()
     setNotificationListeners()
-    // setRewardAdvertisement()
-  }, [])
+    if (user) setRewardAdvertisement(user, getUserInfoByEmail)
+  }, [user])
 
   const [loaded, error] = useFonts({
     pretendard: require('@/assets/fonts/Pretendard-Regular.ttf'),

@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import theme from '@/constants/Theme'
 import { colors } from '@/constants/Colors'
 import { user } from '@/types/user'
@@ -13,8 +13,29 @@ export default function Header() {
   const user: user = useAuthStore((state: any) => state.user)
   const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
 
+  const showAds = () => {
+    try {
+      rewarded.show()
+    } catch (error) {
+      Alert.alert('리워드 광고', '준비된 광고가 없습니다.')
+    }
+  }
+
   const clickCoinContainer = () => {
-    rewarded.show()
+    Alert.alert(
+      '리워드 광고',
+      '광고를 시청하고 100Coin을 획득하시겠습니까?',
+      [
+        {
+          text: '아니요',
+        },
+        {
+          text: '네!',
+          onPress: showAds,
+        },
+      ],
+      { cancelable: false },
+    )
   }
 
   useFocusEffect(
@@ -27,24 +48,21 @@ export default function Header() {
 
   return (
     <View style={styles.header}>
-      {rewarded.loaded ? (
-        <TouchableOpacity style={styles.userCoinContainer} onPress={clickCoinContainer}>
-          <View>
-            <View style={{ position: 'relative', right: 5, top: 5 }}>
-              <FontAwesome5 name="coins" size={20} color={colors.accent} />
-            </View>
-            <View style={{ position: 'relative', left: 15, bottom: 5 }}>
-              <FontAwesome5 name="plus" size={12} color={colors.accent} />
-            </View>
+      <TouchableOpacity style={styles.userCoinContainer} onPress={clickCoinContainer}>
+        <View>
+          <View style={{ position: 'relative', right: 10, top: 5 }}>
+            <FontAwesome5 name="coins" size={20} color={colors.accent} />
           </View>
-          {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.userCoinContainer}>
-          <FontAwesome5 name="coins" size={20} color={colors.accent} />
-          {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
+          <View style={{ position: 'relative', left: 10, bottom: 5 }}>
+            <FontAwesome5 name="plus" size={12} color={colors.accent} />
+          </View>
         </View>
-      )}
+        {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
+      </TouchableOpacity>
+      {/* <View style={styles.userCoinContainer}>
+        <FontAwesome5 name="coins" size={20} color={colors.accent} />
+        {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
+      </View> */}
     </View>
   )
 }
@@ -61,7 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 4,
-    gap: 12,
+    gap: 8,
   },
   userCoin: {
     minWidth: 36,

@@ -23,6 +23,9 @@ export default function RootLayout() {
   useEffect(() => {
     initMobileAds()
     setNotificationListeners()
+  }, [])
+
+  useEffect(() => {
     if (user) setRewardAdvertisement(user, getUserInfoByEmail)
   }, [user])
 

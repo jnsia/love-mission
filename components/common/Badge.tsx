@@ -14,6 +14,7 @@ export default function Badge({ type }: { type: string }) {
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   badge: {
     borderWidth: 1,

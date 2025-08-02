@@ -56,16 +56,16 @@ const useAuthStore = create((set) => ({
         return null
       }
 
-      const user: user = data[0]
+      const user = data[0]
 
       await AsyncStorage.setItem('isLoggedInLoveMission', user?.email)
 
       // FCM 토큰 발급 및 저장
       const token = await registerForPushNotificationsAsync()
 
-      await supabase.from('users').update({ fcmToken: token }).eq('id', user.id)
-
       if (token) {
+        // FCM token 저장을 비동기로 처리
+        saveFcmToken(user.id, token)
         user.fcmToken = token
       }
 
@@ -97,5 +97,9 @@ const useAuthStore = create((set) => ({
     router.replace('/auth/signIn')
   },
 }))
+
+const saveFcmToken = async (userId: number, token: string) => {
+  await supabase.from('users').update({ fcmToken: token }).eq('id', userId)
+}
 
 export default useAuthStore

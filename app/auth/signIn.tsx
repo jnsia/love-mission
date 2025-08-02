@@ -1,25 +1,7 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
-  Platform,
-  BackHandler,
-  Modal,
-  PermissionsAndroid,
-  Alert,
-  Animated,
-} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-
-import { useFocusEffect } from '@react-navigation/native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Animated } from 'react-native'
+import React, { useState } from 'react'
 import { colors } from '@/constants/Colors'
 import theme from '@/constants/Theme'
-import { FontAwesome } from '@expo/vector-icons'
 import { user } from '@/types/user'
 import useAuthStore from '@/stores/authStore'
 import { router } from 'expo-router'
@@ -85,7 +67,7 @@ export default function SignInScreen() {
     setPassword('')
 
     if (userInfo.loveId == null) {
-      router.replace("/auth/connect")
+      router.replace('/auth/connect')
     } else {
       router.replace('/(tabs)')
     }
@@ -103,7 +85,7 @@ export default function SignInScreen() {
       >
         <TextInput
           style={styles.input}
-          placeholder="이메일"
+          placeholder='이메일'
           keyboardType='email-address'
           value={email}
           onChangeText={setEmail}
@@ -116,7 +98,7 @@ export default function SignInScreen() {
       >
         <TextInput
           style={styles.input}
-          placeholder="비밀번호"
+          placeholder='비밀번호'
           secureTextEntry
           value={password}
           onChangeText={setPassword}

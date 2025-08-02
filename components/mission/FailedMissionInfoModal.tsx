@@ -25,7 +25,7 @@ export default function FailedMissionInfoModal({
   }, [failedMissions])
 
   return (
-    <Modal animationType="fade" visible={isFailedMissionInfoVisible} transparent={true}>
+    <Modal animationType='fade' visible={isFailedMissionInfoVisible} transparent={true}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalView}>
           <Text style={styles.title}>실패한 미션 목록</Text>
@@ -46,7 +46,7 @@ export default function FailedMissionInfoModal({
             <Text style={styles.lostCoinInfoText}>전체 잃은 코인</Text>
             <Text style={styles.lostCoinInfoText}>-{totalLostCoin} Coin</Text>
           </View>
-          <CancelButton text="확인" onPressEvent={closeFailedMissionInfoModal} />
+          <CancelButton text='확인' onPressEvent={closeFailedMissionInfoModal} />
         </View>
       </View>
     </Modal>
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
   modalView: {
     position: 'absolute',
     width: '90%',
+    maxHeight: '80%',
     padding: 16,
     marginTop: 60,
     backgroundColor: 'white',

@@ -1,29 +1,16 @@
-import {
-  Alert,
-  BackHandler,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { Alert, BackHandler, ScrollView, StyleSheet, View } from 'react-native'
 import { supabase } from '@/utils/supabase'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { user } from '@/types/user'
 import useAuthStore from '@/stores/authStore'
 import { failedMission, mission } from '@/types/mission'
 import theme from '@/constants/Theme'
-import { router, useFocusEffect } from 'expo-router'
+import { useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/components/mission/MissionInfoModal'
-import { fonts } from '@/constants/Fonts'
-import { colors } from '@/constants/Colors'
 import GuideView from '@/components/coupon/GuideView'
 import FailedMissionInfoModal from '@/components/mission/FailedMissionInfoModal'
-import Badge from '@/components/common/Badge'
-import MissionContainer from '@/components/mission/MissionButton'
 import MissionButton from '@/components/mission/MissionButton'
 import CouponMissionButton from '@/components/mission/CouponMissionButton'
-import { useRoute } from '@react-navigation/native'
 
 export default function HomeScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -35,8 +22,6 @@ export default function HomeScreen() {
 
   const user: user = useAuthStore((state: any) => state.user)
   const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
-
-  const route = useRoute()
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)

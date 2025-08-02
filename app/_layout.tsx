@@ -76,16 +76,16 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar
-        barStyle="light-content" // 상태바 아이콘을 밝게 표시
+        barStyle='light-content' // 상태바 아이콘을 밝게 표시
         translucent={true} // 상태바를 투명하게 설정
-        backgroundColor="transparent" // 상태바의 배경을 투명하게 설정
+        backgroundColor='transparent' // 상태바의 배경을 투명하게 설정
       />
       <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
-        <Stack.Screen name="auth" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="+not-found" />
+        <Stack.Screen name='auth' />
+        <Stack.Screen name='(tabs)' />
+        <Stack.Screen name='+not-found' />
       </Stack>
-      <BannerAdvertisement />
+      {/* <BannerAdvertisement /> */}
     </>
   )
 }

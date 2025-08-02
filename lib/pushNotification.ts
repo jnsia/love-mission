@@ -65,8 +65,33 @@ export async function setNotificationListeners() {
 }
 
 export async function registerForPushNotificationsAsync() {
-  const { status } = await Notifications.requestPermissionsAsync()
+  // 1. 현재 권한 상태 확인
+  const { status: existingStatus } = await Notifications.getPermissionsAsync()
+  let finalStatus = existingStatus
 
+  // 2. 권한이 없는 경우에만 요청
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync()
+    finalStatus = status
+  }
+
+  // 3. 권한이 없으면 종료
+  if (finalStatus !== 'granted') {
+    alert('푸시 알림을 허용해주세요!')
+    return null
+  }
+
+  // 4. Android 채널 설정
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    })
+  }
+
+  // 5. 알림 핸들러 설정
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -75,21 +100,14 @@ export async function registerForPushNotificationsAsync() {
     }),
   })
 
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
+  // 6. 토큰 발급 시도
+  try {
+    const token = await Notifications.getExpoPushTokenAsync({
+      projectId: process.env.projectId, // 프로젝트 ID 필수
     })
+    return token.data
+  } catch (error) {
+    console.error('푸시 토큰 발급 오류:', error)
+    return null
   }
-
-  if (status !== 'granted') {
-    alert('푸시 알림을 허용해주세요!')
-    return
-  }
-
-  const token = (await Notifications.getExpoPushTokenAsync()).data
-
-  return token
 }

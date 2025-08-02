@@ -1,15 +1,5 @@
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  ScrollView,
-  TouchableWithoutFeedback,
-  TextInput,
-} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import theme from '@/constants/Theme'
-import { failedMission } from '@/types/mission'
+import { View, Text, Modal, StyleSheet, TouchableWithoutFeedback, TextInput } from 'react-native'
+import React, { useState } from 'react'
 import CancelButton from '../common/CancelButton'
 import { fonts } from '@/constants/Fonts'
 import { supabase } from '@/utils/supabase'
@@ -29,7 +19,7 @@ export default function OpinionSendModal({
   }
 
   return (
-    <Modal animationType="fade" visible={isVisible} transparent={true} onRequestClose={closeModal}>
+    <Modal animationType='fade' visible={isVisible} transparent={true} onRequestClose={closeModal}>
       <TouchableWithoutFeedback onPress={closeModal}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
@@ -37,7 +27,7 @@ export default function OpinionSendModal({
             <View style={styles.modalBody}>
               <TextInput
                 style={styles.input}
-                placeholder="앱에 대한 의견을 입력해주세요!"
+                placeholder='앱에 대한 의견을 입력해주세요!'
                 value={opinion}
                 onChangeText={setOpinion}
                 multiline
@@ -45,8 +35,8 @@ export default function OpinionSendModal({
               <Text style={styles.label}>의견을 수렴하여 더 좋은 앱을 만들겠습니다!</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 16 }}>
-              <CancelButton text="취소하기" onPressEvent={closeModal} />
-              <SubmitButton text="의견 공유" onPressEvent={sendOpinion} />
+              <CancelButton text='취소하기' onPressEvent={closeModal} />
+              <SubmitButton text='의견 공유' onPressEvent={sendOpinion} />
             </View>
           </View>
         </View>

@@ -1,4 +1,3 @@
-import useAuthStore from '@/stores/authStore'
 import { user } from '@/types/user'
 import { supabase } from '@/utils/supabase'
 import { Alert } from 'react-native'

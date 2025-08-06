@@ -20,12 +20,12 @@ export default function CancelButton({
 const styles = StyleSheet.create({
   button: {
     flex: 1,
+    backgroundColor: theme.colors.text,
     justifyContent: 'center',
     borderWidth: 1,
     height: 48,
     paddingHorizontal: 20,
     borderRadius: 5,
-    backgroundColor: theme.colors.text,
   },
   buttonText: {
     fontSize: fonts.size.body,

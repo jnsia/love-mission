@@ -1,20 +1,29 @@
-export interface mission {
-  id: number;
-  title: string;
-  description: string;
-  completed: boolean;
-  userId: number;
-  type: string;
-  successCoin: number;
-  failCoin: number;
+export interface Mission {
+  id: number
+  title: string
+  description: string
+  completed: boolean
+  userId: number
+  type: string
+  successCoin: number
+  failCoin: number
   createdAt: string
 }
 
 export interface failedMission {
-  id: number;
-  title: string;
-  date: string;
-  userId: number;
-  type: string;
-  coin: number;
+  id: number
+  title: string
+  date: string
+  userId: number
+  type: string
+  coin: number
+}
+
+export interface MissionRegisterRequest {
+  title: string
+  description: string
+  type: string
+  successCoin: string
+  failCoin: string
+  userId: number
 }

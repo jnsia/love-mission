@@ -1,9 +1,16 @@
-import { View, Text, Modal, StyleSheet, TouchableWithoutFeedback, TextInput } from 'react-native'
+import {
+  View,
+  Text,
+  Modal,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TextInput,
+} from 'react-native'
 import React, { useState } from 'react'
-import CancelButton from '../common/CancelButton'
 import { fonts } from '@/shared/constants/Fonts'
 import { supabase } from '@/shared/utils/supabase'
-import SubmitButton from '../common/SubmitButton'
+import CancelButton from '@/shared/components/CancelButton'
+import SubmitButton from '@/shared/components/SubmitButton'
 
 export default function OpinionSendModal({
   isVisible,
@@ -19,7 +26,12 @@ export default function OpinionSendModal({
   }
 
   return (
-    <Modal animationType='fade' visible={isVisible} transparent={true} onRequestClose={closeModal}>
+    <Modal
+      animationType='fade'
+      visible={isVisible}
+      transparent={true}
+      onRequestClose={closeModal}
+    >
       <TouchableWithoutFeedback onPress={closeModal}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalView}>
@@ -32,7 +44,9 @@ export default function OpinionSendModal({
                 onChangeText={setOpinion}
                 multiline
               />
-              <Text style={styles.label}>의견을 수렴하여 더 좋은 앱을 만들겠습니다!</Text>
+              <Text style={styles.label}>
+                의견을 수렴하여 더 좋은 앱을 만들겠습니다!
+              </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 16 }}>
               <CancelButton text='취소하기' onPressEvent={closeModal} />

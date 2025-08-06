@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import theme from '@/shared/constants/Theme'
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'
 
@@ -17,7 +16,12 @@ export default function CouponTabs({
         style={[styles.tabButton, page === 'myCoupons' && styles.selectedTab]}
         onPress={() => setPage('myCoupons')}
       >
-        <Text style={[styles.tabText, page === 'myCoupons' && styles.selectedTabText]}>
+        <Text
+          style={[
+            styles.tabText,
+            page === 'myCoupons' && styles.selectedTabText,
+          ]}
+        >
           보유한 쿠폰
         </Text>
       </TouchableOpacity>
@@ -25,15 +29,28 @@ export default function CouponTabs({
         style={[styles.tabButton, page === 'loveCoupons' && styles.selectedTab]}
         onPress={() => setPage('loveCoupons')}
       >
-        <Text style={[styles.tabText, page === 'loveCoupons' && styles.selectedTabText]}>
+        <Text
+          style={[
+            styles.tabText,
+            page === 'loveCoupons' && styles.selectedTabText,
+          ]}
+        >
           구매 가능 쿠폰
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.tabButton, page === 'issuedCoupons' && styles.selectedTab]}
+        style={[
+          styles.tabButton,
+          page === 'issuedCoupons' && styles.selectedTab,
+        ]}
         onPress={() => setPage('issuedCoupons')}
       >
-        <Text style={[styles.tabText, page === 'issuedCoupons' && styles.selectedTabText]}>
+        <Text
+          style={[
+            styles.tabText,
+            page === 'issuedCoupons' && styles.selectedTabText,
+          ]}
+        >
           발행한 쿠폰
         </Text>
       </TouchableOpacity>

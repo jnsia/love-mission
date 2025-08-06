@@ -11,15 +11,14 @@ import {
 import React, { useState } from 'react'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
 import { colors } from '@/shared/constants/Colors'
-import { sendPushNotification } from '@/shared/lib/pushNotification'
 import { fonts } from '@/shared/constants/Fonts'
 import GuideView from '../coupon/GuideView'
 import CancelButton from '@/shared/components/CancelButton'
 import SubmitButton from '@/shared/components/SubmitButton'
+import useMissionRegister from './hooks/useMissionRegister'
 
-export default function MissionRegistModal({
+export default function MissionRegisterModal({
   getMissions,
   isModalVisible,
   closeModal,
@@ -36,26 +35,26 @@ export default function MissionRegistModal({
   const [failCoin, setFailCoin] = useState('0')
 
   const user: user = useAuthStore((state: any) => state.user)
-  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
-  const registMission = async () => {
+  const { registerMission } = useMissionRegister()
+
+  const selectMissionType = (type: string) => {
+    setType(type)
+  }
+
+  const handleRegisterMission = async () => {
     if (title == '') return
 
-    const { error } = await supabase.from('missions').insert({
+    const request = {
       title,
       description,
       type,
       successCoin,
       failCoin,
       userId: user.loveId,
-    })
-
-    if (error) {
-      console.error(error)
-      return
     }
 
-    await sendPushNotification(loveFcmToken, '연인이 미션을 등록하였습니다!', title, 'home')
+    await registerMission(request)
 
     setType('special')
     setTitle('')
@@ -66,10 +65,6 @@ export default function MissionRegistModal({
 
     getMissions()
     closeModal()
-  }
-
-  const selectMissionType = (type: string) => {
-    setType(type)
   }
 
   return (
@@ -85,23 +80,35 @@ export default function MissionRegistModal({
             <View style={styles.modalView}>
               <ScrollView>
                 {type === 'special' && (
-                  <GuideView texts={['특별 미션은 시간이 지나도 사라지지 않아요~']} />
+                  <GuideView
+                    texts={['특별 미션은 시간이 지나도 사라지지 않아요~']}
+                  />
                 )}
-                {type === 'daily' && <GuideView texts={['일일 미션은 다음 날이 되면 사라져요!']} />}
+                {type === 'daily' && (
+                  <GuideView texts={['일일 미션은 다음 날이 되면 사라져요!']} />
+                )}
                 {type === 'emergency' && (
-                  <GuideView texts={['긴급 미션은 미션의 마감기한을 설정할 수 있어요.']} />
+                  <GuideView
+                    texts={['긴급 미션은 미션의 마감기한을 설정할 수 있어요.']}
+                  />
                 )}
 
                 <Text style={styles.label}>미션 타입</Text>
                 <View style={styles.typeSelectBox}>
                   <TouchableOpacity
-                    style={[styles.typeButton, type === 'special' && styles.selectedTypeButton]}
+                    style={[
+                      styles.typeButton,
+                      type === 'special' && styles.selectedTypeButton,
+                    ]}
                     onPress={() => selectMissionType('special')}
                   >
                     <Text style={styles.typeText}>특별</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.typeButton, type === 'daily' && styles.selectedTypeButton]}
+                    style={[
+                      styles.typeButton,
+                      type === 'daily' && styles.selectedTypeButton,
+                    ]}
                     onPress={() => selectMissionType('daily')}
                   >
                     <Text style={styles.typeText}>일일</Text>
@@ -170,7 +177,10 @@ export default function MissionRegistModal({
 
                 <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                   <CancelButton text='취소하기' onPressEvent={closeModal} />
-                  <SubmitButton text='저장하기' onPressEvent={registMission} />
+                  <SubmitButton
+                    text='저장하기'
+                    onPressEvent={handleRegisterMission}
+                  />
                 </View>
               </ScrollView>
             </View>

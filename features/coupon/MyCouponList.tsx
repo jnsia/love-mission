@@ -31,7 +31,10 @@ export default function MyCouponList({
   }
 
   const getMyCoupons = async () => {
-    const { data, error } = await supabase.from('myCoupons').select().eq('userId', user.id)
+    const { data, error } = await supabase
+      .from('myCoupons')
+      .select()
+      .eq('userId', user.id)
 
     if (error) {
       console.error('Error fetching todos:', error.message)
@@ -55,7 +58,10 @@ export default function MyCouponList({
     <View>
       {myCoupons.map((coupon) => (
         <View key={coupon.id}>
-          <TouchableOpacity style={styles.couponItem} onPress={() => clickCoupon(coupon)}>
+          <TouchableOpacity
+            style={styles.couponItem}
+            onPress={() => clickCoupon(coupon)}
+          >
             <Text style={styles.couponText}>{coupon.name}</Text>
           </TouchableOpacity>
           {selectedCouponId == coupon.id && (

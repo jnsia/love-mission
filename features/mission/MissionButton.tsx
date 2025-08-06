@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import theme from '@/shared/constants/Theme'
-import { mission } from '@/features/mission/types/mission'
+import { Mission } from '@/features/mission/types/mission'
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'
 import Badge from '@/shared/components/Badge'
@@ -10,8 +10,8 @@ export default function MissionButton({
   mission,
   clickMission,
 }: {
-  mission: mission
-  clickMission: (mission: mission) => void
+  mission: Mission
+  clickMission: (mission: Mission) => void
 }) {
   return (
     <TouchableOpacity

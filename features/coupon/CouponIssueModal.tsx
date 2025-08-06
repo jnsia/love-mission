@@ -1,24 +1,20 @@
 import {
   View,
-  Text,
   Modal,
   StyleSheet,
-  TouchableOpacity,
-  TextInput,
   ScrollView,
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import SubmitButton from '../common/SubmitButton'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
-import CancelButton from '../common/CancelButton'
-import theme from '@/shared/constants/Theme'
 import { colors } from '@/shared/constants/Colors'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import InputBox from './InputBox'
 import { fonts } from '@/shared/constants/Fonts'
+import CancelButton from '@/shared/components/CancelButton'
+import SubmitButton from '@/shared/components/SubmitButton'
 
 export default function CouponIssueModal({
   getIssuedCoupons,
@@ -74,7 +70,12 @@ export default function CouponIssueModal({
       return
     }
 
-    await sendPushNotification(loveFcmToken, '연인이 새로운 쿠폰을 발행하였습니다!', name, 'coupon')
+    await sendPushNotification(
+      loveFcmToken,
+      '연인이 새로운 쿠폰을 발행하였습니다!',
+      name,
+      'coupon',
+    )
 
     setName('')
     setDescription('')

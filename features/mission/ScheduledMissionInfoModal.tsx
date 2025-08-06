@@ -11,11 +11,11 @@ import React from 'react'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
-import CancelButton from '../common/CancelButton'
 import theme from '@/shared/constants/Theme'
-import { mission } from '@/features/mission/types/mission'
-import DeleteButton from '../common/DeleteButton'
+import { Mission } from '@/features/mission/types/mission'
 import { fonts } from '@/shared/constants/Fonts'
+import DeleteButton from '@/shared/components/DeleteButton'
+import CancelButton from '@/shared/components/CancelButton'
 
 export default function ScheduledMissionInfoModal({
   getMissions,
@@ -26,7 +26,7 @@ export default function ScheduledMissionInfoModal({
   getMissions: () => void
   isMissionInfoVisible: boolean
   closeMissionInfoModal: () => void
-  mission: mission
+  mission: Mission
 }) {
   const user: user = useAuthStore((state: any) => state.user)
 
@@ -76,14 +76,18 @@ export default function ScheduledMissionInfoModal({
             {mission.description != '' && (
               <View style={styles.missionInfo}>
                 <Text style={styles.label}>미션 설명</Text>
-                <Text style={styles.missionInfoText}>{mission.description}</Text>
+                <Text style={styles.missionInfoText}>
+                  {mission.description}
+                </Text>
               </View>
             )}
 
             {mission.successCoin != 0 && (
               <View style={styles.missionInfo}>
                 <Text style={styles.label}>성공 시 지급될 코인</Text>
-                <Text style={styles.missionInfoText}>{mission.successCoin}</Text>
+                <Text style={styles.missionInfoText}>
+                  {mission.successCoin}
+                </Text>
               </View>
             )}
 
@@ -94,8 +98,14 @@ export default function ScheduledMissionInfoModal({
 
             <View>
               <View style={{ flexDirection: 'row', gap: 8 }}>
-                <DeleteButton text='삭제하기' onPressEvent={clickDeleteMission} />
-                <CancelButton text='닫기' onPressEvent={closeMissionInfoModal} />
+                <DeleteButton
+                  text='삭제하기'
+                  onPressEvent={clickDeleteMission}
+                />
+                <CancelButton
+                  text='닫기'
+                  onPressEvent={closeMissionInfoModal}
+                />
               </View>
             </View>
           </ScrollView>

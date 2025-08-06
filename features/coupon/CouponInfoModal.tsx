@@ -7,16 +7,16 @@ import {
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native'
-import React, { useState } from 'react'
-import SubmitButton from '../common/SubmitButton'
+import React from 'react'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
-import CancelButton from '../common/CancelButton'
 import theme from '@/shared/constants/Theme'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import { router } from 'expo-router'
 import { fonts } from '@/shared/constants/Fonts'
+import CancelButton from '@/shared/components/CancelButton'
+import SubmitButton from '@/shared/components/SubmitButton'
 
 export default function CouponInfoModal({
   page,
@@ -34,7 +34,9 @@ export default function CouponInfoModal({
   coupon: coupon
 }) {
   const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+  const getRecentUserInfo = useAuthStore(
+    (state: any) => state.getRecentUserInfo,
+  )
   const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const useCoupon = async () => {
@@ -98,7 +100,10 @@ export default function CouponInfoModal({
   }
 
   const deleteCoupon = async () => {
-    const { data, error } = await supabase.from('loveCoupon').delete().eq('id', coupon.id)
+    const { data, error } = await supabase
+      .from('loveCoupon')
+      .delete()
+      .eq('id', coupon.id)
 
     if (error) {
       console.error('쿠폰 삭제 중 문제 발생')
@@ -211,7 +216,10 @@ export default function CouponInfoModal({
             {page === 'issuedCoupons' && (
               <View style={{ flexDirection: 'row', gap: 16, marginTop: 8 }}>
                 <CancelButton text='닫기' onPressEvent={closeCouponInfoModal} />
-                <SubmitButton text='삭제하기' onPressEvent={clickDeleteButton} />
+                <SubmitButton
+                  text='삭제하기'
+                  onPressEvent={clickDeleteButton}
+                />
               </View>
             )}
           </ScrollView>

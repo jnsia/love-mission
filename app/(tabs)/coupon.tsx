@@ -1,4 +1,3 @@
-import RegistButton from '@/features/common/RegistButton'
 import CouponIssueModal from '@/features/coupon/CouponIssueModal'
 import CouponTabs from '@/features/coupon/CouponTabs'
 import IssuedCouponList from '@/features/coupon/IssuedCouponList'
@@ -11,6 +10,7 @@ import { user } from '@/shared/types/user'
 import { supabase } from '@/shared/utils/supabase'
 import React, { useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
+import RegistButton from '@/shared/components/RegistButton'
 
 export default function CouponListScreen() {
   const [page, setPage] = useState('myCoupons')
@@ -29,7 +29,10 @@ export default function CouponListScreen() {
   }
 
   const getIssuedCoupons = async () => {
-    const { data, error } = await supabase.from('loveCoupons').select().eq('userId', user.id)
+    const { data, error } = await supabase
+      .from('loveCoupons')
+      .select()
+      .eq('userId', user.id)
 
     if (error) {
       console.error('Error fetching todos:', error.message)
@@ -44,7 +47,9 @@ export default function CouponListScreen() {
       <CouponTabs page={page} setPage={setPage} />
       <ScrollView style={styles.couponsContainer}>
         {page === 'myCoupons' && <MyCouponList page={page} setPage={setPage} />}
-        {page === 'loveCoupons' && <LoveCouponList page={page} setPage={setPage} />}
+        {page === 'loveCoupons' && (
+          <LoveCouponList page={page} setPage={setPage} />
+        )}
         {page === 'issuedCoupons' && (
           <IssuedCouponList
             page={page}

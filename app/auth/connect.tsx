@@ -1,14 +1,21 @@
 import { useState, useEffect } from 'react'
-import { Alert, Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import {
+  Alert,
+  Animated,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'
 import theme from '@/shared/constants/Theme'
-import RegistButton from '@/features/common/RegistButton'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
 import { user } from '@/shared/types/user'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
+import RegistButton from '@/shared/components/RegistButton'
 
 export default function ConnectScreen() {
   const [secret, setSecret] = useState('')
@@ -89,11 +96,21 @@ export default function ConnectScreen() {
 
       await supabase
         .from('loveCoupons')
-        .insert({ name: '뽀뽀 해줘!', description: '', price: 100, userId: user.id })
+        .insert({
+          name: '뽀뽀 해줘!',
+          description: '',
+          price: 100,
+          userId: user.id,
+        })
 
       await supabase
         .from('loveCoupons')
-        .insert({ name: '뽀뽀 해줘!', description: '', price: 100, userId: love.id })
+        .insert({
+          name: '뽀뽀 해줘!',
+          description: '',
+          price: 100,
+          userId: love.id,
+        })
 
       await sendPushNotification(
         love.fcmToken,
@@ -111,7 +128,10 @@ export default function ConnectScreen() {
   const clickConnectButton = async () => {
     if (secret.length !== 6) return
 
-    const { data, error } = await supabase.from('users').select().eq('secret', secret)
+    const { data, error } = await supabase
+      .from('users')
+      .select()
+      .eq('secret', secret)
 
     if (error) {
       console.error(error)
@@ -165,7 +185,12 @@ export default function ConnectScreen() {
       {generatedSecret == '' ? (
         <View>
           <Text style={styles.title}>암호를 발급하거나 입력해주세요!</Text>
-          <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
+          <Animated.View
+            style={[
+              styles.inputContainer,
+              { transform: [{ scale: animation }] },
+            ]}
+          >
             {/* <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} /> */}
             <View style={styles.secretContainer}>
               {Array(6)
@@ -174,7 +199,9 @@ export default function ConnectScreen() {
                   <View
                     key={i}
                     style={
-                      secret[i] ? { ...styles.secretBox, ...styles.secretFilled } : styles.secretBox
+                      secret[i]
+                        ? { ...styles.secretBox, ...styles.secretFilled }
+                        : styles.secretBox
                     }
                   >
                     <Text style={styles.secretText}>{secret[i] || ''}</Text>
@@ -193,10 +220,16 @@ export default function ConnectScreen() {
             />
           </Animated.View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={clickGenerateButton}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={clickGenerateButton}
+            >
               <Text style={styles.buttonText}>암호 생성</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={clickConnectButton}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={clickConnectButton}
+            >
               <Text style={styles.buttonText}>암호 제출</Text>
             </TouchableOpacity>
           </View>
@@ -204,7 +237,12 @@ export default function ConnectScreen() {
       ) : (
         <View>
           <Text style={styles.title}>암호를 생성하였습니다!</Text>
-          <Animated.View style={[styles.inputContainer, { transform: [{ scale: animation }] }]}>
+          <Animated.View
+            style={[
+              styles.inputContainer,
+              { transform: [{ scale: animation }] },
+            ]}
+          >
             {/* <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} /> */}
             <View style={styles.secretContainer}>
               {generatedSecret.split('').map((value, index) => (

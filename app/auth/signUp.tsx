@@ -1,13 +1,20 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from 'react-native'
 import React, { useState } from 'react'
 import { fonts } from '@/shared/constants/Fonts'
 import { colors } from '@/shared/constants/Colors'
 import theme from '@/shared/constants/Theme'
 import { router } from 'expo-router'
-import { createClient } from '@supabase/supabase-js'
 import { supabase } from '@/shared/utils/supabase'
 
-const regex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
+const regex =
+  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
 
 export default function SignUpScreen() {
   const [step, setStep] = useState(1)
@@ -65,7 +72,7 @@ export default function SignUpScreen() {
       return
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: email,
       password: password,
     })
@@ -113,7 +120,9 @@ export default function SignUpScreen() {
               />
             </View>
             {!isValidPassword && (
-              <Text style={styles.warningText}>비밀번호 형식이 올바르지 않습니다.</Text>
+              <Text style={styles.warningText}>
+                비밀번호 형식이 올바르지 않습니다.
+              </Text>
             )}
           </View>
           <View style={styles.inputContainer}>
@@ -129,7 +138,9 @@ export default function SignUpScreen() {
               />
             </View>
             {!isValidVerifiedPassword && (
-              <Text style={styles.warningText}>비밀번호가 일치하지 않습니다.</Text>
+              <Text style={styles.warningText}>
+                비밀번호가 일치하지 않습니다.
+              </Text>
             )}
           </View>
           <TouchableOpacity style={styles.button} onPress={clickSignUpButton}>
@@ -146,7 +157,10 @@ export default function SignUpScreen() {
       {step === 2 && (
         <View>
           <Text style={styles.title}>가입이 완료되었습니다.</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/signIn')}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push('/auth/signIn')}
+          >
             <Text style={styles.buttonText}>로그인 하기</Text>
           </TouchableOpacity>
         </View>

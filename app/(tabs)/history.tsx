@@ -1,5 +1,12 @@
 import React, { useCallback, useState } from 'react'
-import { StyleSheet, Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native'
 
 import { useFocusEffect } from '@react-navigation/native'
 import theme from '@/shared/constants/Theme'
@@ -12,7 +19,6 @@ import HistoryInfoModal from '@/features/history/HistoryInfoModal'
 
 export default function History() {
   const [page, setPage] = useState('missions')
-  // const [type, setType] = useState('전체')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedHistoryId, setSelctedHistoryId] = useState(0)
   const [histories, setHistories] = useState<history[]>([])
@@ -52,51 +58,6 @@ export default function History() {
   return (
     <View style={styles.container}>
       <HistoryTabs page={page} setPage={setPage} />
-      {/* <View>
-        {page ? (
-          <View style={styles.typeSelectBox}>
-            <TouchableOpacity
-              style={type === '전체' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('전체')}
-            >
-              <Text style={type === '전체' ? styles.activeText : styles.text}>전체</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={type === '획득' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('적립')}
-            >
-              <Text style={type === '적립' ? styles.activeText : styles.text}>적립</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={type === '차감' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('출금')}
-            >
-              <Text style={type === '출금' ? styles.activeText : styles.text}>출금</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={styles.typeSelectBox}>
-            <TouchableOpacity
-              style={type === '전체' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('전체')}
-            >
-              <Text style={type === '전체' ? styles.activeText : styles.text}>전체</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={type === '획득' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('적립')}
-            >
-              <Text style={type === '적립' ? styles.activeText : styles.text}>적립</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={type === '차감' ? styles.typeActiveBtn : styles.typeBtn}
-              onPress={() => setType('출금')}
-            >
-              <Text style={type === '출금' ? styles.activeText : styles.text}>출금</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View> */}
       <ScrollView style={styles.missionsBox}>
         {page === 'missions' && (
           <View>
@@ -127,7 +88,14 @@ export default function History() {
                 style={styles.coinItem}
                 onPress={() => clickHistory(history.id)}
               >
-                <View style={{ flex: 1, gap: 4, flexWrap: 'nowrap', marginRight: 12 }}>
+                <View
+                  style={{
+                    flex: 1,
+                    gap: 4,
+                    flexWrap: 'nowrap',
+                    marginRight: 12,
+                  }}
+                >
                   <Text style={styles.itemText} numberOfLines={1}>
                     {history.record}
                   </Text>

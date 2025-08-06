@@ -31,7 +31,10 @@ export default function LoveCouponList({
   }
 
   const getLoveCoupons = async () => {
-    const { data, error } = await supabase.from('loveCoupons').select().eq('userId', user.loveId)
+    const { data, error } = await supabase
+      .from('loveCoupons')
+      .select()
+      .eq('userId', user.loveId)
 
     if (error) {
       console.error('Error fetching loveCoupons:', error.message)
@@ -51,7 +54,10 @@ export default function LoveCouponList({
     <View>
       {loveCoupons.map((coupon) => (
         <View key={coupon.id}>
-          <TouchableOpacity style={styles.couponItem} onPress={() => clickCoupon(coupon)}>
+          <TouchableOpacity
+            style={styles.couponItem}
+            onPress={() => clickCoupon(coupon)}
+          >
             <View style={styles.couponContent}>
               <Text style={styles.couponText}>{coupon.name}</Text>
               <Text style={styles.couponPrice}>{coupon.price} Coin</Text>

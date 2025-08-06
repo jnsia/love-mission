@@ -1,7 +1,5 @@
-import BannerAdvertisement from '@/features/advertisement/BannerAdvertisement'
-import Header from '@/features/common/Header'
+import Header from '@/shared/components/Header'
 import { colors } from '@/shared/constants/Colors'
-import theme from '@/shared/constants/Theme'
 import { FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import { StatusBar, StyleSheet } from 'react-native'

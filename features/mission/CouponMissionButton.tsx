@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import theme from '@/shared/constants/Theme'
-import { mission } from '@/features/mission/types/mission'
+import { Mission } from '@/features/mission/types/mission'
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'
 import Badge from '@/shared/components/Badge'
@@ -10,12 +10,18 @@ export default function CouponMissionButton({
   mission,
   clickMission,
 }: {
-  mission: mission
-  clickMission: (mission: mission) => void
+  mission: Mission
+  clickMission: (mission: Mission) => void
 }) {
   return (
-    <TouchableOpacity style={styles.couponItem} onPress={() => clickMission(mission)}>
-      <Text style={{ ...styles.itemText, color: colors.accent }} numberOfLines={1}>
+    <TouchableOpacity
+      style={styles.couponItem}
+      onPress={() => clickMission(mission)}
+    >
+      <Text
+        style={{ ...styles.itemText, color: colors.accent }}
+        numberOfLines={1}
+      >
         빠른 시일 내에 해결해주세요!
       </Text>
       <View style={{ flexDirection: 'row' }}>

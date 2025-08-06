@@ -3,7 +3,7 @@ import { supabase } from '@/shared/utils/supabase'
 import { useCallback, useState } from 'react'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
-import { failedMission, mission } from '@/features/mission/types/mission'
+import { failedMission, Mission } from '@/features/mission/types/mission'
 import theme from '@/shared/constants/Theme'
 import { useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/features/mission/MissionInfoModal'
@@ -13,15 +13,18 @@ import MissionButton from '@/features/mission/MissionButton'
 import CouponMissionButton from '@/features/mission/CouponMissionButton'
 
 export default function HomeScreen() {
-  const [missions, setMissions] = useState<mission[]>([])
+  const [missions, setMissions] = useState<Mission[]>([])
   const [failedMissions, setFailedMissions] = useState<failedMission[]>([])
-  const [completedMissions, setCompletedMissions] = useState<mission[]>([])
+  const [completedMissions, setCompletedMissions] = useState<Mission[]>([])
   const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
-  const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] = useState(false)
+  const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] =
+    useState(false)
   const [selctedMissionId, setSelctedMissionId] = useState(0)
 
   const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+  const getRecentUserInfo = useAuthStore(
+    (state: any) => state.getRecentUserInfo,
+  )
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)
@@ -30,7 +33,10 @@ export default function HomeScreen() {
   const closeFailedMissionInfoModal = () => {
     try {
       failedMissions.forEach(async (failedMission) => {
-        await supabase.from('failedMissions').delete().eq('id', failedMission.id)
+        await supabase
+          .from('failedMissions')
+          .delete()
+          .eq('id', failedMission.id)
       })
     } catch (error) {
       console.error(error)
@@ -41,24 +47,27 @@ export default function HomeScreen() {
     setIsFailedMissionInfoVisible(false)
   }
 
-  const clickMission = async (mission: mission) => {
+  const clickMission = async (mission: Mission) => {
     setSelctedMissionId(mission.id)
     setIsMissionInfoVisible(true)
   }
 
   const getMissions = async () => {
     try {
-      const { data, error } = await supabase.from('missions').select().eq('userId', user.id)
+      const { data, error } = await supabase
+        .from('missions')
+        .select()
+        .eq('userId', user.id)
 
       if (error) {
         console.error('index mission fetching fail:', error.message)
         return
       }
 
-      const missions: mission[] = []
-      const completedMissions: mission[] = []
+      const missions: Mission[] = []
+      const completedMissions: Mission[] = []
 
-      data.forEach((mission: mission) => {
+      data.forEach((mission: Mission) => {
         if (mission.completed) {
           completedMissions.push(mission)
         } else {
@@ -78,7 +87,10 @@ export default function HomeScreen() {
   }
 
   const getFailedMissions = async () => {
-    const { data, error } = await supabase.from('failedMissions').select().eq('userId', user.id)
+    const { data, error } = await supabase
+      .from('failedMissions')
+      .select()
+      .eq('userId', user.id)
 
     if (error) {
       console.error(error)
@@ -113,7 +125,10 @@ export default function HomeScreen() {
         return true // true를 반환해야 기본 뒤로가기를 막음
       }
 
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        backAction,
+      )
 
       return () => backHandler.remove() // 컴포넌트가 unmount 될 때 이벤트 리스너 제거
     }, [user]),
@@ -122,16 +137,25 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <GuideView
-        texts={['연인이 당신에게 할당한 미션입니다!', '어서 미션을 완료하여 코인를 획득하세요.']}
+        texts={[
+          '연인이 당신에게 할당한 미션입니다!',
+          '어서 미션을 완료하여 코인를 획득하세요.',
+        ]}
       />
       <ScrollView>
         <View>
           {missions.map((mission) => (
             <View key={mission.id}>
               {mission.type == 'coupon' ? (
-                <CouponMissionButton mission={mission} clickMission={() => clickMission(mission)} />
+                <CouponMissionButton
+                  mission={mission}
+                  clickMission={() => clickMission(mission)}
+                />
               ) : (
-                <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
+                <MissionButton
+                  mission={mission}
+                  clickMission={() => clickMission(mission)}
+                />
               )}
               {selctedMissionId == mission.id && (
                 <MissionInfoModal
@@ -147,7 +171,10 @@ export default function HomeScreen() {
         <View>
           {completedMissions.map((mission) => (
             <View key={mission.id}>
-              <MissionButton mission={mission} clickMission={() => clickMission(mission)} />
+              <MissionButton
+                mission={mission}
+                clickMission={() => clickMission(mission)}
+              />
               {selctedMissionId == mission.id && (
                 <MissionInfoModal
                   getMissions={getMissions}

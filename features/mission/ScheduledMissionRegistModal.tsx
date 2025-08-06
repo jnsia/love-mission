@@ -8,14 +8,14 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import SubmitButton from '../common/SubmitButton'
 import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
-import CancelButton from '../common/CancelButton'
 import { colors } from '@/shared/constants/Colors'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import { fonts } from '@/shared/constants/Fonts'
+import CancelButton from '@/shared/components/CancelButton'
+import SubmitButton from '@/shared/components/SubmitButton'
 
 export default function ScheduledMissionRegistModal({
   getMissions,

@@ -10,13 +10,17 @@ import theme from '@/shared/constants/Theme'
 import { setCustomText } from 'react-native-global-props'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { setNotificationListeners } from '@/shared/lib/pushNotification'
-import BannerAdvertisement from '@/features/advertisement/BannerAdvertisement'
-import { initMobileAds, setRewardAdvertisement } from '@/shared/lib/advertisement'
+import {
+  initMobileAds,
+  setRewardAdvertisement,
+} from '@/shared/lib/advertisement'
 
 export default function RootLayout() {
   const user: user = useAuthStore((state: any) => state.user)
   const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
-  const getUserInfoByEmail = useAuthStore((state: any) => state.getUserInfoByEmail)
+  const getUserInfoByEmail = useAuthStore(
+    (state: any) => state.getUserInfoByEmail,
+  )
 
   const router = useRouter()
 
@@ -80,7 +84,9 @@ export default function RootLayout() {
         translucent={true} // 상태바를 투명하게 설정
         backgroundColor='transparent' // 상태바의 배경을 투명하게 설정
       />
-      <Stack screenOptions={{ headerShown: false, contentStyle: styles.container }}>
+      <Stack
+        screenOptions={{ headerShown: false, contentStyle: styles.container }}
+      >
         <Stack.Screen name='auth' />
         <Stack.Screen name='(tabs)' />
         <Stack.Screen name='+not-found' />

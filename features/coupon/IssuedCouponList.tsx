@@ -1,7 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { supabase } from '@/shared/utils/supabase'
-import { user } from '@/shared/types/user'
 import theme from '@/shared/constants/Theme'
 import { fonts } from '@/shared/constants/Fonts'
 import CouponInfoModal from './CouponInfoModal'
@@ -40,7 +38,10 @@ export default function IssuedCouponList({
     <View>
       {coupons.map((coupon) => (
         <View key={coupon.id}>
-          <TouchableOpacity style={styles.couponItem} onPress={() => clickCoupon(coupon)}>
+          <TouchableOpacity
+            style={styles.couponItem}
+            onPress={() => clickCoupon(coupon)}
+          >
             <View style={styles.couponContent}>
               <Text style={styles.couponText} numberOfLines={1}>
                 {coupon.name}

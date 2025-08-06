@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Alert, Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { colors } from '@/constants/Colors'
-import { fonts } from '@/constants/Fonts'
-import theme from '@/constants/Theme'
-import RegistButton from '@/components/common/RegistButton'
+import { colors } from '@/shared/constants/Colors'
+import { fonts } from '@/shared/constants/Fonts'
+import theme from '@/shared/constants/Theme'
+import RegistButton from '@/features/common/RegistButton'
 import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/utils/supabase'
-import { user } from '@/types/user'
-import { sendPushNotification } from '@/lib/pushNotification'
+import { supabase } from '@/shared/utils/supabase'
+import { user } from '@/shared/types/user'
+import { sendPushNotification } from '@/shared/lib/pushNotification'
 
 export default function ConnectScreen() {
   const [secret, setSecret] = useState('')
@@ -88,12 +88,12 @@ export default function ConnectScreen() {
       })
 
       await supabase
-      .from('loveCoupons')
-      .insert({ name: "뽀뽀 해줘!", description: "", price: 100, userId: user.id })
+        .from('loveCoupons')
+        .insert({ name: '뽀뽀 해줘!', description: '', price: 100, userId: user.id })
 
       await supabase
-      .from('loveCoupons')
-      .insert({ name: "뽀뽀 해줘!", description: "", price: 100, userId: love.id })
+        .from('loveCoupons')
+        .insert({ name: '뽀뽀 해줘!', description: '', price: 100, userId: love.id })
 
       await sendPushNotification(
         love.fcmToken,
@@ -185,7 +185,7 @@ export default function ConnectScreen() {
               style={styles.hiddenInput}
               value={secret}
               onChangeText={setSecret}
-              keyboardType="numeric"
+              keyboardType='numeric'
               maxLength={6}
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -224,7 +224,7 @@ export default function ConnectScreen() {
           </View>
         </View>
       )}
-      <RegistButton text="다시 로그인하기" onPressEvent={clickLogoutButton} />
+      <RegistButton text='다시 로그인하기' onPressEvent={clickLogoutButton} />
     </View>
   )
 }
@@ -293,7 +293,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: fonts.size.body,
-
 
     color: '#FFF',
     fontWeight: 'bold',

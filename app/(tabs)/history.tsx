@@ -2,13 +2,13 @@ import React, { useCallback, useState } from 'react'
 import { StyleSheet, Text, View, Dimensions, ScrollView, TouchableOpacity } from 'react-native'
 
 import { useFocusEffect } from '@react-navigation/native'
-import theme from '@/constants/Theme'
-import { user } from '@/types/user'
+import theme from '@/shared/constants/Theme'
+import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
-import HistoryTabs from '@/components/history/HistoryTabs'
-import { supabase } from '@/utils/supabase'
-import { fonts } from '@/constants/Fonts'
-import HistoryInfoModal from '@/components/history/HistoryInfoModal'
+import HistoryTabs from '@/features/history/HistoryTabs'
+import { supabase } from '@/shared/utils/supabase'
+import { fonts } from '@/shared/constants/Fonts'
+import HistoryInfoModal from '@/features/history/HistoryInfoModal'
 
 export default function History() {
   const [page, setPage] = useState('missions')

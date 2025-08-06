@@ -1,14 +1,14 @@
-import RegistButton from '@/components/common/RegistButton'
-import CouponIssueModal from '@/components/coupon/CouponIssueModal'
-import CouponTabs from '@/components/coupon/CouponTabs'
-import IssuedCouponList from '@/components/coupon/IssuedCouponList'
-import LoveCouponList from '@/components/coupon/LoveCouponList'
-import MyCouponList from '@/components/coupon/MyCouponList'
-import { fonts } from '@/constants/Fonts'
-import theme from '@/constants/Theme'
+import RegistButton from '@/features/common/RegistButton'
+import CouponIssueModal from '@/features/coupon/CouponIssueModal'
+import CouponTabs from '@/features/coupon/CouponTabs'
+import IssuedCouponList from '@/features/coupon/IssuedCouponList'
+import LoveCouponList from '@/features/coupon/LoveCouponList'
+import MyCouponList from '@/features/coupon/MyCouponList'
+import { fonts } from '@/shared/constants/Fonts'
+import theme from '@/shared/constants/Theme'
 import useAuthStore from '@/stores/authStore'
-import { user } from '@/types/user'
-import { supabase } from '@/utils/supabase'
+import { user } from '@/shared/types/user'
+import { supabase } from '@/shared/utils/supabase'
 import React, { useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
 
@@ -60,7 +60,7 @@ export default function CouponListScreen() {
           isModalVisible={isModalVisible}
           closeModal={closeModal}
         />
-        <RegistButton text="쿠폰 발행하기" onPressEvent={openModal} />
+        <RegistButton text='쿠폰 발행하기' onPressEvent={openModal} />
       </View>
     </View>
   )

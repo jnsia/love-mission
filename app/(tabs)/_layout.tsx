@@ -1,7 +1,7 @@
-import BannerAdvertisement from '@/components/advertisement/BannerAdvertisement'
-import Header from '@/components/common/Header'
-import { colors } from '@/constants/Colors'
-import theme from '@/constants/Theme'
+import BannerAdvertisement from '@/features/advertisement/BannerAdvertisement'
+import Header from '@/features/common/Header'
+import { colors } from '@/shared/constants/Colors'
+import theme from '@/shared/constants/Theme'
 import { FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
 import { StatusBar, StyleSheet } from 'react-native'
@@ -10,8 +10,8 @@ export default function HomeLayout() {
   return (
     <>
       <StatusBar
-        barStyle="light-content" // 상태바 아이콘을 밝게 표시 (아이콘 색상: 하얀색)
-        backgroundColor="#1c1f2a" // 상태바 배경색
+        barStyle='light-content' // 상태바 아이콘을 밝게 표시 (아이콘 색상: 하얀색)
+        backgroundColor='#1c1f2a' // 상태바 배경색
         // translucent={true}
       />
       <Tabs
@@ -52,7 +52,7 @@ export default function HomeLayout() {
         })}
       >
         <Tabs.Screen
-          name="(index)"
+          name='(index)'
           options={{
             title: '나의 미션',
             headerShown: true,
@@ -60,7 +60,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="love"
+          name='love'
           options={{
             title: '연인의 미션',
             headerShown: true,
@@ -68,7 +68,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="coupon"
+          name='coupon'
           options={{
             title: '쿠폰',
             headerShown: true,
@@ -76,7 +76,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="history"
+          name='history'
           options={{
             title: '기록',
             headerShown: true,
@@ -84,7 +84,7 @@ export default function HomeLayout() {
           }}
         />
         <Tabs.Screen
-          name="(setting)"
+          name='(setting)'
           options={{
             title: '설정',
             headerShown: true,

@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Animated } from 'react-native'
 import React, { useState } from 'react'
-import { colors } from '@/constants/Colors'
-import theme from '@/constants/Theme'
-import { user } from '@/types/user'
+import { colors } from '@/shared/constants/Colors'
+import theme from '@/shared/constants/Theme'
+import { user } from '@/shared/types/user'
 import useAuthStore from '@/stores/authStore'
 import { router } from 'expo-router'
-import { fonts } from '@/constants/Fonts'
+import { fonts } from '@/shared/constants/Fonts'
 
 export default function SignInScreen() {
   const [email, setEmail] = useState('')

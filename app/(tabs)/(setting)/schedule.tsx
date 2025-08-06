@@ -1,19 +1,19 @@
-import MissionInfoModal from '@/components/mission/MissionInfoModal'
-import RegistButton from '@/components/common/RegistButton'
-import theme from '@/constants/Theme'
+import MissionInfoModal from '@/features/mission/MissionInfoModal'
+import RegistButton from '@/features/common/RegistButton'
+import theme from '@/shared/constants/Theme'
 import useAuthStore from '@/stores/authStore'
-import { mission } from '@/types/mission'
-import { user } from '@/types/user'
-import { supabase } from '@/utils/supabase'
+import { mission } from '@/features/mission/types/mission'
+import { user } from '@/shared/types/user'
+import { supabase } from '@/shared/utils/supabase'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { fonts } from '@/constants/Fonts'
-import { colors } from '@/constants/Colors'
-import GuideView from '@/components/coupon/GuideView'
-import ScheduledMissionRegistModal from '@/components/mission/ScheduledMissionRegistModal'
-import ScheduledMissionInfoModal from '@/components/mission/ScheduledMissionInfoModal'
-import CloseButton from '@/components/common/CloseButton'
+import { fonts } from '@/shared/constants/Fonts'
+import { colors } from '@/shared/constants/Colors'
+import GuideView from '@/features/coupon/GuideView'
+import ScheduledMissionRegistModal from '@/features/mission/ScheduledMissionRegistModal'
+import ScheduledMissionInfoModal from '@/features/mission/ScheduledMissionInfoModal'
+import CloseButton from '@/features/common/CloseButton'
 
 export default function ScheduleScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -122,8 +122,8 @@ export default function ScheduleScreen() {
         closeModal={closeModal}
       />
       <View style={{ marginBottom: 10 }}>
-        <RegistButton text="일일 미션 예약하기" onPressEvent={openModal} />
-        <CloseButton text="닫기" onPressEvent={() => router.back()} />
+        <RegistButton text='일일 미션 예약하기' onPressEvent={openModal} />
+        <CloseButton text='닫기' onPressEvent={() => router.back()} />
       </View>
     </View>
   )

@@ -1,19 +1,19 @@
-import MissionInfoModal from '@/components/mission/MissionInfoModal'
-import RegistButton from '@/components/common/RegistButton'
-import MissionRegistModal from '@/components/mission/MissionRegistModal'
-import theme from '@/constants/Theme'
+import MissionInfoModal from '@/features/mission/MissionInfoModal'
+import RegistButton from '@/features/common/RegistButton'
+import MissionRegistModal from '@/features/mission/MissionRegistModal'
+import theme from '@/shared/constants/Theme'
 import useAuthStore from '@/stores/authStore'
-import { mission } from '@/types/mission'
-import { user } from '@/types/user'
-import { supabase } from '@/utils/supabase'
+import { mission } from '@/features/mission/types/mission'
+import { user } from '@/shared/types/user'
+import { supabase } from '@/shared/utils/supabase'
 import { useFocusEffect } from 'expo-router'
 import { useCallback, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { sendPushNotification } from '@/lib/pushNotification'
-import { fonts } from '@/constants/Fonts'
-import { colors } from '@/constants/Colors'
-import Badge from '@/components/common/Badge'
-import MissionButton from '@/components/mission/MissionButton'
+import { sendPushNotification } from '@/shared/lib/pushNotification'
+import { fonts } from '@/shared/constants/Fonts'
+import { colors } from '@/shared/constants/Colors'
+import Badge from '@/features/common/Badge'
+import MissionButton from '@/features/mission/MissionButton'
 
 export default function LoveScreen() {
   const [missions, setMissions] = useState<mission[]>([])
@@ -128,7 +128,7 @@ export default function LoveScreen() {
           미션 수행 독촉하기
         </Text>
       </TouchableOpacity>
-      <RegistButton text="미션 등록하기" onPressEvent={openModal} />
+      <RegistButton text='미션 등록하기' onPressEvent={openModal} />
     </View>
   )
 }

@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { fonts } from '@/constants/Fonts'
-import { colors } from '@/constants/Colors'
-import theme from '@/constants/Theme'
+import { fonts } from '@/shared/constants/Fonts'
+import { colors } from '@/shared/constants/Colors'
+import theme from '@/shared/constants/Theme'
 import { router } from 'expo-router'
 import { createClient } from '@supabase/supabase-js'
-import { supabase } from '@/utils/supabase'
+import { supabase } from '@/shared/utils/supabase'
 
 const regex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
 
@@ -89,13 +89,13 @@ export default function SignUpScreen() {
             <Text style={styles.label}>이메일</Text>
             <View style={styles.inputBox}>
               <TextInput
-                keyboardType="email-address"
+                keyboardType='email-address'
                 style={styles.input}
-                placeholder="이메일"
+                placeholder='이메일'
                 placeholderTextColor={'gray'}
                 value={email}
                 onChangeText={(text) => onChangeEmail(text)}
-                returnKeyType="next"
+                returnKeyType='next'
               />
             </View>
           </View>
@@ -104,11 +104,11 @@ export default function SignUpScreen() {
             <View style={styles.inputBox}>
               <TextInput
                 style={styles.input}
-                placeholder="8자리 이상 입력해주세요."
+                placeholder='8자리 이상 입력해주세요.'
                 placeholderTextColor={'gray'}
                 value={password}
                 onChangeText={(text) => onChangePassword(text)}
-                returnKeyType="next"
+                returnKeyType='next'
                 secureTextEntry
               />
             </View>
@@ -121,7 +121,7 @@ export default function SignUpScreen() {
             <View style={styles.inputBox}>
               <TextInput
                 style={styles.input}
-                placeholder="비밀번호를 다시 입력해주세요"
+                placeholder='비밀번호를 다시 입력해주세요'
                 placeholderTextColor={'gray'}
                 value={verifiedPassword}
                 onChangeText={(text) => onChangeVerifiedPassword(text)}
@@ -135,7 +135,10 @@ export default function SignUpScreen() {
           <TouchableOpacity style={styles.button} onPress={clickSignUpButton}>
             <Text style={styles.buttonText}>회원가입</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/auth/signIn')}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.replace('/auth/signIn')}
+          >
             <Text style={styles.backButtonText}>뒤로가기</Text>
           </TouchableOpacity>
         </View>

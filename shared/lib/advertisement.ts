@@ -1,4 +1,4 @@
-import { user } from '@/shared/types/user'
+import { User } from '@/features/user/types/user.type'
 import { supabase } from '@/shared/utils/supabase'
 import { Alert } from 'react-native'
 import MobileAds, {
@@ -8,7 +8,9 @@ import MobileAds, {
   TestIds,
 } from 'react-native-google-mobile-ads'
 
-const rewardAdUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-3115269616339333/7283099461'
+const rewardAdUnitId = __DEV__
+  ? TestIds.REWARDED
+  : 'ca-app-pub-3115269616339333/7283099461'
 
 const configureAdMob = async () => {
   await MobileAds().setRequestConfiguration({
@@ -32,8 +34,14 @@ export function initMobileAds() {
     })
 }
 
-export function setRewardAdvertisement(user: user, getUserInfoByEmail: (email: string) => void) {
-  const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {})
+export function setRewardAdvertisement(
+  user: User,
+  getUserInfoByEmail: (email: string) => void,
+) {
+  const unsubscribeLoaded = rewarded.addAdEventListener(
+    RewardedAdEventType.LOADED,
+    () => {},
+  )
 
   const unsubscribeEarned = rewarded.addAdEventListener(
     RewardedAdEventType.EARNED_REWARD,

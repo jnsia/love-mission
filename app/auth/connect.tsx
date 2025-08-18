@@ -11,25 +11,25 @@ import {
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'
 import theme from '@/shared/constants/Theme'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
-import { user } from '@/shared/types/user'
+import { User } from '@/features/user/types/user.type'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import RegistButton from '@/shared/components/RegistButton'
+import { router } from 'expo-router'
+import { logout } from '@/features/user/api/auth.api'
+import {
+  fetchCurrentUser,
+  fetchUserBySecret,
+  updateSecret,
+  updateUserLoveId,
+} from '@/features/user/api/user.api'
+import { registerMission } from '@/features/mission/api/mission.api'
+import { issueCoupon } from '@/features/coupon/api/coupon.api'
 
 export default function ConnectScreen() {
+  const [user, setUser] = useState<User>()
   const [secret, setSecret] = useState('')
   const [generatedSecret, setgeneratedSecret] = useState('')
   const [animation] = useState(new Animated.Value(1))
-
-  const user: user = useAuthStore((state: any) => state.user)
-  const logout = useAuthStore((state: any) => state.logout)
-
-  useEffect(() => {
-    if (secret.length === 6) {
-      handleCompleteSecret()
-    }
-  }, [secret])
 
   const handleFocus = () => {
     Animated.spring(animation, {
@@ -47,98 +47,73 @@ export default function ConnectScreen() {
     }).start()
   }
 
-  const clickGenerateButton = async () => {
+  const generateSecret = async () => {
+    if (!user) return
     const secret = Math.floor(100000 + Math.random() * 900000).toString()
-
-    try {
-      await supabase.from('users').update({ secret: secret }).eq('id', user.id)
-    } catch (err) {
-      console.error(err)
-      return
-    }
-
+    await updateSecret(user.id, secret)
     setgeneratedSecret(secret)
   }
 
-  const clickCancleButton = async () => {
-    try {
-      await supabase.from('users').update({ secret: null }).eq('id', user.id)
-    } catch (err) {
-      console.error(err)
-      return
-    }
-
+  const removeSecret = async () => {
+    if (!user) return
+    await updateSecret(user.id, null)
     setgeneratedSecret('')
   }
 
-  const connectLove = async (love: user) => {
+  const connectLove = async (love: User) => {
+    if (!user) return
+
     try {
-      await supabase.from('users').update({ loveId: love.id }).eq('id', user.id)
-      await supabase.from('users').update({ loveId: user.id }).eq('id', love.id)
-
-      await supabase.from('missions').insert({
+      const partialMissionRegisterRequest = {
         title: '연인 꼭 안아주기!',
         description: '',
         type: 'special',
         successCoin: 100,
         failCoin: 0,
-        userId: user.loveId,
-      })
+      }
 
-      await supabase.from('missions').insert({
-        title: '연인 꼭 안아주기!',
+      const partialCouponIssueRequest = {
+        name: '뽀뽀 해줘!',
         description: '',
-        type: 'special',
-        successCoin: 100,
-        failCoin: 0,
-        userId: love.id,
-      })
+        price: 100,
+      }
 
-      await supabase
-        .from('loveCoupons')
-        .insert({
-          name: '뽀뽀 해줘!',
-          description: '',
-          price: 100,
+      await Promise.all([
+        updateUserLoveId(user.id, love.id),
+        updateUserLoveId(love.id, user.id),
+        registerMission({
+          ...partialMissionRegisterRequest,
           userId: user.id,
-        })
-
-      await supabase
-        .from('loveCoupons')
-        .insert({
-          name: '뽀뽀 해줘!',
-          description: '',
-          price: 100,
+        }),
+        registerMission({
+          ...partialMissionRegisterRequest,
           userId: love.id,
-        })
+        }),
+        issueCoupon({
+          ...partialCouponIssueRequest,
+          userId: user.id,
+        }),
+        issueCoupon({
+          ...partialCouponIssueRequest,
+          userId: love.id,
+        }),
+      ])
 
       await sendPushNotification(
         love.fcmToken,
         '연인과 연결되었습니다.',
-        '러브미!션을 즐겨주세요!',
+        '러브미션을 즐겨주세요!',
         'index',
       )
-
-      await supabase.from('users').update({ secret: null }).eq('id', love.id)
     } catch (error) {
       console.error(error)
     }
   }
 
-  const clickConnectButton = async () => {
+  const submitSecret = async () => {
     if (secret.length !== 6) return
 
-    const { data, error } = await supabase
-      .from('users')
-      .select()
-      .eq('secret', secret)
-
-    if (error) {
-      console.error(error)
-      return
-    }
-
-    const user = data[0]
+    const user = await fetchUserBySecret(secret)
 
     if (user == null) {
       Alert.alert('잘못된 암호입니다.')
@@ -162,8 +137,13 @@ export default function ConnectScreen() {
     }
   }
 
-  const clickLogoutButton = async () => {
-    await logout(user.id)
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.replace('/auth/signIn')
+    } catch {
+      Alert.alert('로그아웃에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
   const handleCompleteSecret = () => {
@@ -179,6 +159,26 @@ export default function ConnectScreen() {
       }).start()
     })
   }
+
+  const getCurrentUser = async () => {
+    const currentUser = await fetchCurrentUser()
+    if (currentUser) {
+      setUser(currentUser)
+    } else {
+      Alert.alert('로그인 정보가 없습니다. 다시 로그인해주세요.')
+      router.replace('/auth/signIn')
+    }
+  }
+
+  useEffect(() => {
+    getCurrentUser()
+  }, [])
+
+  useEffect(() => {
+    if (secret.length === 6) {
+      handleCompleteSecret()
+    }
+  }, [secret])
 
   return (
     <View style={styles.container}>
@@ -220,16 +220,10 @@ export default function ConnectScreen() {
             />
           </Animated.View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={clickGenerateButton}
-            >
+            <TouchableOpacity style={styles.button} onPress={generateSecret}>
               <Text style={styles.buttonText}>암호 생성</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={clickConnectButton}
-            >
+            <TouchableOpacity style={styles.button} onPress={submitSecret}>
               <Text style={styles.buttonText}>암호 제출</Text>
             </TouchableOpacity>
           </View>
@@ -243,7 +237,6 @@ export default function ConnectScreen() {
               { transform: [{ scale: animation }] },
             ]}
           >
-            {/* <FontAwesome name="lock" size={24} color="#FF6347" style={styles.icon} /> */}
             <View style={styles.secretContainer}>
               {generatedSecret.split('').map((value, index) => (
                 <View
@@ -256,13 +249,13 @@ export default function ConnectScreen() {
             </View>
           </Animated.View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={clickCancleButton}>
+            <TouchableOpacity style={styles.button} onPress={removeSecret}>
               <Text style={styles.buttonText}>생성 취소</Text>
             </TouchableOpacity>
           </View>
         </View>
       )}
-      <RegistButton text='다시 로그인하기' onPressEvent={clickLogoutButton} />
+      <RegistButton text='다시 로그인하기' onPressEvent={handleLogout} />
     </View>
   )
 }
@@ -331,7 +324,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: fonts.size.body,
-
     color: '#FFF',
     fontWeight: 'bold',
   },

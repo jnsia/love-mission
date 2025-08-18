@@ -3,11 +3,17 @@ import RegistButton from '@/features/common/RegistButton'
 import theme from '@/shared/constants/Theme'
 import useAuthStore from '@/stores/authStore'
 import { mission } from '@/features/mission/types/mission'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import { supabase } from '@/shared/utils/supabase'
 import { router, useFocusEffect } from 'expo-router'
 import { useCallback, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native'
 import { fonts } from '@/shared/constants/Fonts'
 import { colors } from '@/shared/constants/Colors'
 import GuideView from '@/features/coupon/GuideView'
@@ -80,7 +86,10 @@ export default function ScheduleScreen() {
       <ScrollView>
         {completedMissions.map((mission: mission) => (
           <View key={mission.id}>
-            <TouchableOpacity style={styles.completedItem} onPress={() => clickMission(mission)}>
+            <TouchableOpacity
+              style={styles.completedItem}
+              onPress={() => clickMission(mission)}
+            >
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>쿠폰</Text>
               </View>
@@ -100,7 +109,10 @@ export default function ScheduleScreen() {
         ))}
         {missions.map((mission) => (
           <View key={mission.id}>
-            <TouchableOpacity style={styles.item} onPress={() => clickMission(mission)}>
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => clickMission(mission)}
+            >
               <Text style={styles.itemText} numberOfLines={1}>
                 {mission.title}
               </Text>

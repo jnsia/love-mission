@@ -3,7 +3,7 @@ import OpinionSendModal from '@/features/setting/OpinionSendModal'
 import theme from '@/shared/constants/Theme'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import useAuthStore from '@/stores/authStore'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
@@ -31,16 +31,29 @@ export default function SettingScreen() {
   }
 
   const fcmTest = () => {
-    sendPushNotification(user.fcmToken, 'test', 'fcm 테스트를 위한 sendPushNotification', 'index')
+    sendPushNotification(
+      user.fcmToken,
+      'test',
+      'fcm 테스트를 위한 sendPushNotification',
+      'index',
+    )
   }
 
   return (
     <View style={styles.container}>
-      <RegistButton text='일일 미션 자동 등록' onPressEvent={clickScheduleButton} />
+      <RegistButton
+        text='일일 미션 자동 등록'
+        onPressEvent={clickScheduleButton}
+      />
       <RegistButton text='의견 보내기' onPressEvent={clickSendOpinionButton} />
       <RegistButton text='로그아웃' onPressEvent={clickLogoutButton} />
-      {[3, 4].includes(user?.id) && <RegistButton text='FCM 테스트 버튼' onPressEvent={fcmTest} />}
-      <OpinionSendModal isVisible={modalVisible} closeModal={closeSendOpinionModal} />
+      {[3, 4].includes(user?.id) && (
+        <RegistButton text='FCM 테스트 버튼' onPressEvent={fcmTest} />
+      )}
+      <OpinionSendModal
+        isVisible={modalVisible}
+        closeModal={closeSendOpinionModal}
+      />
     </View>
   )
 }

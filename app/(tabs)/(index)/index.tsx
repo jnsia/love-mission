@@ -1,7 +1,7 @@
 import { Alert, BackHandler, ScrollView, StyleSheet, View } from 'react-native'
 import { supabase } from '@/shared/utils/supabase'
 import { useCallback, useState } from 'react'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import { failedMission, Mission } from '@/features/mission/types/mission'
 import theme from '@/shared/constants/Theme'

@@ -1,11 +1,18 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Animated } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Animated,
+} from 'react-native'
 import React, { useState } from 'react'
 import { colors } from '@/shared/constants/Colors'
 import theme from '@/shared/constants/Theme'
-import { user } from '@/shared/types/user'
-import useAuthStore from '@/stores/authStore'
 import { router } from 'expo-router'
 import { fonts } from '@/shared/constants/Fonts'
+import { signIn } from '@/features/user/api/auth.api'
 
 export default function SignInScreen() {
   const [email, setEmail] = useState('')
@@ -13,8 +20,6 @@ export default function SignInScreen() {
 
   const [eamilInputAnimation] = useState(new Animated.Value(1))
   const [passwordInputAnimation] = useState(new Animated.Value(1))
-
-  const signIn = useAuthStore((state: any) => state.signIn)
 
   const handleEmailInputFocus = () => {
     Animated.spring(eamilInputAnimation, {
@@ -57,16 +62,15 @@ export default function SignInScreen() {
       return Alert.alert('비밀번호를 입력해 주세요.')
     }
 
-    const userInfo: user = await signIn(email, password)
-
-    if (userInfo == null) {
+    const user = await signIn(email, password)
+    if (user == null) {
       return Alert.alert('가입된 회원이 아니거나 비밀번호가 틀립니다.')
     }
 
     setEmail('')
     setPassword('')
 
-    if (userInfo.loveId == null) {
+    if (user.loveId == null) {
       router.replace('/auth/connect')
     } else {
       router.replace('/(tabs)')
@@ -81,7 +85,10 @@ export default function SignInScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Love Mission</Text>
       <Animated.View
-        style={[styles.inputContainer, { transform: [{ scale: eamilInputAnimation }] }]}
+        style={[
+          styles.inputContainer,
+          { transform: [{ scale: eamilInputAnimation }] },
+        ]}
       >
         <TextInput
           style={styles.input}
@@ -94,7 +101,10 @@ export default function SignInScreen() {
         />
       </Animated.View>
       <Animated.View
-        style={[styles.inputContainer, { transform: [{ scale: passwordInputAnimation }] }]}
+        style={[
+          styles.inputContainer,
+          { transform: [{ scale: passwordInputAnimation }] },
+        ]}
       >
         <TextInput
           style={styles.input}

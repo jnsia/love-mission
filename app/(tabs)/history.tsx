@@ -10,7 +10,7 @@ import {
 
 import { useFocusEffect } from '@react-navigation/native'
 import theme from '@/shared/constants/Theme'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import HistoryTabs from '@/features/history/HistoryTabs'
 import { supabase } from '@/shared/utils/supabase'

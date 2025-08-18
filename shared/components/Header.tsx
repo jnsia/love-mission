@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import theme from '@/shared/constants/Theme'
 import { colors } from '@/shared/constants/Colors'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useFocusEffect } from 'expo-router'
@@ -11,7 +11,9 @@ import { rewarded } from '@/shared/lib/advertisement'
 
 export default function Header() {
   const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore((state: any) => state.getRecentUserInfo)
+  const getRecentUserInfo = useAuthStore(
+    (state: any) => state.getRecentUserInfo,
+  )
 
   const showAds = () => {
     try {
@@ -48,7 +50,10 @@ export default function Header() {
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity style={styles.userCoinContainer} onPress={clickCoinContainer}>
+      <TouchableOpacity
+        style={styles.userCoinContainer}
+        onPress={clickCoinContainer}
+      >
         <View>
           <View style={{ position: 'relative', right: 10, top: 5 }}>
             <FontAwesome5 name='coins' size={20} color={colors.accent} />

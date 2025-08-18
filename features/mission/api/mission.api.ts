@@ -1,5 +1,5 @@
 import { supabase } from '@/shared/utils/supabase'
-import { Mission } from '../types/mission'
+import { Mission, MissionRegisterRequest } from '../types/mission'
 
 export const fetchMissions = async (
   userId: number,
@@ -15,4 +15,12 @@ export const fetchMissions = async (
   }
 
   return data
+}
+
+export const registerMission = async (request: MissionRegisterRequest) => {
+  const { error } = await supabase.from('missions').insert(request).select()
+
+  if (error) {
+    console.error('Error registering mission:', error.message)
+  }
 }

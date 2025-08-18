@@ -23,7 +23,7 @@ export interface MissionRegisterRequest {
   title: string
   description: string
   type: string
-  successCoin: string
-  failCoin: string
+  successCoin: number
+  failCoin: number
   userId: number
 }

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { supabase } from '@/shared/utils/supabase'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import theme from '@/shared/constants/Theme'
 import { fonts } from '@/shared/constants/Fonts'

@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native'
 import React from 'react'
-import { user } from '@/shared/types/user'
+import { user } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import { supabase } from '@/shared/utils/supabase'
 import theme from '@/shared/constants/Theme'

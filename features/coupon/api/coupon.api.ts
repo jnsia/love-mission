@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 
 export const issueCoupon = async (
   request: CouponIssueRequest,

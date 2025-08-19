@@ -8,11 +8,8 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { colors } from '@/shared/constants/Colors'
-import { sendPushNotification } from '@/shared/lib/pushNotification'
 import { fonts } from '@/shared/constants/Fonts'
 import CancelButton from '@/shared/components/CancelButton'
 import SubmitButton from '@/shared/components/SubmitButton'
@@ -30,8 +27,6 @@ export default function ScheduledMissionRegistModal({
   const [description, setDescription] = useState('')
   const [successCoin, setSuccessCoin] = useState('100')
   const [failCoin, setFailCoin] = useState('0')
-
-  const user: user = useAuthStore((state: any) => state.user)
 
   const registMission = async () => {
     if (title == '') return

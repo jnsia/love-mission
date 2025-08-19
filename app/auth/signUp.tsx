@@ -11,7 +11,7 @@ import { fonts } from '@/shared/constants/Fonts'
 import { colors } from '@/shared/constants/Colors'
 import theme from '@/shared/constants/Theme'
 import { router } from 'expo-router'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 
 const regex =
   /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/

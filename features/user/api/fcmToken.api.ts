@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 
 export const upsertFcmToken = async (userId: number, token: string) => {
   await supabase.from('users').update({ fcmToken: token }).eq('id', userId)

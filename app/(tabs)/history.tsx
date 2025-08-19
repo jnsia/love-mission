@@ -3,17 +3,15 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   ScrollView,
   TouchableOpacity,
 } from 'react-native'
 
 import { useFocusEffect } from '@react-navigation/native'
 import theme from '@/shared/constants/Theme'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
+import { User } from '@/features/user/types/user.type'
 import HistoryTabs from '@/features/history/HistoryTabs'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { fonts } from '@/shared/constants/Fonts'
 import HistoryInfoModal from '@/features/history/HistoryInfoModal'
 
@@ -22,8 +20,6 @@ export default function History() {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedHistoryId, setSelctedHistoryId] = useState(0)
   const [histories, setHistories] = useState<history[]>([])
-
-  const user: user = useAuthStore((state: any) => state.user)
 
   const getHistories = async () => {
     const { data, error } = await supabase

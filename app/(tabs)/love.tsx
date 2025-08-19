@@ -1,9 +1,7 @@
 import MissionInfoModal from '@/features/mission/MissionInfoModal'
 import MissionRegistModal from '@/features/mission/MissionRegisterModal'
 import theme from '@/shared/constants/Theme'
-import useAuthStore from '@/stores/authStore'
 import { Mission } from '@/features/mission/types/mission'
-import { user } from '@/features/user/types/user.type'
 import { useState } from 'react'
 import { View, StyleSheet, ScrollView } from 'react-native'
 import MissionButton from '@/features/mission/MissionButton'
@@ -14,8 +12,6 @@ export default function LoveScreen() {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
   const [selctedMissionId, setSelctedMissionId] = useState(0)
-
-  const user: user = useAuthStore((state: any) => state.user)
 
   const { missions, getMissions } = useMissions({ userId: user.loveId })
 

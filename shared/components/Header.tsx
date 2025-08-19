@@ -2,19 +2,13 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import theme from '@/shared/constants/Theme'
 import { colors } from '@/shared/constants/Colors'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
+import { User } from '@/features/user/types/user.type'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { useFocusEffect } from 'expo-router'
 import { fonts } from '@/shared/constants/Fonts'
 import { rewarded } from '@/shared/lib/advertisement'
 
 export default function Header() {
-  const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore(
-    (state: any) => state.getRecentUserInfo,
-  )
-
   const showAds = () => {
     try {
       rewarded.show()

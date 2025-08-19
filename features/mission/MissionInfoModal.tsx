@@ -8,9 +8,7 @@ import {
   Alert,
 } from 'react-native'
 import React from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import theme from '@/shared/constants/Theme'
 import { Mission } from '@/features/mission/types/mission'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
@@ -30,9 +28,6 @@ export default function MissionInfoModal({
   closeMissionInfoModal: () => void
   mission: Mission
 }) {
-  const user: user = useAuthStore((state: any) => state.user)
-  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
-
   const approveMission = async () => {
     const offset = new Date().getTimezoneOffset() * 60000
     const today = new Date(Date.now() - offset).toISOString().substring(0, 10)

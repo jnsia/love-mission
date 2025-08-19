@@ -1,13 +1,12 @@
-import CouponIssueModal from '@/features/coupon/CouponIssueModal'
-import CouponTabs from '@/features/coupon/CouponTabs'
-import IssuedCouponList from '@/features/coupon/IssuedCouponList'
-import LoveCouponList from '@/features/coupon/LoveCouponList'
-import MyCouponList from '@/features/coupon/MyCouponList'
+import CouponIssueModal from '@/features/coupon/components/CouponIssueModal'
+import CouponTabs from '@/features/coupon/components/CouponTabs'
+import IssuedCouponList from '@/features/coupon/components/IssuedCouponList'
+import LoveCouponList from '@/features/coupon/components/LoveCouponList'
+import MyCouponList from '@/features/coupon/components/MyCouponList'
 import { fonts } from '@/shared/constants/Fonts'
 import theme from '@/shared/constants/Theme'
-import useAuthStore from '@/stores/authStore'
-import { user } from '@/features/user/types/user.type'
-import { supabase } from '@/shared/utils/supabase'
+import { User } from '@/features/user/types/user.type'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import React, { useState } from 'react'
 import { View, StyleSheet, ScrollView, Text } from 'react-native'
 import RegistButton from '@/shared/components/RegistButton'
@@ -15,9 +14,7 @@ import RegistButton from '@/shared/components/RegistButton'
 export default function CouponListScreen() {
   const [page, setPage] = useState('myCoupons')
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [issuedCoupons, setIssuedCoupons] = useState<coupon[]>([])
-
-  const user: user = useAuthStore((state: any) => state.user)
+  const [issuedCoupons, setIssuedCoupons] = useState<Coupon[]>([])
 
   const openModal = () => {
     setPage('issuedCoupons')

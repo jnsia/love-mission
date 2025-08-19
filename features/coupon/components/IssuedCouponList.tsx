@@ -13,13 +13,13 @@ export default function IssuedCouponList({
 }: {
   page: string
   setPage: React.Dispatch<React.SetStateAction<string>>
-  coupons: coupon[]
+  coupons: Coupon[]
   getCoupons: () => void
 }) {
   const [isCouponInfoVisible, setIsCouponInfoVisible] = useState(false)
   const [selectedCouponId, setSelectedCouponId] = useState(0)
 
-  const clickCoupon = (coupon: coupon) => {
+  const clickCoupon = (coupon: Coupon) => {
     setIsCouponInfoVisible(true)
     setSelectedCouponId(coupon.id)
   }

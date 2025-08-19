@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import { user } from '@/features/user/types/user.type'
+import { User } from '@/features/user/types/user.type'
 import useAuthStore from '@/stores/authStore'
 import { colors } from '@/shared/constants/Colors'
 import { fonts } from '@/shared/constants/Fonts'

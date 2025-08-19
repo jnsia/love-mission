@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { Mission, MissionRegisterRequest } from '../types/mission'
 
 export const fetchMissions = async (

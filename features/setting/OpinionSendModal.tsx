@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import React, { useState } from 'react'
 import { fonts } from '@/shared/constants/Fonts'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import CancelButton from '@/shared/components/CancelButton'
 import SubmitButton from '@/shared/components/SubmitButton'
 

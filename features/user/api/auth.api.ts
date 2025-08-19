@@ -3,7 +3,7 @@ import {
   getAuthData,
   setAuthData,
 } from '@/shared/lib/async-storage/auth'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { clearFcmToken, upsertFcmToken } from './fcmToken.api'
 import { fetchUserByEmail } from './user.api'
 import { registerForPushNotificationsAsync } from '@/shared/lib/pushNotification'

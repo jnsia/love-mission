@@ -8,9 +8,7 @@ import {
   Alert,
 } from 'react-native'
 import React from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import theme from '@/shared/constants/Theme'
 import { Mission } from '@/features/mission/types/mission'
 import { fonts } from '@/shared/constants/Fonts'
@@ -28,8 +26,6 @@ export default function ScheduledMissionInfoModal({
   closeMissionInfoModal: () => void
   mission: Mission
 }) {
-  const user: user = useAuthStore((state: any) => state.user)
-
   const deleteMission = async () => {
     try {
       await supabase.from('scheduledMissions').delete().eq('id', mission.id)

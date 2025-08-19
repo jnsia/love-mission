@@ -32,8 +32,8 @@ export async function setNotificationListeners() {
       router.replace('/(tabs)')
     })
 
-  const notificationReceivedListener = Notifications.addNotificationReceivedListener(
-    (notification) => {
+  const notificationReceivedListener =
+    Notifications.addNotificationReceivedListener((notification) => {
       const content = notification.request.content
       Alert.alert(
         content.title || '정체불명의 인앱 메세지',
@@ -55,12 +55,13 @@ export async function setNotificationListeners() {
         ],
         { cancelable: false },
       )
-    },
-  )
+    })
 
   return () => {
     Notifications.removeNotificationSubscription(notificationReceivedListener)
-    Notifications.removeNotificationSubscription(notificationResponseReceivedListener)
+    Notifications.removeNotificationSubscription(
+      notificationResponseReceivedListener,
+    )
   }
 }
 

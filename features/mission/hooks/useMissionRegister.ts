@@ -1,11 +1,8 @@
 import { sendPushNotification } from '@/shared/lib/pushNotification'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { MissionRegisterRequest } from '../types/mission'
-import useAuthStore from '@/stores/authStore'
 
 export default function useMissionRegister() {
-  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
-
   const registerMission = async (request: MissionRegisterRequest) => {
     const { error } = await supabase.from('missions').insert(request)
 

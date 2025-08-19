@@ -2,7 +2,7 @@ import Header from '@/shared/components/Header'
 import { colors } from '@/shared/constants/Colors'
 import { FontAwesome } from '@expo/vector-icons'
 import { Tabs } from 'expo-router'
-import { StatusBar, StyleSheet } from 'react-native'
+import { StatusBar } from 'react-native'
 
 export default function HomeLayout() {
   return (
@@ -15,7 +15,7 @@ export default function HomeLayout() {
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ color, size }) => {
             let iconName: string = ''
 
             if (route.name === '(index)') {

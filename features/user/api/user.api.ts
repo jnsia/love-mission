@@ -1,4 +1,4 @@
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { User } from '../types/user.type'
 import { getAuthData } from '@/shared/lib/async-storage/auth'
 

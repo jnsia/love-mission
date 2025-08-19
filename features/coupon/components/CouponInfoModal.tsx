@@ -8,9 +8,8 @@ import {
   Alert,
 } from 'react-native'
 import React from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
+import { User } from '@/features/user/types/user.type'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import theme from '@/shared/constants/Theme'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import { router } from 'expo-router'
@@ -31,14 +30,8 @@ export default function CouponInfoModal({
   getCoupons: () => void
   isCouponInfoVisible: boolean
   closeCouponInfoModal: () => void
-  coupon: coupon
+  coupon: Coupon
 }) {
-  const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore(
-    (state: any) => state.getRecentUserInfo,
-  )
-  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
-
   const useCoupon = async () => {
     try {
       const { data, error } = await supabase.from('missions').insert({

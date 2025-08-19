@@ -6,9 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import React, { useState } from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { colors } from '@/shared/constants/Colors'
 import { sendPushNotification } from '@/shared/lib/pushNotification'
 import InputBox from './InputBox'
@@ -31,9 +29,6 @@ export default function CouponIssueModal({
 
   const [isNameNull, setIsNameNull] = useState(false)
   const [isPriceNull, setIsPriceNull] = useState(false)
-
-  const user: user = useAuthStore((state: any) => state.user)
-  const loveFcmToken: string = useAuthStore((state: any) => state.loveFcmToken)
 
   const onChangeName = (text: string) => {
     setName(text)

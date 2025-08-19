@@ -1,13 +1,11 @@
 import { Alert, BackHandler, ScrollView, StyleSheet, View } from 'react-native'
-import { supabase } from '@/shared/utils/supabase'
+import { supabase } from '@/shared/lib/supabase/supabase'
 import { useCallback, useState } from 'react'
-import { user } from '@/features/user/types/user.type'
-import useAuthStore from '@/stores/authStore'
 import { failedMission, Mission } from '@/features/mission/types/mission'
 import theme from '@/shared/constants/Theme'
 import { useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/features/mission/MissionInfoModal'
-import GuideView from '@/features/coupon/GuideView'
+import GuideView from '@/features/coupon/components/GuideView'
 import FailedMissionInfoModal from '@/features/mission/FailedMissionInfoModal'
 import MissionButton from '@/features/mission/MissionButton'
 import CouponMissionButton from '@/features/mission/CouponMissionButton'
@@ -20,11 +18,6 @@ export default function HomeScreen() {
   const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] =
     useState(false)
   const [selctedMissionId, setSelctedMissionId] = useState(0)
-
-  const user: user = useAuthStore((state: any) => state.user)
-  const getRecentUserInfo = useAuthStore(
-    (state: any) => state.getRecentUserInfo,
-  )
 
   const closeMissionInfoModal = () => {
     setIsMissionInfoVisible(false)

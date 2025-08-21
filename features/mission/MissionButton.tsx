@@ -1,10 +1,10 @@
-import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import theme from '@/shared/constants/Theme'
 import { Mission } from '@/features/mission/types/mission'
 import { colors } from '@/shared/constants/Colors'
-import { fonts } from '@/shared/constants/Fonts'
 import Badge from '@/shared/components/Badge'
+import Typography from '@/shared/components/Typography'
 
 export default function MissionButton({
   mission,
@@ -19,12 +19,14 @@ export default function MissionButton({
       onPress={() => clickMission(mission)}
     >
       <Badge type={mission.type} />
-      <Text
-        style={mission.completed ? styles.completedItemText : styles.itemText}
+      <Typography
+        variant="body"
+        color={mission.completed ? "white" : "primary"}
+        style={[styles.itemText, mission.completed && styles.completedItemText]}
         numberOfLines={1}
       >
         {mission.title}
-      </Text>
+      </Typography>
     </TouchableOpacity>
   )
 }
@@ -39,10 +41,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemText: {
-    fontSize: 14,
     flex: 1,
-    color: theme.colors.text,
-    fontFamily: fonts.default,
   },
   completedItem: {
     flexDirection: 'row',
@@ -52,9 +51,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.success,
     marginBottom: 8,
   },
-  completedItemText: {
-    fontSize: 14,
-    color: 'white',
-    fontFamily: fonts.default,
-  },
+  completedItemText: {},
 })

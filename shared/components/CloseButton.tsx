@@ -1,7 +1,5 @@
-import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import theme from '@/shared/constants/Theme'
-import { fonts } from '@/shared/constants/Fonts'
+import Button from './Button'
 
 export default function CloseButton({
   text,
@@ -11,24 +9,10 @@ export default function CloseButton({
   onPressEvent: () => void
 }) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPressEvent}>
-      <Text style={styles.buttonText}>{text}</Text>
-    </TouchableOpacity>
+    <Button 
+      text={text} 
+      variant="cancel" 
+      onPress={onPressEvent}
+    />
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    justifyContent: 'center',
-    borderWidth: 1,
-    height: 48,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    backgroundColor: theme.colors.text,
-  },
-  buttonText: {
-    fontSize: fonts.size.body,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-})

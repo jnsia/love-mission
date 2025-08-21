@@ -1,16 +1,16 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import theme from '@/shared/constants/Theme'
-import { fonts } from '@/shared/constants/Fonts'
+import Typography from './Typography'
 
 export default function Badge({ type }: { type: string }) {
   return (
     <View style={styles.badge}>
-      {type == 'special' && <Text style={styles.badgeText}>특별</Text>}
-      {type == 'daily' && <Text style={styles.badgeText}>일일</Text>}
-      {type == 'emergency' && <Text style={styles.badgeText}>긴급</Text>}
-      {type == 'coupon' && <Text style={styles.badgeText}>쿠폰</Text>}
-      {type == 'complete' && <Text style={styles.badgeText}>완료</Text>}
+      {type == 'special' && <Typography variant="caption" color="primary">특별</Typography>}
+      {type == 'daily' && <Typography variant="caption" color="primary">일일</Typography>}
+      {type == 'emergency' && <Typography variant="caption" color="primary">긴급</Typography>}
+      {type == 'coupon' && <Typography variant="caption" color="primary">쿠폰</Typography>}
+      {type == 'complete' && <Typography variant="caption" color="primary">완료</Typography>}
     </View>
   )
 }
@@ -24,10 +24,5 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     marginRight: 8,
     borderRadius: 10,
-  },
-  badgeText: {
-    fontFamily: fonts.default,
-    fontSize: 10,
-    color: theme.colors.text,
   },
 })

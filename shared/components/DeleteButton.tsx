@@ -1,7 +1,5 @@
-import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { colors } from '@/shared/constants/Colors'
-import { fonts } from '@/shared/constants/Fonts'
+import Button from './Button'
 
 export default function DeleteButton({
   text,
@@ -11,26 +9,10 @@ export default function DeleteButton({
   onPressEvent: () => void
 }) {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPressEvent}>
-      <Text style={styles.buttonText}>{text}</Text>
-    </TouchableOpacity>
+    <Button 
+      text={text} 
+      variant="danger" 
+      onPress={onPressEvent}
+    />
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    flex: 1,
-    justifyContent: 'center',
-    borderWidth: 1,
-    height: 48,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    borderColor: colors.accent,
-  },
-  buttonText: {
-    fontSize: fonts.size.body,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: colors.accent,
-  },
-})

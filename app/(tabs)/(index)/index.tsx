@@ -1,7 +1,6 @@
 import { Alert, BackHandler, ScrollView, StyleSheet, View } from 'react-native'
-import { supabase } from '@/shared/lib/supabase/supabase'
-import { useCallback, useState } from 'react'
-import { failedMission, Mission } from '@/features/mission/types/mission'
+import { useState } from 'react'
+import { Mission, FailedMission } from '@/features/mission/types/mission'
 import theme from '@/shared/constants/Theme'
 import { useFocusEffect } from 'expo-router'
 import MissionInfoModal from '@/features/mission/MissionInfoModal'
@@ -9,14 +8,23 @@ import GuideView from '@/features/coupon/components/GuideView'
 import FailedMissionInfoModal from '@/features/mission/FailedMissionInfoModal'
 import MissionButton from '@/features/mission/MissionButton'
 import CouponMissionButton from '@/features/mission/CouponMissionButton'
+import { useCurrentUser } from '@/shared/hooks/useAuth'
+import { 
+  useMissions, 
+  useFailedMissions, 
+  useCompletedMissions,
+  useDeleteFailedMissions 
+} from '@/shared/hooks/useMissions'
 
 export default function HomeScreen() {
-  const [missions, setMissions] = useState<Mission[]>([])
-  const [failedMissions, setFailedMissions] = useState<failedMission[]>([])
-  const [completedMissions, setCompletedMissions] = useState<Mission[]>([])
+  const { data: user } = useCurrentUser()
+  const { data: missions = [], refetch: refetchMissions } = useMissions(user?.id)
+  const { data: failedMissions = [], refetch: refetchFailedMissions } = useFailedMissions(user?.id)
+  const { data: completedMissions = [] } = useCompletedMissions(user?.id)
+  const deleteFailedMissions = useDeleteFailedMissions()
+
   const [isMissionInfoVisible, setIsMissionInfoVisible] = useState(false)
-  const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] =
-    useState(false)
+  const [isFailedMissionInfoVisible, setIsFailedMissionInfoVisible] = useState(false)
   const [selctedMissionId, setSelctedMissionId] = useState(0)
 
   const closeMissionInfoModal = () => {
@@ -24,19 +32,10 @@ export default function HomeScreen() {
   }
 
   const closeFailedMissionInfoModal = () => {
-    try {
-      failedMissions.forEach(async (failedMission) => {
-        await supabase
-          .from('failedMissions')
-          .delete()
-          .eq('id', failedMission.id)
-      })
-    } catch (error) {
-      console.error(error)
-      return
+    const failedMissionIds = failedMissions.map(mission => mission.id)
+    if (failedMissionIds.length > 0) {
+      deleteFailedMissions.mutate(failedMissionIds)
     }
-
-    setFailedMissions([])
     setIsFailedMissionInfoVisible(false)
   }
 
@@ -45,66 +44,18 @@ export default function HomeScreen() {
     setIsMissionInfoVisible(true)
   }
 
-  const getMissions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('missions')
-        .select()
-        .eq('userId', user.id)
-
-      if (error) {
-        console.error('index mission fetching fail:', error.message)
-        return
-      }
-
-      const missions: Mission[] = []
-      const completedMissions: Mission[] = []
-
-      data.forEach((mission: Mission) => {
-        if (mission.completed) {
-          completedMissions.push(mission)
-        } else {
-          if (mission.type == 'coupon') {
-            missions.unshift(mission)
-          } else {
-            missions.push(mission)
-          }
-        }
-      })
-
-      setMissions(missions)
-      setCompletedMissions(completedMissions)
-    } catch (error: any) {
-      console.error('index mission fetching fail:', error.message)
-    }
-  }
-
-  const getFailedMissions = async () => {
-    const { data, error } = await supabase
-      .from('failedMissions')
-      .select()
-      .eq('userId', user.id)
-
-    if (error) {
-      console.error(error)
-      return
-    }
-
-    if (data.length > 0) {
-      setFailedMissions(data)
-      setIsFailedMissionInfoVisible(true)
-    }
-  }
-
+  // 실패한 미션이 있을 때 모달 표시
   useFocusEffect(
-    useCallback(() => {
-      if (user == null) return
-      if (user.loveId == null) {
-        getRecentUserInfo(user.id)
+    React.useCallback(() => {
+      if (failedMissions.length > 0 && !isFailedMissionInfoVisible) {
+        setIsFailedMissionInfoVisible(true)
       }
-      getMissions()
-      getFailedMissions()
+    }, [failedMissions])
+  )
 
+  // 뒤로가기 처리
+  useFocusEffect(
+    React.useCallback(() => {
       const backAction = () => {
         Alert.alert('앱을 종료하시겠습니까?', '', [
           {
@@ -115,7 +66,7 @@ export default function HomeScreen() {
           { text: '예', onPress: () => BackHandler.exitApp() },
         ])
 
-        return true // true를 반환해야 기본 뒤로가기를 막음
+        return true
       }
 
       const backHandler = BackHandler.addEventListener(
@@ -123,9 +74,18 @@ export default function HomeScreen() {
         backAction,
       )
 
-      return () => backHandler.remove() // 컴포넌트가 unmount 될 때 이벤트 리스너 제거
-    }, [user]),
+      return () => backHandler.remove()
+    }, []),
   )
+
+  // 미션 목록 정렬 (쿠폰 미션 우선)
+  const sortedMissions = React.useMemo(() => {
+    return [...missions].sort((a, b) => {
+      if (a.type === 'coupon' && b.type !== 'coupon') return -1
+      if (a.type !== 'coupon' && b.type === 'coupon') return 1
+      return 0
+    })
+  }, [missions])
 
   return (
     <View style={styles.container}>
@@ -137,9 +97,9 @@ export default function HomeScreen() {
       />
       <ScrollView>
         <View>
-          {missions.map((mission) => (
+          {sortedMissions.map((mission) => (
             <View key={mission.id}>
-              {mission.type == 'coupon' ? (
+              {mission.type === 'coupon' ? (
                 <CouponMissionButton
                   mission={mission}
                   clickMission={() => clickMission(mission)}
@@ -150,9 +110,8 @@ export default function HomeScreen() {
                   clickMission={() => clickMission(mission)}
                 />
               )}
-              {selctedMissionId == mission.id && (
+              {selctedMissionId === mission.id && (
                 <MissionInfoModal
-                  getMissions={getMissions}
                   isMissionInfoVisible={isMissionInfoVisible}
                   mission={mission}
                   closeMissionInfoModal={closeMissionInfoModal}
@@ -168,9 +127,8 @@ export default function HomeScreen() {
                 mission={mission}
                 clickMission={() => clickMission(mission)}
               />
-              {selctedMissionId == mission.id && (
+              {selctedMissionId === mission.id && (
                 <MissionInfoModal
-                  getMissions={getMissions}
                   isMissionInfoVisible={isMissionInfoVisible}
                   mission={mission}
                   closeMissionInfoModal={closeMissionInfoModal}

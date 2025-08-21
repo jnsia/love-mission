@@ -14,14 +14,19 @@ import HistoryTabs from '@/features/history/HistoryTabs'
 import { supabase } from '@/shared/lib/supabase/supabase'
 import { fonts } from '@/shared/constants/Fonts'
 import HistoryInfoModal from '@/features/history/HistoryInfoModal'
+import { History as HistoryType } from '@/features/history/types/history'
+import { useCurrentUser } from '@/shared/hooks/useAuth'
 
 export default function History() {
+  const { data: user } = useCurrentUser()
   const [page, setPage] = useState('missions')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [selectedHistoryId, setSelctedHistoryId] = useState(0)
-  const [histories, setHistories] = useState<history[]>([])
+  const [histories, setHistories] = useState<HistoryType[]>([])
 
   const getHistories = async () => {
+    if (!user) return
+    
     const { data, error } = await supabase
       .from('histories')
       .select()

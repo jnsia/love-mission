@@ -10,7 +10,7 @@ export interface Mission {
   createdAt: string
 }
 
-export interface failedMission {
+export interface FailedMission {
   id: number
   title: string
   date: string

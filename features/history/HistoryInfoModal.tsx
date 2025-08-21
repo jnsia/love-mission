@@ -3,6 +3,7 @@ import React from 'react'
 import theme from '@/shared/constants/Theme'
 import { fonts } from '@/shared/constants/Fonts'
 import CancelButton from '@/shared/components/CancelButton'
+import { CoinHistory } from './types/history'
 
 export default function HistoryInfoModal({
   isModalVisible,
@@ -11,7 +12,7 @@ export default function HistoryInfoModal({
 }: {
   isModalVisible: boolean
   closeModal: () => void
-  history: coinHistory
+  history: CoinHistory
 }) {
   return (
     <Modal

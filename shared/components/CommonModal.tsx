@@ -1,7 +1,7 @@
 import { View, Text, Modal, StyleSheet, ScrollView, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import theme from '@/shared/constants/Theme'
-import { failedMission } from '@/features/mission/types/mission'
+import { FailedMission } from '@/features/mission/types/mission'
 import CancelButton from './CancelButton'
 import { fonts } from '@/shared/constants/Fonts'
 

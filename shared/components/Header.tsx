@@ -1,14 +1,28 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import React from 'react'
 import theme from '@/shared/constants/Theme'
 import { colors } from '@/shared/constants/Colors'
-import { User } from '@/features/user/types/user.type'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useFocusEffect } from 'expo-router'
-import { fonts } from '@/shared/constants/Fonts'
 import { rewarded } from '@/shared/lib/advertisement'
+import Typography from './Typography'
+import { useCurrentUser, useRefreshUser } from '@/shared/hooks/useAuth'
+import { useFocusEffect } from 'expo-router'
 
 export default function Header() {
+  const { data: user, refetch } = useCurrentUser()
+  const refreshUser = useRefreshUser()
+
+  // 화면 포커스시 사용자 정보 새로고침
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user) {
+        refreshUser.mutate(user.id)
+      } else {
+        refetch()
+      }
+    }, [user])
+  )
+
   const showAds = () => {
     try {
       rewarded.show()
@@ -34,14 +48,6 @@ export default function Header() {
     )
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      if (user) {
-        getRecentUserInfo(user.id)
-      }
-    }, []),
-  )
-
   return (
     <View style={styles.header}>
       <TouchableOpacity
@@ -56,12 +62,8 @@ export default function Header() {
             <FontAwesome5 name='plus' size={12} color={colors.accent} />
           </View>
         </View>
-        {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
+        {user && <Typography variant="body" color="accent" style={styles.userCoin}>{user.coin} Coin</Typography>}
       </TouchableOpacity>
-      {/* <View style={styles.userCoinContainer}>
-        <FontAwesome5 name="coins" size={20} color={colors.accent} />
-        {user && <Text style={styles.userCoin}>{user.coin} Coin</Text>}
-      </View> */}
     </View>
   )
 }
@@ -83,8 +85,5 @@ const styles = StyleSheet.create({
   userCoin: {
     minWidth: 36,
     textAlign: 'right',
-    color: colors.accent,
-    fontSize: fonts.size.body,
-    fontFamily: fonts.defaultBold,
   },
 })

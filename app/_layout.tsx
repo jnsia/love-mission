@@ -1,58 +1,43 @@
 import { Stack, useRouter } from 'expo-router'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
-import useAuthStore from '@/stores/authStore'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StatusBar, StyleSheet } from 'react-native'
-import { User } from '@/features/user/types/user.type'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
 import theme from '@/shared/constants/Theme'
 import { setCustomText } from 'react-native-global-props'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { getAuthData } from '@/shared/lib/async-storage/auth'
 import { setNotificationListeners } from '@/shared/lib/pushNotification'
 import {
   initMobileAds,
   setRewardAdvertisement,
 } from '@/shared/lib/advertisement'
+import { queryClient } from '@/shared/lib/react-query/queryClient'
 
-export default function RootLayout() {
-  const user: user = useAuthStore((state: any) => state.user)
-  const getLoveFcmToken = useAuthStore((state: any) => state.getLoveFcmToken)
-  const getUserInfoByEmail = useAuthStore(
-    (state: any) => state.getUserInfoByEmail,
-  )
-
+function RootNavigator() {
   const router = useRouter()
+
+  const [loaded, error] = useFonts({
+    pretendard: require('@/shared/assets/fonts/Pretendard-Regular.ttf'),
+    pretendardBold: require('@/shared/assets/fonts/Pretendard-Bold.ttf'),
+  })
 
   useEffect(() => {
     initMobileAds()
     setNotificationListeners()
   }, [])
 
-  useEffect(() => {
-    if (user) setRewardAdvertisement(user, getUserInfoByEmail)
-  }, [user])
-
-  const [loaded, error] = useFonts({
-    pretendard: require('@/assets/fonts/Pretendard-Regular.ttf'),
-    pretendardBold: require('@/assets/fonts/Pretendard-Bold.ttf'),
-  })
-
   const authProcess = async () => {
     if (!loaded) return
 
-    const isLoggedIn = await AsyncStorage.getItem('isLoggedInLoveMission')
+    const authData = await getAuthData()
 
-    if (isLoggedIn) {
-      const user: user = await getUserInfoByEmail(isLoggedIn)
-
-      if (user.loveId == null) {
-        router.replace('/auth/connect')
-      } else {
-        await getLoveFcmToken(user.loveId)
-        router.replace('/(tabs)/(index)')
-      }
+    if (authData?.email) {
+      // 인증된 사용자는 메인으로
+      router.replace('/(tabs)/(index)')
     } else {
+      // 미인증 사용자는 로그인으로
       router.replace('/auth')
     }
 
@@ -80,9 +65,9 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar
-        barStyle='light-content' // 상태바 아이콘을 밝게 표시
-        translucent={true} // 상태바를 투명하게 설정
-        backgroundColor='transparent' // 상태바의 배경을 투명하게 설정
+        barStyle='light-content'
+        translucent={true}
+        backgroundColor='transparent'
       />
       <Stack
         screenOptions={{ headerShown: false, contentStyle: styles.container }}
@@ -91,8 +76,15 @@ export default function RootLayout() {
         <Stack.Screen name='(tabs)' />
         <Stack.Screen name='+not-found' />
       </Stack>
-      {/* <BannerAdvertisement /> */}
     </>
+  )
+}
+
+export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RootNavigator />
+    </QueryClientProvider>
   )
 }
 

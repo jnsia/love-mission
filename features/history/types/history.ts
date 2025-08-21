@@ -1,18 +1,18 @@
-interface history {
+export interface History {
   id: number
   record: string
   date: string
   coin: number
 }
 
-interface missionHistory {
+export interface MissionHistory {
   id: number
   record: string
   date: string
   coin: number
 }
 
-interface coinHistory {
+export interface CoinHistory {
   id: number
   record: string
   date: string
